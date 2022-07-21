@@ -16,3 +16,6 @@
 [submodule "Source/third-party/zip"]
 	path = Source/third-party/zip
 	url = git@github.com:kuba--/zip.git
+[submodule "Source/third-party/digraph"]
+	path = Source/third-party/digraph
+	url = git@github.com:grame-cncm/digraph.git
