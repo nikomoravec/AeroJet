@@ -238,62 +238,58 @@ namespace SuperJet::Java::Archive
         for (int constantPoolEntryIndex = 1; constantPoolEntryIndex < readConstantPoolSize; constantPoolEntryIndex++)
         {
             ConstantPoolInfoTag tag = read<ConstantPoolInfoTag>(stream);
-            std::shared_ptr<ConstantPoolEntry> entry {nullptr};
-
             switch (tag)
             {
                 case ConstantPoolInfoTag::UTF_8:
-                    entry = std::make_shared<ConstantPoolInfoUtf8>(read<ConstantPoolInfoUtf8>(stream, ConstantPoolInfoTag::UTF_8));
+                    constantPool.addEntry(constantPoolEntryIndex, std::make_shared<ConstantPoolInfoUtf8>(read<ConstantPoolInfoUtf8>(stream, ConstantPoolInfoTag::UTF_8)));
                     break;
                 case ConstantPoolInfoTag::INTEGER:
-                    entry = std::make_shared<ConstantPoolInfoInteger>(read<ConstantPoolInfoInteger>(stream, ConstantPoolInfoTag::INTEGER));
+                    constantPool.addEntry(constantPoolEntryIndex, std::make_shared<ConstantPoolInfoInteger>(read<ConstantPoolInfoInteger>(stream, ConstantPoolInfoTag::INTEGER)));
                     break;
                 case ConstantPoolInfoTag::FLOAT:
-                    entry = std::make_shared<ConstantPoolInfoInteger>(read<ConstantPoolInfoInteger>(stream, ConstantPoolInfoTag::FLOAT));
+                    constantPool.addEntry(constantPoolEntryIndex, std::make_shared<ConstantPoolInfoInteger>(read<ConstantPoolInfoInteger>(stream, ConstantPoolInfoTag::FLOAT)));
                     break;
                 case ConstantPoolInfoTag::LONG:
-                    entry = std::make_shared<ConstantPoolInfoLong>(read<ConstantPoolInfoLong>(stream, ConstantPoolInfoTag::LONG));
+                {
+                    constantPool.addEntry(constantPoolEntryIndex, std::make_shared<ConstantPoolInfoLong>(read<ConstantPoolInfoLong>(stream, ConstantPoolInfoTag::LONG)));
+                    constantPoolEntryIndex++;
                     break;
+                }
                 case ConstantPoolInfoTag::DOUBLE:
-                    entry = std::make_shared<ConstantPoolInfoLong>(read<ConstantPoolInfoLong>(stream, ConstantPoolInfoTag::DOUBLE));
+                {
+                    constantPool.addEntry(constantPoolEntryIndex, std::make_shared<ConstantPoolInfoLong>(read<ConstantPoolInfoLong>(stream, ConstantPoolInfoTag::DOUBLE)));
+                    constantPoolEntryIndex++;
                     break;
+                }
                 case ConstantPoolInfoTag::CLASS:
-                    entry = std::make_shared<ConstantPoolInfoClass>(read<ConstantPoolInfoClass>(stream, ConstantPoolInfoTag::CLASS));
+                    constantPool.addEntry(constantPoolEntryIndex, std::make_shared<ConstantPoolInfoClass>(read<ConstantPoolInfoClass>(stream, ConstantPoolInfoTag::CLASS)));
                     break;
                 case ConstantPoolInfoTag::STRING:
-                    entry = std::make_shared<ConstantPoolInfoString>(read<ConstantPoolInfoString>(stream, ConstantPoolInfoTag::STRING));
+                    constantPool.addEntry(constantPoolEntryIndex, std::make_shared<ConstantPoolInfoString>(read<ConstantPoolInfoString>(stream, ConstantPoolInfoTag::STRING)));
                     break;
                 case ConstantPoolInfoTag::INTERFACE_METHOD_REF:
-                    entry = std::make_shared<ConstantPoolInfoFieldRef>(read<ConstantPoolInfoFieldRef>(stream, ConstantPoolInfoTag::INTERFACE_METHOD_REF));
+                    constantPool.addEntry(constantPoolEntryIndex, std::make_shared<ConstantPoolInfoFieldRef>(read<ConstantPoolInfoFieldRef>(stream, ConstantPoolInfoTag::INTERFACE_METHOD_REF)));
                     break;
                 case ConstantPoolInfoTag::FIELD_REF:
-                    entry = std::make_shared<ConstantPoolInfoFieldRef>(read<ConstantPoolInfoFieldRef>(stream, ConstantPoolInfoTag::FIELD_REF));
+                    constantPool.addEntry(constantPoolEntryIndex, std::make_shared<ConstantPoolInfoFieldRef>(read<ConstantPoolInfoFieldRef>(stream, ConstantPoolInfoTag::FIELD_REF)));
                     break;
                 case ConstantPoolInfoTag::METHOD_REF:
-                    entry = std::make_shared<ConstantPoolInfoFieldRef>(read<ConstantPoolInfoFieldRef>(stream, ConstantPoolInfoTag::METHOD_REF));
+                    constantPool.addEntry(constantPoolEntryIndex, std::make_shared<ConstantPoolInfoFieldRef>(read<ConstantPoolInfoFieldRef>(stream, ConstantPoolInfoTag::METHOD_REF)));
                     break;
                 case ConstantPoolInfoTag::NAME_AND_TYPE:
-                    entry = std::make_shared<ConstantPoolInfoNameAndType>(read<ConstantPoolInfoNameAndType>(stream, ConstantPoolInfoTag::NAME_AND_TYPE));
+                    constantPool.addEntry(constantPoolEntryIndex, std::make_shared<ConstantPoolInfoNameAndType>(read<ConstantPoolInfoNameAndType>(stream, ConstantPoolInfoTag::NAME_AND_TYPE)));
                     break;
                 case ConstantPoolInfoTag::METHOD_HANDLE:
-                    entry = std::make_shared<ConstantPoolInfoMethodHandle>(read<ConstantPoolInfoMethodHandle>(stream, ConstantPoolInfoTag::METHOD_HANDLE));
+                    constantPool.addEntry(constantPoolEntryIndex, std::make_shared<ConstantPoolInfoMethodHandle>(read<ConstantPoolInfoMethodHandle>(stream, ConstantPoolInfoTag::METHOD_HANDLE)));
                     break;
                 case ConstantPoolInfoTag::METHOD_TYPE:
-                    entry = std::make_shared<ConstantPoolInfoMethodType>(read<ConstantPoolInfoMethodType>(stream, ConstantPoolInfoTag::METHOD_TYPE));
+                    constantPool.addEntry(constantPoolEntryIndex, std::make_shared<ConstantPoolInfoMethodType>(read<ConstantPoolInfoMethodType>(stream, ConstantPoolInfoTag::METHOD_TYPE)));
                     break;
                 case ConstantPoolInfoTag::INVOKE_DYNAMIC:
-                    entry = std::make_shared<ConstantPoolInfoInvokeDynamic>(read<ConstantPoolInfoInvokeDynamic>(stream, ConstantPoolInfoTag::INVOKE_DYNAMIC));
+                    constantPool.addEntry(constantPoolEntryIndex, std::make_shared<ConstantPoolInfoInvokeDynamic>(read<ConstantPoolInfoInvokeDynamic>(stream, ConstantPoolInfoTag::INVOKE_DYNAMIC)));
                     break;
                 default:
                     throw SuperJet::Compiler::UnknownConstantPoolTagException(tag);
-            }
-
-            constantPool.addEntry(entry);
-
-            if (tag == ConstantPoolInfoTag::LONG || tag == ConstantPoolInfoTag::DOUBLE)
-            {
-                constantPool.addEntry(nullptr);
-                constantPoolEntryIndex++;
             }
         }
 

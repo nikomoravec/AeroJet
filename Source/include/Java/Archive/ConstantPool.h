@@ -4,6 +4,7 @@
 #include <filesystem>
 #include <fstream>
 #include <memory>
+#include <map>
 
 #include "fmt/format.h"
 #include "Compiler/Exceptions/RuntimeException.h"
@@ -19,7 +20,6 @@ namespace SuperJet::Java::Archive
     public:
         ConstantPool(const JVM::u2 InSize)
         {
-            entries.reserve(InSize - 1);
         }
 
         JVM::u2 getSize() const
@@ -28,34 +28,24 @@ namespace SuperJet::Java::Archive
         }
 
         template<typename T = ConstantPoolEntry>
-        std::shared_ptr<T> get(int32_t index) const requires std::is_base_of_v<ConstantPoolEntry, T>
+        std::shared_ptr<T> get(int64_t index) const requires std::is_base_of_v<ConstantPoolEntry, T>
         {
-            index = index - 1; // indexes in Constant Pool in Java starts from 1
-            if (index >= getSize() || index < 0)
-            {
-                /*
-                 * TODO: replace it with dedicated exception type IndexOutOfException
-                 * @Author: Nikita Miroshnichenko (nikita.miroshnichenko@yahoo.com)
-                 */
-                throw std::runtime_error("Index out of bound!");
-            }
-
-            if (entries[index] == nullptr)
+            if (entries.at(index) == nullptr)
             {
                 throw Compiler::RuntimeException(fmt::format("Element {} is null!", index));
             }
 
-            return std::static_pointer_cast<T>(entries[index]);
+            return std::static_pointer_cast<T>(entries.at(index));
         }
 
-        void addEntry(std::shared_ptr<ConstantPoolEntry> entry)
+        void addEntry(int64_t index, std::shared_ptr<ConstantPoolEntry> entry)
         {
             if (entry == nullptr)
             {
                 throw std::invalid_argument("parameter \'entry\' can not be null!");
             }
 
-            entries.emplace_back(entry);
+            entries[index] = entry;
         }
 
         auto begin() const
@@ -70,7 +60,7 @@ namespace SuperJet::Java::Archive
 
 
     protected:
-        std::vector<std::shared_ptr<ConstantPoolEntry>> entries;
+        std::map<int64_t, std::shared_ptr<ConstantPoolEntry>> entries;
     };
 }
 
