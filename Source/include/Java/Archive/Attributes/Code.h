@@ -52,19 +52,23 @@ namespace SuperJet::Java::Archive::Attributes
     public:
         Code(const ConstantPool& constantPool, const AttributeInfo& attributeInfo);
 
-        JVM::u2 getAttributeNameIndex() const {
+        JVM::u2 getAttributeNameIndex() const
+        {
             return attributeNameIndex;
         }
 
-        JVM::u4 getAttributeLength() const {
+        JVM::u4 getAttributeLength() const
+        {
             return attributeLength;
         }
 
-        JVM::u2 getMaxStack() const {
+        JVM::u2 getMaxStack() const
+        {
             return maxStack;
         }
 
-        JVM::u2 getMaxLocals() const {
+        JVM::u2 getMaxLocals() const
+        {
             return maxLocals;
         }
 
