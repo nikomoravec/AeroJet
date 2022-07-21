@@ -37,7 +37,14 @@
 #include "Compiler/Exceptions/OperationNotSupportedException.h"
 #include "Compiler/Exceptions/UnknownConstantPoolTagException.h"
 
+#include "Compiler/CodeGen/Node.h"
+#include "Compiler/CodeGen/Cpp/Class.h"
+#include "Compiler/CodeGen/Cpp/Document.h"
+#include "Compiler/CodeGen/Cpp/ForwardDeclaration.h"
 #include "Compiler/CodeGen/Cpp/Namespace.h"
+#include "Compiler/CodeGen/Cpp/Template.h"
+#include "Compiler/CodeGen/Cpp/Type.h"
+#include "Compiler/CodeGen/Cpp/Variable.h"
 
 
 
