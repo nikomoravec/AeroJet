@@ -10,3 +10,6 @@
 [submodule "Source/third-party/cxxopts"]
 	path = Source/third-party/cxxopts
 	url = git@github.com:jarro2783/cxxopts.git
+[submodule "Source/third-party/spdlog"]
+	path = Source/third-party/spdlog
+	url = git@github.com:gabime/spdlog.git
