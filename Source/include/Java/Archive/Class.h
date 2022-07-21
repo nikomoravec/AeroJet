@@ -17,6 +17,18 @@ namespace SuperJet::Java::Archive
     class Class
     {
     public:
+        enum class AccessFlags : JVM::u2
+        {
+            ACC_PUBLIC     = 0x0001,
+            ACC_FINAL      = 0x0010,
+            ACC_SUPER      = 0x0020,
+            ACC_INTERFACE  = 0x0200,
+            ACC_ABSTRACT   = 0x0400,
+            ACC_SYNTHETIC  = 0x1000,
+            ACC_ANNOTATION = 0x2000,
+            ACC_ENUM       = 0x4000
+        };
+
         Class(const JVM::u4 inMagic, const JVM::u2 inMinorVersion, const JVM::u2 inMajorVersion,
               const ConstantPool& inConstantPool, const JVM::u2 inAccessFlags, const JVM::u2 inThisClass,
               const JVM::u2 inSuperClass, const std::vector<JVM::u2>& inInterfaces, const std::vector<FieldInfo>& inFields,
