@@ -108,7 +108,7 @@ namespace SuperJet::Java::Archive
             return attributes;
         }
 
-        std::string getName()
+        std::string getName() const
         {
             Java::JVM::u2 thisClassIndex = getThisClass();
             Java::JVM::u2 nameIndex = constantPool.get<Java::Archive::ConstantPoolInfoClass>(thisClassIndex)->getNameIndex();
