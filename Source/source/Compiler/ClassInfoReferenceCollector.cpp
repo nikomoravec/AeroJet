@@ -33,7 +33,6 @@ namespace SuperJet::Compiler
 
     SourceDependencyGraph ClassInfoReferenceCollector::collect(const std::filesystem::path& className)
     {
-        spdlog::info(fmt::format("Gathering dependencies for class '{}'", className.string()));
         return collect(Compiler::loadClass(context, className));
     }
 
