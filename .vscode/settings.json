@@ -5,7 +5,6 @@
         "Source/include/",
         "Source/third-party/fmtlib/include",
         "Source/third-party/backwandcpp",
-        ".build/Source/third-party/llvm/llvm/include",
         "Source/third-party/llvm/llvm/include",
         "Source/third-party/cxxopts/include",
         "Source/third-party/spdlog/include",
@@ -130,6 +129,7 @@
         "ranges": "cpp",
         "stop_token": "cpp",
         "*.idl": "cpp",
-        "*.inc": "cpp"
+        "*.inc": "cpp",
+        "filesystem": "cpp"
     },
 }

@@ -2,7 +2,8 @@
     "configurations": [
         {
             "name": "Linux",
-            "includePath": [
+            "includePath":
+            [
                 "${default}",
                 "/usr/include/c++/12.1.0"
             ],

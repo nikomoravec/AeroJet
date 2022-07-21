@@ -1,0 +1,42 @@
+{
+    "tasks":
+    [
+        {
+            "label": "Clean Project",
+            "type": "shell",
+            "command": "rm -rf ${workspaceFolder}/.build && mkdir ${workspaceFolder}/.build",
+            "options":
+            {
+                "cwd": "${workspaceFolder}"
+            },
+        },
+        {
+            "label": "Generate Project",
+            "type": "shell",
+            "command": "cmake .. -DCMAKE_BUILD_TYPE=Debug",
+            "options":
+            {
+                "cwd": "${workspaceFolder}/.build"
+            },
+            "problemMatcher":
+            [
+                "$gcc",
+            ]
+        },
+        {
+            "dependsOn":
+            [
+                "Generate Project"
+            ],
+            "label": "Compile",
+            "type": "shell",
+            "command": "cmake --build ${workspaceFolder}/.build --target SuperJet",
+            "problemMatcher":
+            [
+                "$gcc",
+            ]
+        }
+    ],
+
+    "version": "2.0.0"
+}
