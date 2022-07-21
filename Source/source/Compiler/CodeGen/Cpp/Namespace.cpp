@@ -1,30 +1,16 @@
 #include "Compiler/CodeGen/Cpp/Namespace.h"
+#include "Compiler/CodeGen/Cpp/ForwardDeclaration.h"
+#include "Compiler/CodeGen/Cpp/Class.h"
 
-#include <string>
-#include <stack>
-
-namespace SuperJet
+namespace SuperJet::Compiler::CodeGen::Cpp
 {
-    template<>
-    std::string toString(const SuperJet::Compiler::CodeGen::Cpp::Namespace& object)
+    void Namespace::addForwardDeclaration(std::shared_ptr<SuperJet::Compiler::CodeGen::Cpp::ForwardDeclaration> forwardDeclaration)
     {
-        std::stack<std::string> parts = object.getParts();
-        std::stringstream ss;
+        childrens.emplace_back(forwardDeclaration);
+    }
 
-        ss << parts.top();
-        parts.pop();
-
-        if (parts.empty())
-        {
-            return ss.str();
-        }
-
-        while(!parts.empty())
-        {
-            ss << "::" << parts.top();
-            parts.pop();
-        }
-
-        return ss.str();
+    void Namespace::addClass(std::shared_ptr<SuperJet::Compiler::CodeGen::Cpp::Class> clazz)
+    {
+        childrens.emplace_back(clazz);
     }
 }
