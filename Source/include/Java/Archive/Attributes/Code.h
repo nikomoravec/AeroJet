@@ -12,6 +12,7 @@ namespace SuperJet::Java::Archive::Attributes
 {
     class Code
     {
+    public:
         static constexpr auto CODE_ATTRIBUTE_NAME = "Code";
 
         class ExceptionTableEntry

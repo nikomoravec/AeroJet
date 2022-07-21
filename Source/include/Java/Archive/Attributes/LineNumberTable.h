@@ -13,6 +13,7 @@ namespace SuperJet::Java::Archive::Attributes
 {
     class LineNumberTable
     {
+    public:
         static constexpr auto LINE_NUMBER_TABLE_ATTRIBUTE_NAME = "LineNumberTable";
 
         class LineNUmberTableEntry
