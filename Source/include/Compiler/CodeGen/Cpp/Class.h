@@ -4,7 +4,7 @@
 #include "Compiler/Compiler.h"
 #include "Compiler/CodeGen/Node.h"
 #include "Compiler/CodeGen/Cpp/Namespace.h"
-#include "Compiler/CodeGen/Cpp/Field.h"
+#include "Compiler/CodeGen/Cpp/Variable.h"
 #include "Java/Archive/ClassInfo.h"
 #include "fmt/format.h"
 #include <string>
@@ -14,20 +14,11 @@ namespace SuperJet::Compiler::CodeGen::Cpp
 {
     class Class : public Compiler::CodeGen::Node
     {
+        friend void SuperJet::Compiler::CodeGen::Cpp::Namespace::addClass(std::shared_ptr<SuperJet::Compiler::CodeGen::Cpp::Class>);
+
     public:
-        Class(std::shared_ptr<Java::Archive::ClassInfo> classInfo)
+        Class(const std::string& className) : name(className)
         {
-            std::filesystem::path package = std::filesystem::path(classInfo->getName());
-            if (package.has_parent_path())
-            {
-                name = package.filename();
-                ns = Namespace(package.parent_path().string());
-            }
-            else
-            {
-                name = package.string();
-                ns = std::nullopt;
-            }
         }
 
         bool hasNamespace() const
@@ -47,23 +38,23 @@ namespace SuperJet::Compiler::CodeGen::Cpp
 
         std::string getFullName() const
         {
-            if (ns.has_value())
+            if (hasNamespace())
             {
-                return ns.value().asString() + Namespace::CPP_NAMESPACE_DELIMITER + name;
+                return ns->asString() + Namespace::CPP_NAMESPACE_DELIMITER + name;
             }
 
             return name;
         }
 
-        void addField(std::shared_ptr<SuperJet::Compiler::CodeGen::Cpp::Field> field)
+        void addVariable(std::shared_ptr<SuperJet::Compiler::CodeGen::Cpp::Variable> var)
         {
-            childrens.emplace_back(field);
+            addNode(var);
         }
 
         virtual void dump(std::ostream& outputStream) override
         {
             outputStream << fmt::format("struct {}", getName());
-            outputStream << "\n{";
+            outputStream << "\n{\n";
             for (const auto& child : childrens)
             {
                 child->dump(outputStream);
@@ -72,7 +63,7 @@ namespace SuperJet::Compiler::CodeGen::Cpp
         }
 
     protected:
-        std::optional<Namespace> ns;
+        std::optional<SuperJet::Compiler::CodeGen::Cpp::Namespace> ns;
         std::string name;
     };
 }

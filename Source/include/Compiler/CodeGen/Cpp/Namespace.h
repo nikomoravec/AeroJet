@@ -24,8 +24,7 @@ namespace SuperJet::Compiler::CodeGen::Cpp
 
         Namespace(const std::filesystem::path& package)
         {   
-            std::filesystem::path p = package.parent_path();
-            for (auto it = p.begin(); it != p.end(); ++it)
+            for (auto it = package.begin(); it != package.end(); ++it)
             {
                 parts.push((*it).string());
             }

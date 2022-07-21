@@ -11,6 +11,7 @@ namespace SuperJet::Compiler::CodeGen::Cpp
 
     void Namespace::addClass(std::shared_ptr<SuperJet::Compiler::CodeGen::Cpp::Class> clazz)
     {
+        clazz->ns = *this;
         childrens.emplace_back(clazz);
     }
 }
