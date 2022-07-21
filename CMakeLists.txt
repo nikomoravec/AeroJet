@@ -26,6 +26,7 @@ add_executable(SuperJet
         Source/source/Compiler/ClassInfoReferenceCollector.cpp
         Source/source/Compiler/Context.cpp
         Source/source/Java/Archive/Attributes/LocalVariableTable.cpp
+        Source/source/Java/Archive/ClassInfo.cpp
 )
 
 add_dependencies(SuperJet
