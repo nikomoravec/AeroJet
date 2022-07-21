@@ -6,16 +6,42 @@ int main(int argc, char** argv)
     cxxopts::Options options("SuperJet", "Java AOT compiler");
 
     options.add_options()
-            ("i,input", "input Java class", cxxopts::value<std::string>());
+            ("jar", "input Java archive", cxxopts::value<std::string>())
+            ("jhome", "JAVA_HOME", cxxopts::value<std::string>())
+            ("main", "main class", cxxopts::value<std::string>());
 
     const cxxopts::ParseResult& commandLineParse = options.parse(argc, argv);
 
-    if (commandLineParse.count("input"))
+    if (commandLineParse.count("jar"))
     {
-        const SuperJet::Java::Archive::ClassInfo& classInfo = SuperJet::Java::Archive::read<SuperJet::Java::Archive::ClassInfo>(commandLineParse["input"].as<std::string>());
-        SuperJet::Compiler::ClassInfoResolver classInfoResolver(classInfo);
-        SuperJet::Compiler::ResolvedTypes::ClassInfo resolvedClass = classInfoResolver.resolve();
-        return 0;
+        if (commandLineParse.count("jhome"))
+        {
+            if (commandLineParse.count("main"))
+            {
+                SuperJet::Compiler::Environment environment;
+                environment.mainClass = commandLineParse["main"].as<std::string>();
+
+                for (const std::filesystem::directory_entry& entry : std::filesystem::directory_iterator(std::filesystem::path(commandLineParse["jhome"].as<std::string>()) / "jre" / "lib"))
+                {
+                    if(entry.is_regular_file())
+                    {
+                        if (entry.path().extension() == ".jar")
+                        {
+                            environment.libraries.emplace_back(entry.path());
+                        }
+                    }
+                }
+
+                environment.libraries.emplace_back(commandLineParse["jar"].as<std::string>());
+
+
+                SuperJet::Compiler::ClassInfoReferenceCollector collector = {environment};
+                collector.collect();
+            }
+
+            return 0;
+        }
+
     }
 
     std::cout << options.help() << std::endl;
