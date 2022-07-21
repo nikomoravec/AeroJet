@@ -135,8 +135,8 @@ namespace SuperJet::Java::Archive
         readNameIndex = swapEndian(readNameIndex);
 
         JVM::u2 readDescriptorIndex  = 0;
-        stream.read((char*)&readNameIndex, sizeof(readNameIndex));
-        readNameIndex = swapEndian(readNameIndex);
+        stream.read((char*)&readDescriptorIndex, sizeof(readDescriptorIndex));
+        readDescriptorIndex = swapEndian(readDescriptorIndex);
 
         return ConstantPoolInfoNameAndType{tag, readNameIndex, readDescriptorIndex};
     }
