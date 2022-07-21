@@ -5,6 +5,7 @@
 
 #include "Java/Archive/Attributes/Code.h"
 #include "Java/Archive/Attributes/LineNumberTable.h"
+#include "Java/Archive/Attributes/SourceFile.h"
 
 #include "Java/Archive/AttributeInfo.h"
 #include "Java/Archive/ConstantPool.h"
@@ -20,7 +21,8 @@ namespace SuperJet::Compiler
         using AttributeInfo = std::variant
         <
                 ::SuperJet::Java::Archive::Attributes::Code,
-                ::SuperJet::Java::Archive::Attributes::LineNumberTable
+                ::SuperJet::Java::Archive::Attributes::LineNumberTable,
+                ::SuperJet::Java::Archive::Attributes::SourceFile
         >;
     }
 

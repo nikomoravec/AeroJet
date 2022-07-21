@@ -20,6 +20,11 @@ namespace SuperJet::Compiler
             return {Java::Archive::Attributes::LineNumberTable(constantPool, resolvingObject)};
         }
 
+        if (attributeName == Java::Archive::Attributes::SourceFile::SOURCE_FILE_ATTRIBUTE_NAME)
+        {
+            return {Java::Archive::Attributes::SourceFile(constantPool, resolvingObject)};
+        }
+
         throw NotSupportedException(fmt::format("Attribute \"{}\" not supported!", attributeName));
     }
 }
