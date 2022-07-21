@@ -11,7 +11,8 @@
 #include <bit>
 #include <strstream>
 #include <type_traits>
-
+#include "spdlog/spdlog.h"
+#pragma optimize( "", off )
 namespace
 {
     template<typename T>
@@ -67,7 +68,7 @@ namespace SuperJet::Java::Archive
     ConstantPoolInfoTag read(std::istream& stream)
     {
         ConstantPoolInfoTag tag;
-        stream.read((char*)&tag, std::ios::cur);
+        stream.read((char*)&tag, sizeof(tag));
         return tag;
     }
 
@@ -77,7 +78,7 @@ namespace SuperJet::Java::Archive
         const JVM::u2 readLength = read<JVM::u2>(stream);
 
         std::vector<JVM::u1> bytes;
-        bytes.reserve(readLength - 1);
+        bytes.reserve(readLength);
 
         for (int32_t ByteIndex = 0; ByteIndex < readLength; ByteIndex++)
         {
@@ -288,6 +289,12 @@ namespace SuperJet::Java::Archive
             }
 
             constantPool.addEntry(entry);
+
+            if (tag == ConstantPoolInfoTag::LONG || tag == ConstantPoolInfoTag::DOUBLE)
+            {
+                constantPool.addEntry(nullptr);
+                constantPoolEntryIndex++;
+            }
         }
 
         const JVM::u2 readAccessFlags = read<JVM::u2>(stream);
@@ -928,3 +935,5 @@ namespace SuperJet::Java::Archive
         }
     }
 }
+
+#pragma optimize( "", on )
