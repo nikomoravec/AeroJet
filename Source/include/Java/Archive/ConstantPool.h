@@ -39,7 +39,6 @@ namespace SuperJet::Java::Archive
             return entries[index];
         }
 
-    protected:
         void addEntry(std::shared_ptr<ConstantPoolEntry> entry)
         {
             if (entry == nullptr)
