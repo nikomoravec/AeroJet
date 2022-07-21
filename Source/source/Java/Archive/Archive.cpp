@@ -1,5 +1,5 @@
 #include "Java/Archive/Archive.h"
-#include "Java/Archive/Class.h"
+#include "Java/Archive/ClassInfo.h"
 #include "Java/Archive/ConstantPoolEntry.h"
 #include "Java/Archive/MethodInfo.h"
 #include "Compiler/Exceptions/NotSupportedException.h"
@@ -213,7 +213,7 @@ namespace SuperJet::Java::Archive
     }
 
     template<>
-    Class read(std::istream& stream)
+    ClassInfo read(std::istream& stream)
     {
         const JVM::u4 readMagic = read<JVM::u4>(stream);
 
@@ -325,11 +325,11 @@ namespace SuperJet::Java::Archive
             attributes.emplace_back(read<AttributeInfo>(stream));
         }
 
-        Class clazz {readMagic, readMinorVersion, readMajorVersion,
-                     constantPool, readAccessFlags, readThisClass,
+        ClassInfo classInfo {readMagic, readMinorVersion, readMajorVersion,
+                         constantPool, readAccessFlags, readThisClass,
                      readSuperClass == 0 ? std::nullopt : std::optional<JVM::u2>(readSuperClass), interfaces, fields, methods,
-                     attributes};
+                         attributes};
 
-        return clazz;
+        return classInfo;
     }
 }

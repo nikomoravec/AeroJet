@@ -5,7 +5,7 @@
 
 #include "Java/Archive/Archive.h"
 #include "Java/Archive/AttributeInfo.h"
-#include "Java/Archive/Class.h"
+#include "Java/Archive/ClassInfo.h"
 #include "Java/Archive/ConstantPool.h"
 #include "Java/Archive/ConstantPoolEntry.h"
 #include "Java/Archive/FieldInfo.h"

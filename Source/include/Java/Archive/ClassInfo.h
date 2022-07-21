@@ -1,5 +1,5 @@
-#ifndef SUPERJET_CLASS_H
-#define SUPERJET_CLASS_H
+#ifndef SUPERJET_CLASSINFO_H
+#define SUPERJET_CLASSINFO_H
 
 #include <variant>
 #include <vector>
@@ -17,7 +17,7 @@ namespace SuperJet::Java::Archive
     static constexpr JVM::u2 MAX_JAVA_CLASS_MAJOR_VERSION = 52; // 52 Java 8
     static constexpr char TOP_SUPER_CLASS[17] = "java/lang/Object";
 
-    class Class
+    class ClassInfo
     {
     public:
         enum class AccessFlags : JVM::u2
@@ -32,10 +32,10 @@ namespace SuperJet::Java::Archive
             ACC_ENUM       = 0x4000
         };
 
-        Class(const JVM::u4 inMagic, const JVM::u2 inMinorVersion, const JVM::u2 inMajorVersion,
-              const ConstantPool& inConstantPool, const JVM::u2 inAccessFlags, const JVM::u2 inThisClass,
-              const std::optional<JVM::u2> inSuperClass, const std::vector<JVM::u2>& inInterfaces, const std::vector<FieldInfo>& inFields,
-              const std::vector<MethodInfo>& inMethods, const std::vector<AttributeInfo>& inAttributes)
+        ClassInfo(const JVM::u4 inMagic, const JVM::u2 inMinorVersion, const JVM::u2 inMajorVersion,
+                  const ConstantPool& inConstantPool, const JVM::u2 inAccessFlags, const JVM::u2 inThisClass,
+                  const std::optional<JVM::u2> inSuperClass, const std::vector<JVM::u2>& inInterfaces, const std::vector<FieldInfo>& inFields,
+                  const std::vector<MethodInfo>& inMethods, const std::vector<AttributeInfo>& inAttributes)
               : magic(inMagic), minorVersion(inMinorVersion), majorVersion(inMajorVersion), constantPool(inConstantPool),
               accessFlags(inAccessFlags), thisClass(inThisClass), superClass(inSuperClass),
               interfaces(inInterfaces), fields(inFields), methods(inMethods), attributes(inAttributes)
@@ -123,17 +123,17 @@ namespace SuperJet::Java::Archive
         std::vector<AttributeInfo> attributes;
     };
 
-    inline Class::AccessFlags operator| (Class::AccessFlags lhs, Class::AccessFlags rhs)
+    inline ClassInfo::AccessFlags operator| (ClassInfo::AccessFlags lhs, ClassInfo::AccessFlags rhs)
     {
-        using T = std::underlying_type_t <Class::AccessFlags>;
-        return static_cast<Class::AccessFlags>(static_cast<T>(lhs) | static_cast<T>(rhs));
+        using T = std::underlying_type_t <ClassInfo::AccessFlags>;
+        return static_cast<ClassInfo::AccessFlags>(static_cast<T>(lhs) | static_cast<T>(rhs));
     }
 
-    inline bool operator^ (Class::AccessFlags lhs, Class::AccessFlags rhs)
+    inline bool operator^ (ClassInfo::AccessFlags lhs, ClassInfo::AccessFlags rhs)
     {
-        using T = std::underlying_type_t <Class::AccessFlags>;
+        using T = std::underlying_type_t <ClassInfo::AccessFlags>;
         return (static_cast<T>(lhs) & static_cast<T>(rhs)) == static_cast<T>(rhs);
     }
 }
 
-#endif //SUPERJET_CLASS_H
+#endif //SUPERJET_CLASSINFO_H

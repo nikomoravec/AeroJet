@@ -12,7 +12,7 @@ namespace SuperJet::Java::Archive
 {
     class ConstantPool
     {
-        friend class Class;
+        friend class ClassInfo;
 
     public:
         ConstantPool(const JVM::u2 InSize)
