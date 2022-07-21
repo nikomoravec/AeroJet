@@ -108,6 +108,13 @@ namespace SuperJet::Java::Archive
             return attributes;
         }
 
+        std::string getName()
+        {
+            Java::JVM::u2 thisClassIndex = getThisClass();
+            Java::JVM::u2 nameIndex = constantPool.get<Java::Archive::ConstantPoolInfoClass>(thisClassIndex)->getNameIndex();
+            return constantPool.get<Java::Archive::ConstantPoolInfoUtf8>(nameIndex)->asString();
+        }
+
     protected:
         JVM::u4 magic;
         JVM::u2 minorVersion;
