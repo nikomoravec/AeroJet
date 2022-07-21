@@ -7,42 +7,60 @@
 #include <bit>
 #include <strstream>
 #include <type_traits>
-#include <iostream>
+
+namespace
+{
+    template<typename T>
+    T swapEndian(const T& data)
+    {
+        static_assert(CHAR_BIT == 8, "CHAR_BIT != 8");
+
+        union ByteObjectRepresentation
+        {
+            T object;
+            unsigned char bytes[sizeof(T)];
+        };
+
+        ByteObjectRepresentation source{};
+        ByteObjectRepresentation dst{};
+
+        source.object = data;
+
+        for (size_t k = 0; k < sizeof(T); k++)
+        {
+            dst.bytes[k] = source.bytes[sizeof(T) - k - 1];
+        }
+
+        return dst.object;
+    }
+}
 
 namespace SuperJet::Java::Archive
 {
-    namespace
+    template<>
+    JVM::u2 read(std::istream& stream)
     {
-        template<typename T>
-        T swapEndian(const T& u)
-        {
-            static_assert(CHAR_BIT == 8, "CHAR_BIT != 8");
-
-            union ByteObjectRepresentation
-            {
-                T object;
-                unsigned char bytes[sizeof(T)];
-            };
-
-            ByteObjectRepresentation source{};
-            ByteObjectRepresentation dst{};
-
-            source.object = u;
-
-            for (size_t k = 0; k < sizeof(T); k++)
-            {
-                dst.bytes[k] = source.bytes[sizeof(T) - k - 1];
-            }
-
-            return dst.object;
-        }
+        JVM::u2 read = 0;
+        stream.read((char*)&read, sizeof(read));
+        read = swapEndian(read);
+        return read;
     }
 
+    template<>
+    JVM::u4 read(std::istream& stream)
+    {
+        JVM::u4 read = 0;
+        stream.read((char*)&read, sizeof(read));
+        read = swapEndian(read);
+        return read;
+    }
+
+
     template<typename T>
-    T read(std::basic_istream<char>& stream, ConstantPoolInfoTag tag) requires std::is_base_of_v<ConstantPoolEntry, T>;
+    T read(std::istream& stream, ConstantPoolInfoTag tag) requires std::is_base_of_v<ConstantPoolEntry, T>;
 
     template<>
-    ConstantPoolInfoTag read(std::basic_istream<char>& stream)
+    ConstantPoolInfoTag read(std::istream& stream)
     {
         ConstantPoolInfoTag tag;
         stream.read((char*)&tag, std::ios::cur);
@@ -50,11 +68,9 @@ namespace SuperJet::Java::Archive
     }
 
     template<>
-    ConstantPoolInfoUtf8 read(std::basic_istream<char>& stream, ConstantPoolInfoTag tag)
+    ConstantPoolInfoUtf8 read(std::istream& stream, ConstantPoolInfoTag tag)
     {
-        JVM::u2 readLength  = 0;
-        stream.read((char*)&readLength, sizeof(readLength));
-        readLength = swapEndian(readLength);
+        const JVM::u2 readLength = read<JVM::u2>(stream);
 
         std::vector<JVM::u1> bytes;
         bytes.reserve(readLength - 1);
@@ -70,156 +86,101 @@ namespace SuperJet::Java::Archive
     }
 
     template<>
-    ConstantPoolInfoInteger read(std::basic_istream<char>& stream, ConstantPoolInfoTag tag)
+    ConstantPoolInfoInteger read(std::istream& stream, ConstantPoolInfoTag tag)
     {
-        JVM::u4 readBytes  = 0;
-        stream.read((char*)&readBytes, sizeof(readBytes));
-        readBytes = swapEndian(readBytes);
-
+        const JVM::u4 readBytes = read<JVM::u4>(stream);
         return ConstantPoolInfoInteger{tag, readBytes};
     }
 
     template<>
-    ConstantPoolInfoLong read(std::basic_istream<char>& stream, ConstantPoolInfoTag tag)
+    ConstantPoolInfoLong read(std::istream& stream, ConstantPoolInfoTag tag)
     {
-        JVM::u4 readHighBytes  = 0;
-        JVM::u4 readLowBytes  = 0;
-
-        stream.read((char*)&readHighBytes, sizeof(readHighBytes));
-        readHighBytes = swapEndian(readHighBytes);
-
-        stream.read((char*)&readLowBytes, sizeof(readLowBytes));
-        readLowBytes = swapEndian(readLowBytes);
+        const JVM::u4 readHighBytes = read<JVM::u4>(stream);
+        const JVM::u4 readLowBytes = read<JVM::u4>(stream);
 
         return ConstantPoolInfoLong{tag, readHighBytes, readLowBytes};
     }
 
     template<>
-    ConstantPoolInfoClass read(std::basic_istream<char>& stream, ConstantPoolInfoTag tag)
+    ConstantPoolInfoClass read(std::istream& stream, ConstantPoolInfoTag tag)
     {
-        JVM::u2 readNameIndex  = 0;
-        stream.read((char*)&readNameIndex, sizeof(readNameIndex));
-        readNameIndex = swapEndian(readNameIndex);
-
+        const JVM::u2 readNameIndex  = read<JVM::u2>(stream);
         return ConstantPoolInfoClass{tag, readNameIndex};
     }
 
     template<>
-    ConstantPoolInfoString read(std::basic_istream<char>& stream, ConstantPoolInfoTag tag)
+    ConstantPoolInfoString read(std::istream& stream, ConstantPoolInfoTag tag)
     {
-        JVM::u2 readStringIndex  = 0;
-        stream.read((char*)&readStringIndex, sizeof(readStringIndex));
-        readStringIndex = swapEndian(readStringIndex);
-
+        const JVM::u2 readStringIndex = read<JVM::u2>(stream);
         return ConstantPoolInfoString{tag, readStringIndex};
     }
 
     template<>
-    ConstantPoolInfoFieldRef read(std::basic_istream<char>& stream, ConstantPoolInfoTag tag)
+    ConstantPoolInfoFieldRef read(std::istream& stream, ConstantPoolInfoTag tag)
     {
-        JVM::u2 readClassIndex  = 0;
-        stream.read((char*)&readClassIndex, sizeof(readClassIndex));
-        readClassIndex = swapEndian(readClassIndex);
-
-        JVM::u2 readNameAndTypeIndex  = 0;
-        stream.read((char*)&readNameAndTypeIndex, sizeof(readNameAndTypeIndex));
-        readNameAndTypeIndex = swapEndian(readNameAndTypeIndex);
+        const JVM::u2 readClassIndex = read<JVM::u2>(stream);
+        const JVM::u2 readNameAndTypeIndex = read<JVM::u2>(stream);
 
         return ConstantPoolInfoFieldRef{tag, readClassIndex, readNameAndTypeIndex};
     }
 
     template<>
-    ConstantPoolInfoNameAndType read(std::basic_istream<char>& stream, ConstantPoolInfoTag tag)
+    ConstantPoolInfoNameAndType read(std::istream& stream, ConstantPoolInfoTag tag)
     {
-        JVM::u2 readNameIndex  = 0;
-        stream.read((char*)&readNameIndex, sizeof(readNameIndex));
-        readNameIndex = swapEndian(readNameIndex);
-
-        JVM::u2 readDescriptorIndex  = 0;
-        stream.read((char*)&readDescriptorIndex, sizeof(readDescriptorIndex));
-        readDescriptorIndex = swapEndian(readDescriptorIndex);
+        const JVM::u2 readNameIndex = read<JVM::u2>(stream);
+        const JVM::u2 readDescriptorIndex = read<JVM::u2>(stream);
 
         return ConstantPoolInfoNameAndType{tag, readNameIndex, readDescriptorIndex};
     }
 
     template<>
-    ConstantPoolInfoMethodHandle read(std::basic_istream<char>& stream, ConstantPoolInfoTag tag)
+    ConstantPoolInfoMethodHandle read(std::istream& stream, ConstantPoolInfoTag tag)
     {
-        JVM::u1 readReferenceKind  = 0;
-        stream.read((char*)&readReferenceKind, sizeof(readReferenceKind));
-
-        JVM::u2 readReferenceIndex  = 0;
-        stream.read((char*)&readReferenceIndex, sizeof(readReferenceIndex));
-        readReferenceIndex = swapEndian(readReferenceIndex);
+        const JVM::u1 readReferenceKind = stream.get();
+        const JVM::u2 readReferenceIndex = read<JVM::u2>(stream);
 
         return ConstantPoolInfoMethodHandle{tag, readReferenceKind, readReferenceIndex};
     }
 
     template<>
-    ConstantPoolInfoMethodType read(std::basic_istream<char>& stream, ConstantPoolInfoTag tag)
+    ConstantPoolInfoMethodType read(std::istream& stream, ConstantPoolInfoTag tag)
     {
-        JVM::u2 readDescriptorIndex  = 0;
-        stream.read((char*)&readDescriptorIndex, sizeof(readDescriptorIndex));
-        readDescriptorIndex = swapEndian(readDescriptorIndex);
-
+        const JVM::u2 readDescriptorIndex = read<JVM::u2>(stream);
         return ConstantPoolInfoMethodType{tag, readDescriptorIndex};
     }
 
     template<>
-    ConstantPoolInfoInvokeDynamic read(std::basic_istream<char>& stream, ConstantPoolInfoTag tag)
+    ConstantPoolInfoInvokeDynamic read(std::istream& stream, ConstantPoolInfoTag tag)
     {
-        JVM::u2 readBootstrapMethodAttributeIndex  = 0;
-        stream.read((char*)&readBootstrapMethodAttributeIndex, sizeof(readBootstrapMethodAttributeIndex));
-        readBootstrapMethodAttributeIndex = swapEndian(readBootstrapMethodAttributeIndex);
-
-        JVM::u2 readNameAndTypeIndex  = 0;
-        stream.read((char*)&readNameAndTypeIndex, sizeof(readNameAndTypeIndex));
-        readNameAndTypeIndex = swapEndian(readNameAndTypeIndex);
+        const JVM::u2 readBootstrapMethodAttributeIndex = read<JVM::u2>(stream);
+        const JVM::u2 readNameAndTypeIndex = read<JVM::u2>(stream);
 
         return ConstantPoolInfoInvokeDynamic{tag, readBootstrapMethodAttributeIndex, readNameAndTypeIndex};
     }
 
     template<>
-    AttributeInfo read(std::basic_istream<char>& stream)
+    AttributeInfo read(std::istream& stream)
     {
-        JVM::u2 readAttributeNameIndex = 0;
-        stream.read((char*)&readAttributeNameIndex, sizeof(readAttributeNameIndex));
-        readAttributeNameIndex = swapEndian(readAttributeNameIndex);
-
-        JVM::u4 readAttributeInfoSize = 0;
-        stream.read((char*)&readAttributeInfoSize, sizeof(readAttributeInfoSize));
-        readAttributeInfoSize = swapEndian(readAttributeInfoSize);
+        const JVM::u2 readAttributeNameIndex = read<JVM::u2>(stream);
+        const JVM::u4 readAttributeInfoSize = read<JVM::u4>(stream);
 
         std::vector<JVM::u1> attributeInfo;
+        attributeInfo.reserve(readAttributeInfoSize);
         for (int32_t attributeInfoIndex = 0; attributeInfoIndex < readAttributeInfoSize; attributeInfoIndex++)
         {
-            JVM::u1 readAttributeInfoByte = 0;
-            stream.read((char*)&readAttributeInfoByte, sizeof(readAttributeInfoByte));
-
-            attributeInfo.emplace_back(readAttributeInfoByte);
+            attributeInfo.emplace_back(stream.get());
         }
 
         return AttributeInfo{readAttributeNameIndex, attributeInfo};
     }
 
     template<>
-    FieldInfo read(std::basic_istream<char>& stream)
+    FieldInfo read(std::istream& stream)
     {
-        JVM::u2 readAccessFlags = 0;
-        stream.read((char*)&readAccessFlags, sizeof(readAccessFlags));
-        readAccessFlags = swapEndian(readAccessFlags);
-
-        JVM::u2 readNameIndex = 0;
-        stream.read((char*)&readNameIndex, sizeof(readNameIndex));
-        readNameIndex = swapEndian(readNameIndex);
-
-        JVM::u2 readDescriptorIndex = 0;
-        stream.read((char*)&readDescriptorIndex, sizeof(readDescriptorIndex));
-        readDescriptorIndex = swapEndian(readDescriptorIndex);
-
-        JVM::u2 readAttributesCount = 0;
-        stream.read((char*)&readAttributesCount, sizeof(readAttributesCount));
-        readAttributesCount = swapEndian(readAttributesCount);
+        const JVM::u2 readAccessFlags = read<JVM::u2>(stream);
+        const JVM::u2 readNameIndex = read<JVM::u2>(stream);
+        const JVM::u2 readDescriptorIndex = read<JVM::u2>(stream);
+        const JVM::u2 readAttributesCount = read<JVM::u2>(stream);
 
         std::vector<AttributeInfo> attributes;
         attributes.reserve(readAttributesCount);
@@ -232,25 +193,15 @@ namespace SuperJet::Java::Archive
     }
 
     template<>
-    MethodInfo read(std::basic_istream<char>& stream)
+    MethodInfo read(std::istream& stream)
     {
-        JVM::u2 readAccessFlags = 0;
-        stream.read((char*)&readAccessFlags, sizeof(readAccessFlags));
-        readAccessFlags = swapEndian(readAccessFlags);
-
-        JVM::u2 readNameIndex = 0;
-        stream.read((char*)&readNameIndex, sizeof(readNameIndex));
-        readNameIndex = swapEndian(readNameIndex);
-
-        JVM::u2 readDescriptorIndex = 0;
-        stream.read((char*)&readDescriptorIndex, sizeof(readDescriptorIndex));
-        readDescriptorIndex = swapEndian(readDescriptorIndex);
-
-        JVM::u2 readAttributesCount = 0;
-        stream.read((char*)&readAttributesCount, sizeof(readAttributesCount));
-        readAttributesCount = swapEndian(readAttributesCount);
+        const JVM::u2 readAccessFlags = read<JVM::u2>(stream);
+        const JVM::u2 readNameIndex = read<JVM::u2>(stream);
+        const JVM::u2 readDescriptorIndex = read<JVM::u2>(stream);
+        const JVM::u2 readAttributesCount = read<JVM::u2>(stream);
 
         std::vector<AttributeInfo> readMethodAttributes;
+        readMethodAttributes.reserve(readAttributesCount);
         for (int32_t attributeIndex = 0; attributeIndex < readAttributesCount; attributeIndex++)
         {
             readMethodAttributes.emplace_back(read<AttributeInfo>(stream));
@@ -260,24 +211,17 @@ namespace SuperJet::Java::Archive
     }
 
     template<>
-    Class read(std::basic_istream<char>& stream)
+    Class read(std::istream& stream)
     {
-        JVM::u4 readMagic = 0;
-        stream.read((char*)&readMagic, sizeof(readMagic));
-        readMagic = swapEndian(readMagic);
+        const JVM::u4 readMagic = read<JVM::u4>(stream);
 
         if (readMagic != JAVA_CLASS_MAGIC)
         {
             throw SuperJet::Compiler::RuntimeException("Not a Java class!");
         }
 
-        JVM::u2 readMinorVersion = 0;
-        stream.read((char*)&readMinorVersion, sizeof(readMinorVersion));
-        readMinorVersion = swapEndian(readMinorVersion);
-
-        JVM::u2 readMajorVersion = 0;
-        stream.read((char*)&readMajorVersion, sizeof(readMajorVersion));
-        readMajorVersion = swapEndian(readMajorVersion);
+        const JVM::u2 readMinorVersion = read<JVM::u2>(stream);
+        const JVM::u2 readMajorVersion = read<JVM::u2>(stream);
 
         if (readMajorVersion > MAX_JAVA_CLASS_MAJOR_VERSION)
         {
@@ -287,16 +231,11 @@ namespace SuperJet::Java::Archive
             throw SuperJet::Compiler::RuntimeException(stringStream.str());
         }
 
-        JVM::u2 readConstantPoolSize = 0;
-        stream.read((char*)&readConstantPoolSize, sizeof(readConstantPoolSize));
-        readConstantPoolSize = swapEndian(readConstantPoolSize);
-
+        const JVM::u2 readConstantPoolSize = read<JVM::u2>(stream);
         ConstantPool constantPool(readConstantPoolSize);
-
         for (int constantPoolEntryIndex = 1; constantPoolEntryIndex < readConstantPoolSize; constantPoolEntryIndex++)
         {
             ConstantPoolInfoTag tag = read<ConstantPoolInfoTag>(stream);
-
             std::shared_ptr<ConstantPoolEntry> entry {nullptr};
 
             switch (tag)
@@ -350,35 +289,19 @@ namespace SuperJet::Java::Archive
             constantPool.addEntry(entry);
         }
 
-        JVM::u2 readAccessFlags = 0;
-        stream.read((char*)&readAccessFlags, sizeof(readAccessFlags));
-        readAccessFlags = swapEndian(readAccessFlags);
-
-        JVM::u2 readThisClass = 0;
-        stream.read((char*)&readThisClass, sizeof(readThisClass));
-        readThisClass = swapEndian(readThisClass);
-
-        JVM::u2 readSuperClass = 0;
-        stream.read((char*)&readSuperClass, sizeof(readSuperClass));
-        readSuperClass = swapEndian(readSuperClass);
-
-        JVM::u2 readInterfacesCount = 0;
-        stream.read((char*)&readInterfacesCount, sizeof(readInterfacesCount));
-        readInterfacesCount = swapEndian(readInterfacesCount);
+        const JVM::u2 readAccessFlags = read<JVM::u2>(stream);
+        const JVM::u2 readThisClass = read<JVM::u2>(stream);
+        const JVM::u2 readSuperClass = read<JVM::u2>(stream);
+        const JVM::u2 readInterfacesCount = read<JVM::u2>(stream);
 
         std::vector<JVM::u2> interfaces;
+        interfaces.reserve(readInterfacesCount);
         for (int interfaceIndex = 0; interfaceIndex < readInterfacesCount; interfaceIndex++)
         {
-            JVM::u2 interface = 0;
-            stream.read((char*)&interface, sizeof(interface));
-            interface = swapEndian(interface);
-
-            interfaces.emplace_back(interface);
+            interfaces.emplace_back(read<JVM::u2>(stream));
         }
 
-        JVM::u2 readFieldsCount = 0;
-        stream.read((char*)&readFieldsCount, sizeof(readFieldsCount));
-        readFieldsCount = swapEndian(readFieldsCount);
+        const JVM::u2 readFieldsCount = read<JVM::u2>(stream);
 
         std::vector<FieldInfo> fields;
         fields.reserve(readFieldsCount);
@@ -387,10 +310,7 @@ namespace SuperJet::Java::Archive
             fields.emplace_back(read<FieldInfo>(stream));
         }
 
-        JVM::u2 readMethodsCount = 0;
-        stream.read((char*)&readMethodsCount, sizeof(readMethodsCount));
-        readMethodsCount = swapEndian(readMethodsCount);
-
+        const JVM::u2 readMethodsCount = read<JVM::u2>(stream);
         std::vector<MethodInfo> methods;
         methods.reserve(readMethodsCount);
         for (int methodIndex = 0; methodIndex < readMethodsCount; methodIndex++)
@@ -398,10 +318,7 @@ namespace SuperJet::Java::Archive
             methods.emplace_back(read<MethodInfo>(stream));
         }
 
-        JVM::u2 readAttributesCount = 0;
-        stream.read((char*)&readAttributesCount, sizeof(readAttributesCount));
-        readAttributesCount = swapEndian(readAttributesCount);
-
+        const JVM::u2 readAttributesCount = read<JVM::u2>(stream);
         std::vector<AttributeInfo> attributes;
         attributes.reserve(readAttributesCount);
         for (int attributeIndex = 0; attributeIndex < readAttributesCount; attributeIndex++)

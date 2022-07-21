@@ -9,7 +9,7 @@
 namespace SuperJet::Java::Archive
 {
     template<typename T>
-    T read(std::basic_istream<char>& stream);
+    T read(std::istream& stream);
 
     template<typename T>
     T read(const std::filesystem::path& classFilePath)
