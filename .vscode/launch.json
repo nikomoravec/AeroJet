@@ -26,6 +26,10 @@
         {
           "MIMode": "gdb",
         },
+        "osx":
+        {
+          "MIMode": "lldb"
+        },
         "args":
         [
             "--jar", "/home/niko/Desktop/HelloWorld.jar",
@@ -36,7 +40,7 @@
         "cwd": "${workspaceFolder}/.build",
         "environment": [],
         "externalConsole": false,
-        "name": "(gdb) Launch (Linux Release)",
+        "name": "Debug (SuperJet)",
         "program": "${workspaceFolder}/.build/SuperJet",
         "request": "launch",
         "setupCommands":

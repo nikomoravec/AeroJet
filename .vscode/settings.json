@@ -130,6 +130,11 @@
         "stop_token": "cpp",
         "*.idl": "cpp",
         "*.inc": "cpp",
-        "filesystem": "cpp"
+        "filesystem": "cpp",
+        "__functional_base": "cpp",
+        "__memory": "cpp"
     },
+
+    "terminal.integrated.fontSize": 18,
+    "debug.console.fontSize": 18
 }
