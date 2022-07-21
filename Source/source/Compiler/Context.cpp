@@ -52,26 +52,16 @@ namespace SuperJet::Compiler
         std::queue<std::shared_ptr<Java::Archive::ClassInfo>> nodes = dependencyGraph.topology();
         while (!nodes.empty())
         {
-            /*
-             * compiler code here
-            */
+            std::shared_ptr<Java::Archive::ClassInfo> node = nodes.front();
 
-           std::shared_ptr<Java::Archive::ClassInfo> node = nodes.front();
 
-           
+
+
+            nodes.pop();
         }
-        
-        return;
     }
 
-    std::unique_ptr<llvm::Value> ByteCodeCompiler::generate(const SuperJet::Java::Archive::ClassInfo& classInfo)
-    {
-        return nullptr;
-    }
-
-    ByteCodeCompiler::ByteCodeCompiler(const Environment& env) : context(env),
-        llvmModule(std::make_unique<llvm::Module>(llvm::StringRef(SuperJet::toString(context.getMainClass())),llvmContext)),
-        llvmBuilder(std::make_unique<llvm::IRBuilder<>>(llvmContext))
+    ByteCodeCompiler::ByteCodeCompiler(const Environment& env) : context(env)
     {
         ClassInfoReferenceCollector collector = ClassInfoReferenceCollector(context);
         dependencyGraph = collector.collect(context.getMainClass());
