@@ -2,7 +2,9 @@
 #include "Java/Archive/Class.h"
 #include "Java/Archive/ConstantPoolEntry.h"
 #include "Java/Archive/MethodInfo.h"
-#include "Compiler/Exceptions/RuntimeException.h"
+#include "Compiler/Exceptions/NotSupportedException.h"
+#include "Compiler/Exceptions/UnknownConstantPoolTagException.h"
+#include "fmt/format.h"
 
 #include <bit>
 #include <strstream>
@@ -225,10 +227,7 @@ namespace SuperJet::Java::Archive
 
         if (readMajorVersion > MAX_JAVA_CLASS_MAJOR_VERSION)
         {
-            std::strstream stringStream;
-            stringStream << "Unsupported java class version file!" << " " << "Maximum supported version is: " << MAX_JAVA_CLASS_MAJOR_VERSION << " " << "but got: " << readMajorVersion;
-
-            throw SuperJet::Compiler::RuntimeException(stringStream.str());
+            throw SuperJet::Compiler::NotSupportedException(fmt::format("Unsupported java class version file {}! Maximum supported version is: {}", readMajorVersion, MAX_JAVA_CLASS_MAJOR_VERSION));
         }
 
         const JVM::u2 readConstantPoolSize = read<JVM::u2>(stream);
@@ -283,7 +282,7 @@ namespace SuperJet::Java::Archive
                     entry = std::make_shared<ConstantPoolInfoInvokeDynamic>(read<ConstantPoolInfoInvokeDynamic>(stream, ConstantPoolInfoTag::INVOKE_DYNAMIC));
                     break;
                 default:
-                    throw SuperJet::Compiler::RuntimeException("Unknown type");
+                    throw SuperJet::Compiler::UnknownConstantPoolTagException(tag);
             }
 
             constantPool.addEntry(entry);
