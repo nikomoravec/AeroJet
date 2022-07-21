@@ -11,11 +11,7 @@ namespace SuperJet::Compiler::CodeGen::Cpp
     class Value : public SuperJet::Compiler::CodeGen::Node
     {
     protected:
-        Value(Type inType) : type(inType)
-        {
-        }
-
-        Type type;
+        Value() = default;
     };
 
     class NumericValue : public Value
