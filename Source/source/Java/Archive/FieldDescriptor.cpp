@@ -1,5 +1,6 @@
 #include "Java/Archive/FieldDescriptor.h"
 #include "fmt/format.h"
+#include "Compiler/Exceptions/RuntimeException.h"
 
 namespace SuperJet::Java::Archive
 {
@@ -7,7 +8,7 @@ namespace SuperJet::Java::Archive
     {
         if (rawLiteral.empty())
         {
-            throw std::runtime_error("Field descriptor could not be empty!");
+            throw SuperJet::Compiler::RuntimeException("Field descriptor could not be empty!");
         }
     }
 
@@ -52,7 +53,7 @@ namespace SuperJet::Java::Archive
 
         if (rawLiteral.size() != 1)
         {
-            throw std::runtime_error(fmt::format("Incorrect Field Descriptor literal: \"{}\"", rawLiteral));
+            throw SuperJet::Compiler::RuntimeException(fmt::format("Incorrect Field Descriptor literal: \"{}\"", rawLiteral));
         }
 
         switch(first)
@@ -74,7 +75,7 @@ namespace SuperJet::Java::Archive
             case static_cast<char>(FieldType::BOOLEAN):
                 return FieldType::BOOLEAN;
             default:
-                throw std::runtime_error(fmt::format("Can not resolve type of field descriptor: \"{}\"", rawLiteral));
+                throw SuperJet::Compiler::RuntimeException(fmt::format("Can not resolve type of field descriptor: \"{}\"", rawLiteral));
         }
     }
 }

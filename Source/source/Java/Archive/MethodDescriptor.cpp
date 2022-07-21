@@ -1,6 +1,7 @@
 #include "Java/Archive/MethodDescriptor.h"
 #include "Java/Archive/FieldDescriptor.h"
 #include "fmt/format.h"
+#include "Compiler/Exceptions/RuntimeException.h"
 
 namespace SuperJet::Java::Archive
 {
@@ -40,7 +41,7 @@ namespace SuperJet::Java::Archive
             return classNameEndPos;
         }
 
-        throw std::runtime_error(fmt::format("Unexpected token at position {} in \"{}\"", underlyingTypeIndex, literal));
+        throw SuperJet::Compiler::RuntimeException(fmt::format("Unexpected token at position {} in \"{}\"", underlyingTypeIndex, literal));
     }
 
     static size_t resolvePrimitive(const std::string& literal, std::vector<FieldDescriptor>& arguments, size_t position)
@@ -58,7 +59,7 @@ namespace SuperJet::Java::Archive
             return static_cast<int32_t>(classNameEndPos);
         }
 
-        throw std::runtime_error(fmt::format("Can not resolve method descriptor: \"{}\"", literal));
+        throw SuperJet::Compiler::RuntimeException(fmt::format("Can not resolve method descriptor: \"{}\"", literal));
     }
 
     MethodDescriptor::MethodDescriptor(const std::string& inDescriptor) : rawLiteral(inDescriptor)
@@ -109,12 +110,12 @@ namespace SuperJet::Java::Archive
             }
             else
             {
-                throw std::runtime_error(fmt::format("Can not resolve method descriptor: \"{}\"", rawLiteral));
+                throw SuperJet::Compiler::RuntimeException(fmt::format("Can not resolve method descriptor: \"{}\"", rawLiteral));
             }
         }
         else
         {
-            throw std::runtime_error(fmt::format("Can not resolve method descriptor: \"{}\"", rawLiteral));
+            throw SuperJet::Compiler::RuntimeException(fmt::format("Can not resolve method descriptor: \"{}\"", rawLiteral));
         }
     }
 }
