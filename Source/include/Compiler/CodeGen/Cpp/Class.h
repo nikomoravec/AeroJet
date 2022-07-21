@@ -2,7 +2,9 @@
 #define SUPERJET_CLASS_H
 
 #include "Compiler/Compiler.h"
+#include "Compiler/CodeGen/Node.h"
 #include "Compiler/CodeGen/Cpp/Namespace.h"
+#include "Compiler/CodeGen/Cpp/Field.h"
 #include "Java/Archive/ClassInfo.h"
 #include "fmt/format.h"
 #include <string>
@@ -10,12 +12,12 @@
 
 namespace SuperJet::Compiler::CodeGen::Cpp
 {
-    class Class
+    class Class : public Compiler::CodeGen::Node
     {
     public:
-        Class(const Java::Archive::ClassInfo& classInfo)
+        Class(std::shared_ptr<Java::Archive::ClassInfo> classInfo)
         {
-            std::filesystem::path package = std::filesystem::path(classInfo.getName());
+            std::filesystem::path package = std::filesystem::path(classInfo->getName());
             if (package.has_parent_path())
             {
                 name = package.filename();
@@ -47,10 +49,26 @@ namespace SuperJet::Compiler::CodeGen::Cpp
         {
             if (ns.has_value())
             {
-                return SuperJet::toString(ns.value()) + Namespace::CPP_NAMESPACE_DELIMITER + name;
+                return ns.value().asString() + Namespace::CPP_NAMESPACE_DELIMITER + name;
             }
 
             return name;
+        }
+
+        void addField(std::shared_ptr<SuperJet::Compiler::CodeGen::Cpp::Field> field)
+        {
+            childrens.emplace_back(field);
+        }
+
+        virtual void dump(std::ostream& outputStream) override
+        {
+            outputStream << fmt::format("struct {}", getName());
+            outputStream << "\n{";
+            for (const auto& child : childrens)
+            {
+                child->dump(outputStream);
+            }
+            outputStream << "\n};";
         }
 
     protected:

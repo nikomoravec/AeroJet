@@ -3,6 +3,7 @@
 
 #include "Compiler/Compiler.h"
 #include "Compiler/Exceptions/RuntimeException.h"
+#include "Compiler/CodeGen/Node.h"
 
 #include <string>
 #include <vector>
@@ -12,41 +13,77 @@
 
 namespace SuperJet::Compiler::CodeGen::Cpp
 {
-    class Namespace
+    class ForwardDeclaration;
+    class Class;
+
+    class Namespace : public Compiler::CodeGen::Node
     {
     public:
         static constexpr auto JAVA_PACKAGE_DELIMITER = '/';
         static constexpr auto CPP_NAMESPACE_DELIMITER = "::";
 
         Namespace(const std::filesystem::path& package)
-        {
-            if (package.empty())
+        {   
+            std::filesystem::path p = package.parent_path();
+            for (auto it = p.begin(); it != p.end(); ++it)
+            {
+                parts.push((*it).string());
+            }
+
+            if (parts.empty())
             {
                 throw SuperJet::Compiler::RuntimeException("Namespace can not be empty!");
             }
-
-            std::filesystem::path p = package;
-            while (p.has_parent_path())
-            {
-                parts.push(p.filename());
-                p = p.parent_path();
-            }
-
-            parts.push(p.filename());
         }
 
-        std::stack<std::string> getParts() const
+        std::queue<std::string> getParts() const
         {
             return parts;
         }
 
-        void add(const std::string& part)
+        void addForwardDeclaration(std::shared_ptr<SuperJet::Compiler::CodeGen::Cpp::ForwardDeclaration> forwardDeclaration);
+
+        void addClass(std::shared_ptr<SuperJet::Compiler::CodeGen::Cpp::Class> clazz);
+
+        std::string asString() const
         {
-            parts.push(part);
+            std::queue<std::string> p = getParts();
+
+            std::stringstream ss;
+
+            ss << p.front();
+            p.pop();
+
+            if (p.empty())
+            {
+                return ss.str();
+            }
+
+            while(!p.empty())
+            {
+                ss << CPP_NAMESPACE_DELIMITER << p.front();
+                p.pop();
+            }
+
+            return ss.str();
+
+        }
+
+        virtual void dump(std::ostream& outputStream) override
+        {           
+            outputStream << fmt::format("namespace {}\n", asString());
+            outputStream << "{\n";
+
+            for (const auto& child : childrens)
+            {
+                child->dump(outputStream);
+            }
+
+            outputStream << "\n}\n";
         }
 
     protected:
-        std::stack<std::string> parts;
+        std::queue<std::string> parts;
     };
 }
 
