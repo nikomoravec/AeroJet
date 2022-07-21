@@ -48,9 +48,49 @@ namespace SuperJet::Java::Archive
             return attributes;
         }
 
+        bool isPublic() const
+        {
+            return accessFlags & static_cast<JVM::u2>(AccessFlags::ACC_PUBLIC);
+        }
+
+        bool isPrivate() const
+        {
+            return accessFlags & static_cast<JVM::u2>(AccessFlags::ACC_PRIVATE);
+        }
+
+        bool isProtected() const
+        {
+            return accessFlags & static_cast<JVM::u2>(AccessFlags::ACC_PROTECTED);
+        }
+
         bool isStatic() const
         {
             return accessFlags & static_cast<JVM::u2>(AccessFlags::ACC_STATIC);
+        }
+
+        bool isFinal() const
+        {
+            return accessFlags & static_cast<JVM::u2>(AccessFlags::ACC_FINAL);
+        }
+
+        bool isVolatile() const
+        {
+            return accessFlags & static_cast<JVM::u2>(AccessFlags::ACC_VOLATILE);
+        }
+
+        bool isTransient() const
+        {
+            return accessFlags & static_cast<JVM::u2>(AccessFlags::ACC_TRANSIENT);
+        }
+
+        bool isSynthetic() const
+        {
+            return accessFlags & static_cast<JVM::u2>(AccessFlags::ACC_SYNTHETIC);
+        }
+
+        bool isEnum() const
+        {
+            return accessFlags & static_cast<JVM::u2>(AccessFlags::ACC_ENUM);
         }
 
     protected:
