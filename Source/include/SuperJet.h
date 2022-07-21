@@ -14,6 +14,7 @@
 #include "Java/Archive/ConstantPoolEntry.h"
 #include "Java/Archive/FieldDescriptor.h"
 #include "Java/Archive/FieldInfo.h"
+#include "Java/Archive/Jar.h"
 #include "Java/Archive/MethodDescriptor.h"
 #include "Java/Archive/MethodInfo.h"
 

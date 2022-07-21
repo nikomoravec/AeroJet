@@ -22,6 +22,7 @@ add_executable(SuperJet
         Source/source/Compiler/ClassInfoResolver.cpp
         Source/source/Compiler/FieldInfoResolver.cpp
         Source/source/Java/Archive/Attributes/SourceFile.cpp
+        Source/source/Java/Archive/Jar.cpp
 )
 
 add_dependencies(SuperJet
