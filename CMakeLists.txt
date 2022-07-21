@@ -5,7 +5,7 @@ set(CMAKE_CXX_STANDARD 20)
 
 add_subdirectory(Source/third-party/fmtlib)
 add_subdirectory(Source/third-party/backwandcpp)
-add_subdirectory(Source/third-party/llvm/llvm)
+#add_subdirectory(Source/third-party/llvm/llvm)
 add_subdirectory(Source/third-party/cxxopts)
 add_subdirectory(Source/third-party/spdlog)
 add_subdirectory(Source/third-party/zip)
@@ -29,16 +29,16 @@ add_executable(SuperJet
         Source/source/Java/Archive/ClassInfo.cpp
 )
 
-add_dependencies(SuperJet
-        intrinsics_gen # for LLVM
-)
+#add_dependencies(SuperJet
+#        intrinsics_gen # for LLVM
+#)
 
 target_include_directories(SuperJet PUBLIC
         Source/include
         Source/third-party/fmtlib/include
         Source/third-party/backwandcpp
-        ${LLVM_BINARY_DIR}/include
-        Source/third-party/llvm/llvm/include
+        #${LLVM_BINARY_DIR}/include
+        #Source/third-party/llvm/llvm/include
         Source/third-party/cxxopts/include
         Source/third-party/spdlog/include
         Source/third-party/zip/src
@@ -47,9 +47,8 @@ target_include_directories(SuperJet PUBLIC
 
 target_link_libraries(SuperJet PUBLIC
         fmt
-        dw
         backward
-        LLVMCodeGen
+        #LLVMCodeGen
         spdlog
         zip
 )
