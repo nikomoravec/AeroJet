@@ -51,6 +51,17 @@ namespace SuperJet::Java::Archive
             entries.emplace_back(entry);
         }
 
+        auto begin() const
+        {
+            return entries.begin();
+        }
+
+        auto end() const
+        {
+            return entries.end();
+        }
+
+
     protected:
         std::vector<std::shared_ptr<ConstantPoolEntry>> entries;
     };
