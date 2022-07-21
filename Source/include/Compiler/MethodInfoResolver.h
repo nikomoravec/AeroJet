@@ -24,11 +24,11 @@ namespace SuperJet::Compiler
         class MethodInfo
         {
         public:
-            MethodInfo(Java::Archive::MethodInfo::AccessFlags inAccessFlags, const std::string& inName, const Java::Archive::MethodDescriptor& inMethodDescriptor, const std::vector<ResolvedTypes::AttributeInfo>& inAttributes) : accessFlags(inAccessFlags), name(inName), descriptor(inMethodDescriptor), attributes(inAttributes)
+            MethodInfo(::SuperJet::Java::Archive::MethodInfo::AccessFlags inAccessFlags, const std::string& inName, const ::SuperJet::Java::Archive::MethodDescriptor& inMethodDescriptor, const std::vector<ResolvedTypes::AttributeInfo>& inAttributes) : accessFlags(inAccessFlags), name(inName), descriptor(inMethodDescriptor), attributes(inAttributes)
             {
             }
 
-            Java::Archive::MethodInfo::AccessFlags getAccessFlags() const
+            ::SuperJet::Java::Archive::MethodInfo::AccessFlags getAccessFlags() const
             {
                 return accessFlags;
             }
@@ -38,7 +38,7 @@ namespace SuperJet::Compiler
                 return name;
             }
 
-            const Java::Archive::MethodDescriptor& getDescriptor() const
+            const ::SuperJet::Java::Archive::MethodDescriptor& getDescriptor() const
             {
                 return descriptor;
             }
@@ -49,25 +49,25 @@ namespace SuperJet::Compiler
             }
 
         protected:
-            Java::Archive::MethodInfo::AccessFlags accessFlags;
+            ::SuperJet::Java::Archive::MethodInfo::AccessFlags accessFlags;
             std::string name;
-            Java::Archive::MethodDescriptor descriptor;
+            ::SuperJet::Java::Archive::MethodDescriptor descriptor;
             std::vector<ResolvedTypes::AttributeInfo> attributes;
         };
     }
 
 
-    class MethodInfoResolver : public Resolver<Java::Archive::MethodInfo, ResolvedTypes::MethodInfo>
+    class MethodInfoResolver : public Resolver<::SuperJet::Java::Archive::MethodInfo, ResolvedTypes::MethodInfo>
     {
     public:
-        MethodInfoResolver(const Java::Archive::MethodInfo& methodInfo, const Java::Archive::ConstantPool& inConstantPool) : Resolver<Java::Archive::MethodInfo, ResolvedTypes::MethodInfo>(methodInfo), constantPool(inConstantPool)
+        MethodInfoResolver(const ::SuperJet::Java::Archive::MethodInfo& methodInfo, const ::SuperJet::Java::Archive::ConstantPool& inConstantPool) : Resolver<::SuperJet::Java::Archive::MethodInfo, ResolvedTypes::MethodInfo>(methodInfo), constantPool(inConstantPool)
         {
         }
 
         virtual ResolvedTypes::MethodInfo resolve() const override;
 
     protected:
-        Java::Archive::ConstantPool constantPool;
+        ::SuperJet::Java::Archive::ConstantPool constantPool;
     };
 }
 

@@ -19,22 +19,22 @@ namespace SuperJet::Compiler
     {
         using AttributeInfo = std::variant
         <
-                Java::Archive::Attributes::Code,
-                Java::Archive::Attributes::LineNumberTable
+                ::SuperJet::Java::Archive::Attributes::Code,
+                ::SuperJet::Java::Archive::Attributes::LineNumberTable
         >;
     }
 
-    class AttributeInfoResolver : public Resolver<Java::Archive::AttributeInfo, ResolvedTypes::AttributeInfo>
+    class AttributeInfoResolver : public Resolver<::SuperJet::Java::Archive::AttributeInfo, ResolvedTypes::AttributeInfo>
     {
     public:
-        AttributeInfoResolver(const Java::Archive::AttributeInfo& attributeInfo, const Java::Archive::ConstantPool& inConstantPool) : Resolver<Java::Archive::AttributeInfo, ResolvedTypes::AttributeInfo>(attributeInfo), constantPool(inConstantPool)
+        AttributeInfoResolver(const ::SuperJet::Java::Archive::AttributeInfo& attributeInfo, const ::SuperJet::Java::Archive::ConstantPool& inConstantPool) : Resolver<::SuperJet::Java::Archive::AttributeInfo, ResolvedTypes::AttributeInfo>(attributeInfo), constantPool(inConstantPool)
         {
         }
 
         virtual ResolvedTypes::AttributeInfo resolve() const override;
 
     protected:
-        Java::Archive::ConstantPool constantPool;
+        ::SuperJet::Java::Archive::ConstantPool constantPool;
     };
 }
 

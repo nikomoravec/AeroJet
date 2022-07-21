@@ -28,9 +28,9 @@ namespace SuperJet::Java::Archive
         {
         }
 
-        JVM::u2 getAccessFlags() const
+        AccessFlags getAccessFlags() const
         {
-            return accessFlags;
+            return static_cast<AccessFlags>(accessFlags);
         }
 
         JVM::u2 getNameIndex() const
