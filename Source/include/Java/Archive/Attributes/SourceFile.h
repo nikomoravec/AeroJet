@@ -30,16 +30,10 @@ namespace SuperJet::Java::Archive::Attributes
             return sourceFileIndex;
         }
 
-        const std::string& getSourceFileName() const
-        {
-            return sourceFileName;
-        }
-
     protected:
         JVM::u2 attributeNameIndex;
         JVM::u4 attributeLength;
         JVM::u2 sourceFileIndex;
-        std::string sourceFileName;
     };
 }
 

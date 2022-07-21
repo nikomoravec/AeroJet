@@ -21,7 +21,6 @@ namespace SuperJet::Java::Archive::Attributes
             std::move(info.begin(), info.end(),std::ostream_iterator<JVM::u1>(ss));
 
             sourceFileIndex = read<JVM::u2>(ss);
-            sourceFileName = constantPool.get<ConstantPoolInfoUtf8>(sourceFileIndex)->asString();
         }
         else
         {

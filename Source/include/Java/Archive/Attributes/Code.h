@@ -52,6 +52,37 @@ namespace SuperJet::Java::Archive::Attributes
     public:
         Code(const ConstantPool& constantPool, const AttributeInfo& attributeInfo);
 
+        JVM::u2 getAttributeNameIndex() const {
+            return attributeNameIndex;
+        }
+
+        JVM::u4 getAttributeLength() const {
+            return attributeLength;
+        }
+
+        JVM::u2 getMaxStack() const {
+            return maxStack;
+        }
+
+        JVM::u2 getMaxLocals() const {
+            return maxLocals;
+        }
+
+        const std::vector<std::shared_ptr<JVM::Runtime::Operation>>& getCode() const
+        {
+            return code;
+        }
+
+        const std::vector<Code::ExceptionTableEntry>& getExceptionTable() const
+        {
+            return exceptionTable;
+        }
+
+        const std::vector<Archive::AttributeInfo>& getAttributes() const
+        {
+            return attributes;
+        }
+
     protected:
         JVM::u2 attributeNameIndex;
         JVM::u4 attributeLength;
