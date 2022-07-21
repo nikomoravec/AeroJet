@@ -16,6 +16,7 @@ namespace SuperJet::Java::Archive
 
         JVM::u2 getAttributeNameIndex() const { return attributeNameIndex; }
         JVM::u2 getSize() const { return info.size(); }
+        const std::vector<JVM::u1>& getInfo() const { return info; }
 
     protected:
         JVM::u2 attributeNameIndex;
