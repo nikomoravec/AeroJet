@@ -1,9 +1,14 @@
 #include "Compiler/Compiler.h"
 #include "Compiler/ClassInfoRerenceCollector.h"
 #include "Compiler/Exceptions/RuntimeException.h"
+#include "Compiler/CodeGen/Cpp/Class.h"
+#include "Compiler/CodeGen/Cpp/ClassPreDeclarationPrinter.h"
+#include "Compiler/CodeGen/Cpp/StructurePrinter.h"
 #include "spdlog/spdlog.h"
 #include "fmt/format.h"
 #include "Java/Archive/Archive.h"
+
+#include <fstream>
 
 namespace SuperJet::Compiler
 {
@@ -50,12 +55,21 @@ namespace SuperJet::Compiler
     void ByteCodeCompiler::run()
     {
         std::queue<std::shared_ptr<Java::Archive::ClassInfo>> nodes = dependencyGraph.topology();
+        std::ofstream outputStream("codegen.cpp");
+
+        for (const std::shared_ptr<Java::Archive::ClassInfo>& node : dependencyGraph.nodes())
+        {
+            CodeGen::Cpp::ClassPreDeclarationPrinter preDeclarationPrinter(CodeGen::Cpp::Class{*node});
+            preDeclarationPrinter.print(outputStream);
+        }
+
         while (!nodes.empty())
         {
             std::shared_ptr<Java::Archive::ClassInfo> node = nodes.front();
 
-
-
+            CodeGen::Cpp::Class codegenNode = {*node};
+            CodeGen::Cpp::StructureDeclarationPrinter structPrinter(codegenNode);
+            structPrinter.print(outputStream);
 
             nodes.pop();
         }

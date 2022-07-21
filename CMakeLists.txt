@@ -27,18 +27,13 @@ add_executable(SuperJet
         Source/source/Compiler/Compiler.cpp
         Source/source/Java/Archive/Attributes/LocalVariableTable.cpp
         Source/source/Java/Archive/ClassInfo.cpp
+        Source/source/Compiler/CodeGen/Cpp/Namespace.cpp
 )
-
-#add_dependencies(SuperJet
-#        intrinsics_gen # for LLVM
-#)
 
 target_include_directories(SuperJet PUBLIC
         Source/include
         Source/third-party/fmtlib/include
         Source/third-party/backwandcpp
-        #${LLVM_BINARY_DIR}/include
-        #Source/third-party/llvm/llvm/include
         Source/third-party/cxxopts/include
         Source/third-party/spdlog/include
         Source/third-party/zip/src
@@ -48,7 +43,6 @@ target_include_directories(SuperJet PUBLIC
 target_link_libraries(SuperJet PUBLIC
         fmt
         backward
-        #LLVMCodeGen
         spdlog
         zip
 )
