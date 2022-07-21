@@ -20,11 +20,12 @@ namespace SuperJet::Compiler
     public:
         ClassInfoReferenceCollector(const Context& ctx);
         SourceDependencyGraph collect(const std::filesystem::path& rootClass);
+        SourceDependencyGraph collect(const std::shared_ptr<Java::Archive::ClassInfo>& rootClass);
 
     private:
         Context context;
         SourceDependencyGraph graph;
-        std::set<std::string> visited;
+        std::set<std::shared_ptr<Java::Archive::ClassInfo>> visited;
     };
 
 

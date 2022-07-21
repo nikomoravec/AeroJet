@@ -36,7 +36,7 @@ namespace SuperJet::Compiler
         return environment.mainClass;
     }
 
-    std::shared_ptr<Java::Archive::Jar> Context::jarForClass(const std::filesystem::path& javaClassName)
+    std::shared_ptr<Java::Archive::Jar> Context::jarForClass(const std::filesystem::path& javaClassName) const
     {
         auto find = classMap.find(javaClassName);
         if (find != classMap.end())

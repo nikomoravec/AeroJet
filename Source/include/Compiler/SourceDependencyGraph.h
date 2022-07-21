@@ -13,7 +13,9 @@ namespace SuperJet::Compiler
         HARD
     };
 
-    using SourceDependencyGraph = digraph<std::string, ConnectionType>;
+    class SourceDependencyGraph : public digraph<std::shared_ptr<Java::Archive::ClassInfo>, ConnectionType>
+    {
+    };
 }
 
 #endif //SUPERJET_SOURCEDEPENDENCYGRAPH_H
