@@ -5,7 +5,7 @@
         "Source/include/",
         "Source/third-party/fmtlib/include",
         "Source/third-party/backwandcpp",
-        "${LLVM_BINARY_DIR}/include",
+        ".build/Source/third-party/llvm/llvm/include",
         "Source/third-party/llvm/llvm/include",
         "Source/third-party/cxxopts/include",
         "Source/third-party/spdlog/include",
@@ -128,6 +128,8 @@
         "hash_map": "cpp",
         "hash_set": "cpp",
         "ranges": "cpp",
-        "stop_token": "cpp"
+        "stop_token": "cpp",
+        "*.idl": "cpp",
+        "*.inc": "cpp"
     },
 }
