@@ -27,6 +27,8 @@
 #include "Compiler/MethodInfoResolver.h"
 #include "Compiler/Resolver.h"
 
+#include "Compiler/Compiler.h"
+
 #include "Compiler/Environment.h"
 
 #include "Compiler/Exceptions/RuntimeException.h"
@@ -35,6 +37,8 @@
 #include "Compiler/Exceptions/NotSupportedException.h"
 #include "Compiler/Exceptions/OperationNotSupportedException.h"
 #include "Compiler/Exceptions/UnknownConstantPoolTagException.h"
+
+#include "Compiler/SourceDependencyGraph.h"
 
 
 #endif //SUPERJET_JAVA_H

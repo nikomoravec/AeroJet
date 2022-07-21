@@ -15,7 +15,6 @@ namespace SuperJet::Java::Archive
 {
     static constexpr JVM::u4 JAVA_CLASS_MAGIC  = 0xCAFEBABE;
     static constexpr JVM::u2 MAX_JAVA_CLASS_MAJOR_VERSION = 52; // 52 Java 8
-    static constexpr char TOP_SUPER_CLASS[17] = "java/lang/Object";
 
     class ClassInfo
     {
@@ -135,5 +134,30 @@ namespace SuperJet::Java::Archive
         return (static_cast<T>(lhs) & static_cast<T>(rhs)) == static_cast<T>(rhs);
     }
 }
+
+namespace std
+{
+    template <>
+    struct less<SuperJet::Java::Archive::ClassInfo>
+    {
+        bool operator()(const SuperJet::Java::Archive::ClassInfo& class1, const SuperJet::Java::Archive::ClassInfo& class2) const
+        {
+            const SuperJet::Java::Archive::ConstantPool& class1ConstantPool = class1.getConstantPool();
+            SuperJet::Java::JVM::u2 class1Index = class1.getThisClass();
+            SuperJet::Java::JVM::u2 class1NameIndex = class1ConstantPool.get<SuperJet::Java::Archive::ConstantPoolInfoClass>(class1Index)->getNameIndex();
+
+            const SuperJet::Java::Archive::ConstantPool& class2ConstantPool = class2.getConstantPool();
+            SuperJet::Java::JVM::u2 class2Index = class2.getThisClass();
+            SuperJet::Java::JVM::u2 class2NameIndex = class2ConstantPool.get<SuperJet::Java::Archive::ConstantPoolInfoClass>(class2Index)->getNameIndex();
+
+            return std::less<>()
+            (
+                    class1ConstantPool.get<SuperJet::Java::Archive::ConstantPoolInfoUtf8>(class1NameIndex)->asString(),
+                    class2ConstantPool.get<SuperJet::Java::Archive::ConstantPoolInfoUtf8>(class2NameIndex)->asString()
+            );
+        }
+    };
+}
+
 
 #endif //SUPERJET_CLASSINFO_H

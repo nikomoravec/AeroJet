@@ -24,6 +24,8 @@ add_executable(SuperJet
         Source/source/Java/Archive/Attributes/SourceFile.cpp
         Source/source/Java/Archive/Jar.cpp
         Source/source/Compiler/ClassInfoReferenceCollector.cpp
+        Source/source/Compiler/LLVMCodeGenerator.cpp
+        Source/source/Compiler/Context.cpp
 )
 
 add_dependencies(SuperJet

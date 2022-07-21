@@ -2,15 +2,14 @@
 #define SUPERJET_ENVIRONMENT_H
 
 #include "Java/Archive/Jar.h"
-#include <filesystem>
-#include <vector>
+#include <set>
 
 namespace SuperJet::Compiler
 {
     struct Environment
     {
         std::filesystem::path mainClass;
-        std::vector<std::filesystem::path> libraries;
+        std::set<std::string> libraries;
     };
 }
 
