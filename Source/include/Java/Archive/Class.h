@@ -59,9 +59,9 @@ namespace SuperJet::Java::Archive
             return constantPool;
         }
 
-        JVM::u2 getAccessFlags() const
+        AccessFlags getAccessFlags() const
         {
-            return accessFlags;
+            return static_cast<AccessFlags>(accessFlags);
         }
 
         JVM::u2 getThisClass() const
@@ -107,6 +107,18 @@ namespace SuperJet::Java::Archive
         std::vector<MethodInfo> methods;
         std::vector<AttributeInfo> attributes;
     };
+
+    inline Class::AccessFlags operator| (Class::AccessFlags lhs, Class::AccessFlags rhs)
+    {
+        using T = std::underlying_type_t <Class::AccessFlags>;
+        return static_cast<Class::AccessFlags>(static_cast<T>(lhs) | static_cast<T>(rhs));
+    }
+
+    inline bool operator^ (Class::AccessFlags lhs, Class::AccessFlags rhs)
+    {
+        using T = std::underlying_type_t <Class::AccessFlags>;
+        return (static_cast<T>(lhs) & static_cast<T>(rhs)) == static_cast<T>(rhs);
+    }
 }
 
 #endif //SUPERJET_CLASS_H
