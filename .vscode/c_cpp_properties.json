@@ -3,7 +3,8 @@
         {
             "name": "Linux",
             "includePath": [
-                "${default}"
+                "${default}",
+                "/usr/include/c++/12.1.0"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/gcc",

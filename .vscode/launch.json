@@ -1,0 +1,52 @@
+{
+    "inputs":
+    [
+      {
+        "id": "jar",
+        "type": "promptString",
+        "description": "path to jar archive"
+      },
+      {
+        "id": "jhome",
+        "type": "promptString",
+        "description": "path to jre root directory"
+      },
+      {
+        "id": "main",
+        "type": "promptString",
+        "description": "main class"
+      },
+    ],
+
+    "configurations":
+    [
+        {
+            "MIMode": "gdb",
+            "args":
+            [
+                "--jar", "${input:jar}",
+                "--jhome", "${input:jhome}",
+                "--main", "${input:main}"
+            ],
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false,
+            "name": "(gdb) Launch (Linux Release)",
+            "program": "${workspaceFolder}/.build/SuperJet",
+            "request": "launch",
+            "setupCommands":
+            [
+              {
+                "description": "Enable pretty-printing for gdb",
+                "ignoreFailures": true,
+                "text": "-enable-pretty-printing"
+              }
+            ],
+            "stopAtEntry": false,
+            "targetArchitecture": "x64",
+            "type": "cppdbg"
+          },
+    ],
+
+    "version": "0.2.0"
+}
