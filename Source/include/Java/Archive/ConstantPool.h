@@ -22,12 +22,14 @@ namespace SuperJet::Java::Archive
 
         JVM::u2 getSize() const
         {
-            return entries.size();
+            return entries.size() + 1;
         }
 
-        const std::shared_ptr<ConstantPoolEntry> get(uint32_t index) const
+        template<typename T = ConstantPoolEntry>
+        std::shared_ptr<T> get(int32_t index) const requires std::is_base_of_v<ConstantPoolEntry, T>
         {
-            if (index >= getSize())
+            index = index - 1; // indexes in Constant Pool in Java starts from 1
+            if (index >= getSize() || index < 0)
             {
                 /*
                  * TODO: replace it with dedicated exception type IndexOutOfException
@@ -36,7 +38,7 @@ namespace SuperJet::Java::Archive
                 throw std::runtime_error("Index out of bound!");
             }
 
-            return entries[index];
+            return std::static_pointer_cast<T>(entries[index]);
         }
 
         void addEntry(std::shared_ptr<ConstantPoolEntry> entry)
