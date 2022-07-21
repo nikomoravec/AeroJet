@@ -37,42 +37,6 @@ int main(int argc, char** argv)
 
                 SuperJet::Compiler::ByteCodeCompiler compiler(environment);
                 compiler.run();
-
-//                SuperJet::Compiler::ClassInfoReferenceCollector collector = {environment};
-//                SuperJet::Compiler::SourceDependencyGraph graph = collector.collect();
-
-//                std::set<SuperJet::Java::Archive::ClassInfo> captured;
-//                for (const SuperJet::Java::Archive::ClassInfo& classInfo : graph.nodes())
-//                {
-//                    for(const auto& pair : graph.connections(classInfo))
-//                    {
-//                        const SuperJet::Java::Archive::ClassInfo& dependency = pair.first;
-//
-//                        if (!captured.contains(classInfo) && !captured.contains(dependency))
-//                        {
-//                            if (graph.connections(dependency).contains(classInfo))
-//                            {
-//                                static std::set<SuperJet::Java::Archive::ClassInfo> captured;
-//
-//                                const SuperJet::Java::Archive::ConstantPool& constantPool = classInfo.getConstantPool();
-//                                SuperJet::Java::JVM::u2 thisClassIndex = classInfo.getThisClass();
-//                                SuperJet::Java::JVM::u2 thisClassNameIndex = constantPool.get<SuperJet::Java::Archive::ConstantPoolInfoClass>(thisClassIndex)->getNameIndex();
-//                                const std::string& thisClassName = constantPool.get<SuperJet::Java::Archive::ConstantPoolInfoUtf8>(thisClassNameIndex)->asString();
-//
-//
-//                                const SuperJet::Java::Archive::ConstantPool& dependencyConstantPool = dependency.getConstantPool();
-//                                SuperJet::Java::JVM::u2 dependencyClassIndex = dependency.getThisClass();
-//                                SuperJet::Java::JVM::u2 dependencyClassNameIndex = dependencyConstantPool.get<SuperJet::Java::Archive::ConstantPoolInfoClass>(dependencyClassIndex)->getNameIndex();
-//                                const std::string& dependencyClassName = dependencyConstantPool.get<SuperJet::Java::Archive::ConstantPoolInfoUtf8>(dependencyClassNameIndex)->asString();
-//
-//                                spdlog::warn(fmt::format("Found cross reference '{}' <-> '{}'", thisClassName, dependencyClassName));
-//
-//                                captured.emplace(classInfo);
-//                                captured.emplace(dependency);
-//                            }
-//                        }
-//                    }
-//                }
             }
 
             return 0;
