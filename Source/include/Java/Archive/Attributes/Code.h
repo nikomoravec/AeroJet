@@ -56,7 +56,7 @@ namespace SuperJet::Java::Archive::Attributes
         JVM::u4 attributeLength;
         JVM::u2 maxStack;
         JVM::u2 maxLocals;
-        std::vector<JVM::Runtime::OperationCode> code;
+        std::vector<std::shared_ptr<JVM::Runtime::Operation>> code;
         std::vector<ExceptionTableEntry> exceptionTable;
         std::vector<Archive::AttributeInfo> attributes;
     };

@@ -24,10 +24,11 @@ namespace SuperJet::Java::Archive::Attributes
             maxLocals = read<JVM::u2>(ss);
 
             const JVM::u4 codeLength = read<JVM::u4>(ss);
-            code.reserve(codeLength);
-            for (int32_t codeIndex = 0; codeIndex < codeLength; codeIndex++)
+            const uint32_t endPos = static_cast<uint32_t>(ss.tellg()) + codeLength;
+
+            while (ss.tellg() != endPos)
             {
-                code.emplace_back(static_cast<Java::JVM::Runtime::OperationCode>(ss.get()));
+                code.emplace_back(read<std::shared_ptr<SuperJet::Java::JVM::Runtime::Operation>>(ss));
             }
 
             const JVM::u2 exceptionTableLength = read<JVM::u2>(ss);
