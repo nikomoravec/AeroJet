@@ -5,6 +5,8 @@
 #include <fstream>
 #include <memory>
 
+#include "fmt/format.h"
+#include "Compiler/Exceptions/RuntimeException.h"
 #include "Java/Archive/ConstantPoolEntry.h"
 #include "Java/Types.h"
 
@@ -36,6 +38,11 @@ namespace SuperJet::Java::Archive
                  * @Author: Nikita Miroshnichenko (nikita.miroshnichenko@yahoo.com)
                  */
                 throw std::runtime_error("Index out of bound!");
+            }
+
+            if (entries[index] == nullptr)
+            {
+                throw Compiler::RuntimeException(fmt::format("Element {} is null!", index));
             }
 
             return std::static_pointer_cast<T>(entries[index]);
