@@ -2,8 +2,8 @@
 #include "Compiler/ClassInfoRerenceCollector.h"
 #include "Compiler/Exceptions/RuntimeException.h"
 #include "Compiler/CodeGen/Cpp/Class.h"
-#include "Compiler/CodeGen/Cpp/ClassPreDeclarationPrinter.h"
-#include "Compiler/CodeGen/Cpp/StructurePrinter.h"
+#include "Compiler/CodeGen/Cpp/Document.h"
+#include "Compiler/CodeGen/Cpp/ForwardDeclaration.h"
 #include "spdlog/spdlog.h"
 #include "fmt/format.h"
 #include "Java/Archive/Archive.h"
@@ -54,25 +54,54 @@ namespace SuperJet::Compiler
 
     void ByteCodeCompiler::run()
     {
+        Compiler::CodeGen::Cpp::Document document = Compiler::CodeGen::Cpp::Document();
         std::queue<std::shared_ptr<Java::Archive::ClassInfo>> nodes = dependencyGraph.topology();
-        std::ofstream outputStream("codegen.cpp");
 
-        for (const std::shared_ptr<Java::Archive::ClassInfo>& node : dependencyGraph.nodes())
+        for(std::shared_ptr<Java::Archive::ClassInfo> node : dependencyGraph.nodes())
         {
-            CodeGen::Cpp::ClassPreDeclarationPrinter preDeclarationPrinter(CodeGen::Cpp::Class{*node});
-            preDeclarationPrinter.print(outputStream);
+            std::shared_ptr<SuperJet::Compiler::CodeGen::Cpp::Class> clazz = std::make_shared<SuperJet::Compiler::CodeGen::Cpp::Class>(node);
+        
+            if (clazz->hasNamespace())
+            {
+                std::shared_ptr<SuperJet::Compiler::CodeGen::Cpp::Namespace> ns = document.addNameSpace(node->getName());
+                ns->addForwardDeclaration(std::make_shared<SuperJet::Compiler::CodeGen::Cpp::ForwardDeclaration>(clazz));
+            }
+            else
+            {
+               document.addForwardDeclaration(std::make_shared<SuperJet::Compiler::CodeGen::Cpp::ForwardDeclaration>(clazz));
+            }
         }
 
         while (!nodes.empty())
         {
             std::shared_ptr<Java::Archive::ClassInfo> node = nodes.front();
 
-            CodeGen::Cpp::Class codegenNode = {*node};
-            CodeGen::Cpp::StructureDeclarationPrinter structPrinter(codegenNode);
-            structPrinter.print(outputStream);
+            std::shared_ptr<SuperJet::Compiler::CodeGen::Cpp::Class> clazz = std::make_shared<SuperJet::Compiler::CodeGen::Cpp::Class>(node);
+            spdlog::info(fmt::format("Compiling '{}'", clazz->getFullName()));
+
+            if(clazz->hasNamespace())
+            {
+                std::shared_ptr<SuperJet::Compiler::CodeGen::Cpp::Namespace> ns = document.addNameSpace(node->getName());
+                ns->addClass(clazz);
+            }
+            else
+            {
+                document.addClass(clazz);
+            }
+
+            for (const SuperJet::Java::Archive::FieldInfo& field : node->getFields())
+            {
+                
+            }
+
 
             nodes.pop();
         }
+        
+        std::ofstream outputStream("codegen.cpp");
+        document.dump(outputStream);
+
+        return;
     }
 
     ByteCodeCompiler::ByteCodeCompiler(const Environment& env) : context(env)
