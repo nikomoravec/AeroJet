@@ -1,0 +1,27 @@
+{
+    "C_Cpp.default.cStandard": "gnu17",
+    "C_Cpp.default.cppStandard": "gnu++20",
+    "C_Cpp.default.includePath": [
+        "Source/include/",
+        "Source/third-party/fmtlib/include",
+        "Source/third-party/backwandcpp",
+        "${LLVM_BINARY_DIR}/include",
+        "Source/third-party/llvm/llvm/include",
+        "Source/third-party/cxxopts/include",
+        "Source/third-party/spdlog/include",
+        "Source/third-party/zip/src",
+        "Source/third-party/digraph",
+        "Source/source/**"
+    ],
+    "C_Cpp.vcFormat.indent.gotoLabels": "leftmostColumn",
+    "C_Cpp.vcFormat.space.pointerReferenceAlignment": "left",
+    "files.trimFinalNewlines": false,
+    "files.trimTrailingWhitespace": false,
+    "files.associations": {
+        "vector": "cpp",
+        "algorithm": "cpp"
+    },
+
+    "cmake.buildDirectory": "${workspaceFolder}/.build",
+    "cmake.generator": "Unix Makefiles"
+}
