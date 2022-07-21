@@ -8,6 +8,8 @@
 
 namespace SuperJet::Java::Archive
 {
+    static constexpr auto CLASS_FILE_EXTENSION = ".class";
+
     template<typename T>
     T read(std::istream& stream);
 
