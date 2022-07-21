@@ -32,6 +32,11 @@ namespace SuperJet::Java::Archive
         return std::nullopt;
     }
 
+    FieldDescriptor::FieldType getFieldType() const
+    {
+        return type;
+    }
+
     FieldDescriptor::FieldType FieldDescriptor::resolve()
     {
         const char first = *rawLiteral.begin();
