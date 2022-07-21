@@ -41,6 +41,8 @@ namespace SuperJet::Java::Archive
         Jar(const Jar& other);
         ~Jar();
 
+        Jar::Entry openClass(const std::filesystem::path& path) const;
+
         Jar::Entry open(const std::filesystem::path& path) const;
         Jar::Entry open(ssize_t index) const;
 

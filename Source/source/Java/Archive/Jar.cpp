@@ -1,6 +1,7 @@
 #include "Java/Archive/Jar.h"
+#include "Java/Archive/Archive.h"
 #include "Compiler/Exceptions/FileNotFoundException.h"
-#include <sstream>
+
 #include "spdlog/spdlog.h"
 
 namespace SuperJet::Java::Archive
@@ -119,5 +120,10 @@ namespace SuperJet::Java::Archive
     Jar::Entry Jar::open(ssize_t index) const
     {
         return {zip, index};
+    }
+
+    Jar::Entry Jar::openClass(const std::filesystem::path& path) const
+    {
+        return open(path.string() + CLASS_FILE_EXTENSION);
     }
 }
