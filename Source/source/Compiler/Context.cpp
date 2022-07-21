@@ -55,5 +55,6 @@ namespace SuperJet::Compiler
     {
         ClassInfoReferenceCollector collector = ClassInfoReferenceCollector(context);
         dependencyGraph = collector.collect(context.getMainClass());
+        return;
     }
 }

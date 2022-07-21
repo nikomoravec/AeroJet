@@ -3,6 +3,7 @@
 
 #include "Java/Archive/ClassInfo.h"
 #include "dglib/digraph.hh"
+#include <string>
 
 namespace SuperJet::Compiler
 {
@@ -12,7 +13,7 @@ namespace SuperJet::Compiler
         HARD
     };
 
-    using SourceDependencyGraph = digraph<Java::Archive::ClassInfo, ConnectionType>;
+    using SourceDependencyGraph = digraph<std::string, ConnectionType>;
 }
 
 #endif //SUPERJET_SOURCEDEPENDENCYGRAPH_H

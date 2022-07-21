@@ -24,35 +24,25 @@ struct arrow_traits<SuperJet::Compiler::ConnectionType>
     }
 };
 
-
-
-
-
 namespace SuperJet::Compiler
 {
     ClassInfoReferenceCollector::ClassInfoReferenceCollector(const Context& ctx) : context(ctx)
     {
     }
 
-    SourceDependencyGraph ClassInfoReferenceCollector::collect(const std::filesystem::path& rootClass)
+    SourceDependencyGraph ClassInfoReferenceCollector::collect(const std::filesystem::path& className)
     {
-        std::shared_ptr<Java::Archive::Jar> jar = context.jarForClass(rootClass);
-        const Java::Archive::Jar::Entry& entry = jar->openClass(rootClass.string());
+        spdlog::info(fmt::format("Gathering dependencies for class '{}'", className.string()));
+
+        std::shared_ptr<Java::Archive::Jar> jar = context.jarForClass(className);
+        const Java::Archive::Jar::Entry& entry = jar->openClass(className.string());
 
         std::stringstream stream = entry.read();
-        const Java::Archive::ClassInfo& rootClassInfo = Java::Archive::read<Java::Archive::ClassInfo>(stream);
-
-        return collect(rootClassInfo);
-    }
-
-    SourceDependencyGraph ClassInfoReferenceCollector::collect(const Java::Archive::ClassInfo& classInfo)
-    {
-        const Java::Archive::ConstantPool& constantPool = classInfo.getConstantPool();
-        Java::JVM::u2 thisClassIndex = classInfo.getThisClass();
+        std::unique_ptr<Java::Archive::ClassInfo> classInfo = std::make_unique<Java::Archive::ClassInfo>(Java::Archive::read<Java::Archive::ClassInfo>(stream));
+        const Java::Archive::ConstantPool& constantPool = classInfo->getConstantPool();
+        Java::JVM::u2 thisClassIndex = classInfo->getThisClass();
         Java::JVM::u2 thisClassNameIndex = constantPool.get<Java::Archive::ConstantPoolInfoClass>(thisClassIndex)->getNameIndex();
         const std::string& thisClassName = constantPool.get<Java::Archive::ConstantPoolInfoUtf8>(thisClassNameIndex)->asString();
-
-        spdlog::info(fmt::format("Gathering dependencies for class \'{}\'", thisClassName));
 
         for(const auto& pair : constantPool)
         {
@@ -80,20 +70,13 @@ namespace SuperJet::Compiler
                     dependencyClassName = std::string(optionalClassName.value());
                 }
 
-                std::shared_ptr<Java::Archive::Jar> jar = context.jarForClass(dependencyClassName);
-
-                Java::Archive::Jar::Entry dependencyClassJarEntry = jar->openClass(dependencyClassName);
-                std::stringstream dependencyClassJarEntryStream = dependencyClassJarEntry.read();
-
-                const Java::Archive::ClassInfo& dependencyClassInfo = Java::Archive::read<Java::Archive::ClassInfo>(dependencyClassJarEntryStream);
-
-                graph.add(classInfo, dependencyClassInfo, ConnectionType::HARD);
+                graph.add(thisClassName, dependencyClassName, ConnectionType::HARD);
             }
         }
 
-        visited.emplace(classInfo);
+        visited.emplace(thisClassName);
 
-        for (const auto& pair : graph.connections(classInfo))
+        for (const auto& pair : graph.connections(thisClassName))
         {
             if (!visited.contains(pair.first))
             {

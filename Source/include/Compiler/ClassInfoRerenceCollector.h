@@ -10,6 +10,7 @@
 #include <filesystem>
 #include <variant>
 #include <map>
+#include <memory>
 #include <unordered_set>
 
 namespace SuperJet::Compiler
@@ -19,12 +20,11 @@ namespace SuperJet::Compiler
     public:
         ClassInfoReferenceCollector(const Context& ctx);
         SourceDependencyGraph collect(const std::filesystem::path& rootClass);
-        SourceDependencyGraph collect(const Java::Archive::ClassInfo& rootClass);
 
     private:
         Context context;
         SourceDependencyGraph graph;
-        std::set<Java::Archive::ClassInfo> visited;
+        std::set<std::string> visited;
     };
 
 
