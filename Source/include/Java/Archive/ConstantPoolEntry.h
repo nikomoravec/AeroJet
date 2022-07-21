@@ -58,6 +58,11 @@ namespace SuperJet::Java::Archive
             return bytes.size();
         }
 
+        std::string asString()
+        {
+            return {bytes.begin(), bytes.end()};
+        }
+
     protected:
         std::vector<JVM::u1> bytes;
     };
@@ -155,6 +160,35 @@ namespace SuperJet::Java::Archive
             return lowBytes;
         }
 
+        int64_t asLong() const
+        {
+            union Long
+            {
+            public:
+                Long(JVM::u4 highBytes, JVM::u4 lowBytes)
+                {
+                    parts[0] = highBytes;
+                    parts[1] = lowBytes;
+                }
+
+                int64_t getValue() const
+                {
+                    return value;
+                }
+
+            protected:
+                int64_t value;
+                JVM::u4 parts[2] {};
+            };
+
+            return Long(highBytes, lowBytes).getValue();
+        }
+
+        double asDouble() const
+        {
+            return static_cast<double>(asLong());
+        }
+
     protected:
         JVM::u4 highBytes;
         JVM::u4 lowBytes;
@@ -187,13 +221,26 @@ namespace SuperJet::Java::Archive
     class ConstantPoolInfoMethodHandle : public ConstantPoolEntry
     {
     public:
+        enum class ReferenceKind : JVM::u1
+        {
+            REF_getField = 1,
+            REF_getStatic = 2,
+            REF_putField = 3,
+            REF_putStatic = 4,
+            REF_invokeVirtual = 5,
+            REF_invokeStatic = 6,
+            REF_invokeSpecial = 7,
+            REF_newInvokeSpecial = 8,
+            REF_invokeInterface = 9
+        };
+
         ConstantPoolInfoMethodHandle(const ConstantPoolInfoTag inTag, const JVM::u1 inReferenceKind, const JVM::u2 inReferenceIndex) : ConstantPoolEntry(inTag), referenceKind(inReferenceKind), referenceIndex(inReferenceIndex)
         {
         }
 
-        JVM::u1 getReferenceKind() const
+        ReferenceKind getReferenceKind() const
         {
-            return referenceKind;
+            return static_cast<ReferenceKind>(referenceKind);
         }
 
         JVM::u2 getReferenceIndex() const
