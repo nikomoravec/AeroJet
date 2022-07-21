@@ -2,7 +2,6 @@
 #define SUPERJET_CLASSINFORERENCECOLLECTOR_H
 
 #include "Compiler/Compiler.h"
-#include "Visitor.h"
 #include "SourceDependencyGraph.h"
 #include "Java/Archive/ClassInfo.h"
 #include "Java/Archive/Jar.h"
