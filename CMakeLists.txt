@@ -46,6 +46,7 @@ target_include_directories(SuperJet PUBLIC
 
 target_link_libraries(SuperJet PUBLIC
         fmt
+        dw
         backward
         LLVMCodeGen
         spdlog
