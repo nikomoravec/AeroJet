@@ -23,6 +23,7 @@ add_executable(SuperJet
         Source/source/Compiler/FieldInfoResolver.cpp
         Source/source/Java/Archive/Attributes/SourceFile.cpp
         Source/source/Java/Archive/Jar.cpp
+        Source/source/Compiler/ClassInfoReferenceCollector.cpp
 )
 
 add_dependencies(SuperJet
@@ -38,6 +39,7 @@ target_include_directories(SuperJet PUBLIC
         Source/third-party/cxxopts/include
         Source/third-party/spdlog/include
         Source/third-party/zip/src
+        Source/third-party/digraph
 )
 
 target_link_libraries(SuperJet PUBLIC
