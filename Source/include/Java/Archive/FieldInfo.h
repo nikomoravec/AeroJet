@@ -48,6 +48,11 @@ namespace SuperJet::Java::Archive
             return attributes;
         }
 
+        bool isStatic() const
+        {
+            return accessFlags & static_cast<JVM::u2>(AccessFlags::ACC_STATIC);
+        }
+
     protected:
         JVM::u2 accessFlags;
         JVM::u2 nameIndex;
