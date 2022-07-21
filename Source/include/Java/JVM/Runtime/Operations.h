@@ -219,13 +219,15 @@ namespace SuperJet::Java::JVM::Runtime
     class Operation
     {
     public:
+        Operation(){}
         OperationCode getOperationCode() const
         {
             return operationCode;
         }
 
-        const std::vector<JVM::u1> getData() const
+        const std::vector<JVM::u1>& getData() const
         {
+            return data;
         }
 
     protected:
@@ -398,6 +400,14 @@ namespace SuperJet::Java::JVM::Runtime
         }
     };
 
+    class aastore : public NoDataOperation
+    {
+    public:
+        aastore() : NoDataOperation(OperationCode::aastore)
+        {
+        }
+    };
+
     class aconst_null : public NoDataOperation
     {
     public:
@@ -481,6 +491,7 @@ namespace SuperJet::Java::JVM::Runtime
 
     class astore : public SingleByteDataOperation
     {
+    public:
         astore(const OperationData& inOperationData) : SingleByteDataOperation(OperationCode::astore, inOperationData)
         {
         }
@@ -494,7 +505,8 @@ namespace SuperJet::Java::JVM::Runtime
 
     class astore_0 : public astore
     {
-        astore_0(const OperationData& inOperationData) : astore(OperationCode::astore_0, {0})
+    public:
+        astore_0() : astore(OperationCode::astore_0, {0})
         {
         }
     };
@@ -502,7 +514,7 @@ namespace SuperJet::Java::JVM::Runtime
     class astore_1 : public astore
     {
     public:
-        astore_1(const OperationData& inOperationData) : astore(OperationCode::astore_1, {1})
+        astore_1() : astore(OperationCode::astore_1, {1})
         {
         }
     };
@@ -510,7 +522,7 @@ namespace SuperJet::Java::JVM::Runtime
     class astore_2 : public astore
     {
     public:
-        astore_2(const OperationData& inOperationData) : astore(OperationCode::astore_2, {2})
+        astore_2() : astore(OperationCode::astore_2, {2})
         {
         }
     };
@@ -518,7 +530,7 @@ namespace SuperJet::Java::JVM::Runtime
     class astore_3 : public astore
     {
     public:
-        astore_3(const OperationData& inOperationData) : astore(OperationCode::astore_3, {3})
+        astore_3() : astore(OperationCode::astore_3, {3})
         {
         }
     };
@@ -1035,7 +1047,7 @@ namespace SuperJet::Java::JVM::Runtime
     class fstore_0 : public fstore
     {
     public:
-        fstore_0(const OperationData& inOperationData) : fstore(OperationCode::fstore_0, {0})
+        fstore_0() : fstore(OperationCode::fstore_0, {0})
         {
         }
     };
@@ -1043,7 +1055,7 @@ namespace SuperJet::Java::JVM::Runtime
     class fstore_1 : public fstore
     {
     public:
-        fstore_1(const OperationData& inOperationData) : fstore(OperationCode::fstore_1, {1})
+        fstore_1() : fstore(OperationCode::fstore_1, {1})
         {
         }
     };
@@ -1051,7 +1063,7 @@ namespace SuperJet::Java::JVM::Runtime
     class fstore_2 : public fstore
     {
     public:
-        fstore_2(const OperationData& inOperationData) : fstore(OperationCode::fstore_2, {2})
+        fstore_2() : fstore(OperationCode::fstore_2, {2})
         {
         }
     };
@@ -1059,7 +1071,7 @@ namespace SuperJet::Java::JVM::Runtime
     class fstore_3 : public fstore
     {
     public:
-        fstore_3(const OperationData& inOperationData) : fstore(OperationCode::fstore_3, {3})
+        fstore_3() : fstore(OperationCode::fstore_3, {3})
         {
         }
     };
