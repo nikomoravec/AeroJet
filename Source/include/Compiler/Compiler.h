@@ -5,11 +5,6 @@
 #include "Compiler/SourceDependencyGraph.h"
 #include "Java/Archive/Archive.h"
 
-#include "llvm/IR/Module.h"
-#include "llvm/IR/IRBuilder.h"
-#include "llvm/IR/LLVMContext.h"
-#include "llvm/IR/Value.h"
-
 #include <string>
 #include <filesystem>
 #include <optional>
@@ -44,15 +39,8 @@ namespace SuperJet
             void run();
 
         protected:
-            std::unique_ptr<llvm::Value> generate(const SuperJet::Java::Archive::ClassInfo& classInfo);
-
-        protected:
             Context context;
             SourceDependencyGraph dependencyGraph;
-
-            std::unique_ptr<llvm::Module> llvmModule;
-            std::unique_ptr<llvm::LLVMContext> llvmContext;
-            std::unique_ptr<llvm::IRBuilder<>> llvmBuilder;
         };
 
         static std::shared_ptr<Java::Archive::ClassInfo> loadClass(const Context& context, const std::filesystem::path& clazz)
