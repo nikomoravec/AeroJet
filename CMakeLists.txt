@@ -7,6 +7,8 @@ add_subdirectory(Source/third-party/fmtlib)
 add_subdirectory(Source/third-party/backwandcpp)
 add_subdirectory(Source/third-party/llvm/llvm)
 add_subdirectory(Source/third-party/cxxopts)
+add_subdirectory(Source/third-party/spdlog)
+add_subdirectory(Source/third-party/zip)
 
 add_executable(SuperJet
         SuperJet.cpp
@@ -33,10 +35,14 @@ target_include_directories(SuperJet PUBLIC
         ${LLVM_BINARY_DIR}/include
         Source/third-party/llvm/llvm/include
         Source/third-party/cxxopts/include
+        Source/third-party/spdlog/include
+        Source/third-party/zip/src
 )
 
 target_link_libraries(SuperJet PUBLIC
         fmt
         backward
         LLVMCodeGen
+        spdlog
+        zip
 )
