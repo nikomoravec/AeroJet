@@ -1,3 +1,6 @@
 [submodule "Source/third-party/fmtlib"]
 	path = Source/third-party/fmtlib
 	url = git@github.com:fmtlib/fmt.git
+[submodule "Source/third-party/backwandcpp"]
+	path = Source/third-party/backwandcpp
+	url = git@github.com:bombela/backward-cpp.git
