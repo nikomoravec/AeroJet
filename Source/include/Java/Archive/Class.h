@@ -3,16 +3,19 @@
 
 #include <variant>
 #include <vector>
+#include <optional>
 
 #include "Java/Archive/ConstantPool.h"
 #include "Java/Types.h"
 #include "FieldInfo.h"
 #include "MethodInfo.h"
+#include "fmt/format.h"
 
 namespace SuperJet::Java::Archive
 {
     static constexpr JVM::u4 JAVA_CLASS_MAGIC  = 0xCAFEBABE;
     static constexpr JVM::u2 MAX_JAVA_CLASS_MAJOR_VERSION = 52; // 52 Java 8
+    static constexpr char TOP_SUPER_CLASS[17] = "java/lang/Object";
 
     class Class
     {
@@ -31,7 +34,7 @@ namespace SuperJet::Java::Archive
 
         Class(const JVM::u4 inMagic, const JVM::u2 inMinorVersion, const JVM::u2 inMajorVersion,
               const ConstantPool& inConstantPool, const JVM::u2 inAccessFlags, const JVM::u2 inThisClass,
-              const JVM::u2 inSuperClass, const std::vector<JVM::u2>& inInterfaces, const std::vector<FieldInfo>& inFields,
+              const std::optional<JVM::u2> inSuperClass, const std::vector<JVM::u2>& inInterfaces, const std::vector<FieldInfo>& inFields,
               const std::vector<MethodInfo>& inMethods, const std::vector<AttributeInfo>& inAttributes)
               : magic(inMagic), minorVersion(inMinorVersion), majorVersion(inMajorVersion), constantPool(inConstantPool),
               accessFlags(inAccessFlags), thisClass(inThisClass), superClass(inSuperClass),
@@ -69,9 +72,21 @@ namespace SuperJet::Java::Archive
             return thisClass;
         }
 
+        bool isSuperClassPresented() const
+        {
+            return superClass.has_value();
+        }
+
         JVM::u2 getSuperClass() const
         {
-            return superClass;
+            if (!isSuperClassPresented())
+            {
+                std::shared_ptr<ConstantPoolInfoClass> thisClassEntry = constantPool.get<ConstantPoolInfoClass>(thisClass);
+                const JVM::u2 thisClassNameIndex = thisClassEntry->getNameIndex();
+                throw std::runtime_error(fmt::format("Super Class not presented in \"{}\"", constantPool.get<ConstantPoolInfoUtf8>(thisClassNameIndex)->asString()));
+            }
+
+            return superClass.value();
         }
 
         const std::vector<JVM::u2>& getInterfaces() const
@@ -101,7 +116,7 @@ namespace SuperJet::Java::Archive
         ConstantPool constantPool;
         JVM::u2 accessFlags;
         JVM::u2 thisClass;
-        JVM::u2 superClass;
+        std::optional<JVM::u2> superClass;
         std::vector<JVM::u2> interfaces;
         std::vector<FieldInfo> fields;
         std::vector<MethodInfo> methods;

@@ -410,7 +410,7 @@ namespace SuperJet::Java::Archive
 
         Class clazz {readMagic, readMinorVersion, readMajorVersion,
                      constantPool, readAccessFlags, readThisClass,
-                     readSuperClass, interfaces, fields, methods,
+                     readSuperClass == 0 ? std::nullopt : std::optional<JVM::u2>(readSuperClass), interfaces, fields, methods,
                      attributes};
 
         return clazz;
