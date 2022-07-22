@@ -5,7 +5,7 @@
 #include "Compiler/CodeGen/Node.h"
 #include "Compiler/CodeGen/Cpp/Namespace.h"
 #include "Compiler/CodeGen/Cpp/Variable.h"
-#include "Java/Archive/ClassInfo.h"
+#include "Compiler/CodeGen/Cpp/Template.h"
 #include "fmt/format.h"
 #include <string>
 #include <optional>
@@ -17,8 +17,13 @@ namespace SuperJet::Compiler::CodeGen::Cpp
         friend void SuperJet::Compiler::CodeGen::Cpp::Namespace::addClass(std::shared_ptr<SuperJet::Compiler::CodeGen::Cpp::Class>);
 
     public:
-        Class(const std::string& className) : name(className)
+        Class(const std::string& className) : name(className), templade(nullptr)
         {
+        }
+
+        bool hasTemplate() const
+        {
+            return templade != nullptr;
         }
 
         bool hasNamespace() const
@@ -51,8 +56,24 @@ namespace SuperJet::Compiler::CodeGen::Cpp
             addNode(var);
         }
 
+        void setTemplate(std::shared_ptr<SuperJet::Compiler::CodeGen::Cpp::Template> templ)
+        {
+            templade = templ;
+        }
+
+        std::shared_ptr<SuperJet::Compiler::CodeGen::Cpp::Template> getTemplate()
+        {
+            return templade;
+        }
+
         virtual void dump(std::ostream& outputStream) override
         {
+            if (hasTemplate())
+            {
+                templade->dump(outputStream);
+                outputStream << '\n';
+            }
+
             outputStream << fmt::format("struct {}", getName());
             outputStream << "\n{\n";
             for (const auto& child : childrens)
@@ -64,6 +85,8 @@ namespace SuperJet::Compiler::CodeGen::Cpp
 
     protected:
         std::optional<SuperJet::Compiler::CodeGen::Cpp::Namespace> ns;
+        std::shared_ptr<SuperJet::Compiler::CodeGen::Cpp::Template> templade;
+        
         std::string name;
     };
 }
