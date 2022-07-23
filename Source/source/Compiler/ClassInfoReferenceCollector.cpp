@@ -3,7 +3,6 @@
 #include "Java/Archive/Archive.h"
 #include "spdlog/spdlog.h"
 #include "fmt/format.h"
-#include "Compiler/ClassInfoResolver.h"
 #include "Java/Archive/FieldDescriptor.h"
 #include "Java/Types.h"
 

@@ -17,10 +17,6 @@ add_executable(SuperJet
         Source/source/Java/Archive/MethodDescriptor.cpp
         Source/source/Java/Archive/Attributes/Code.cpp
         Source/source/Java/Archive/Attributes/LineNumberTable.cpp
-        Source/source/Compiler/MethodInfoResolver.cpp
-        Source/source/Compiler/AttributeInfoResolver.cpp
-        Source/source/Compiler/ClassInfoResolver.cpp
-        Source/source/Compiler/FieldInfoResolver.cpp
         Source/source/Java/Archive/Attributes/SourceFile.cpp
         Source/source/Java/Archive/Jar.cpp
         Source/source/Compiler/ClassInfoReferenceCollector.cpp

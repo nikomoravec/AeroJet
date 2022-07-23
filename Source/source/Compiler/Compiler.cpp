@@ -59,40 +59,40 @@ namespace SuperJet::Compiler
 
         for(std::shared_ptr<Java::Archive::ClassInfo> node : dependencyGraph.nodes())
         {
-            std::shared_ptr<SuperJet::Compiler::CodeGen::Cpp::Class> clazz = std::make_shared<SuperJet::Compiler::CodeGen::Cpp::Class>(node);
+            // std::shared_ptr<SuperJet::Compiler::CodeGen::Cpp::Class> clazz = std::make_shared<SuperJet::Compiler::CodeGen::Cpp::Class>(node);
         
-            if (clazz->hasNamespace())
-            {
-                std::shared_ptr<SuperJet::Compiler::CodeGen::Cpp::Namespace> ns = document.addNameSpace(node->getName());
-                ns->addForwardDeclaration(std::make_shared<SuperJet::Compiler::CodeGen::Cpp::ForwardDeclaration>(clazz));
-            }
-            else
-            {
-               document.addForwardDeclaration(std::make_shared<SuperJet::Compiler::CodeGen::Cpp::ForwardDeclaration>(clazz));
-            }
+            // if (clazz->hasNamespace())
+            // {
+            //     std::shared_ptr<SuperJet::Compiler::CodeGen::Cpp::Namespace> ns = document.addNameSpace(node->getName());
+            //     ns->addForwardDeclaration(std::make_shared<SuperJet::Compiler::CodeGen::Cpp::ForwardDeclaration>(clazz));
+            // }
+            // else
+            // {
+            //    document.addForwardDeclaration(std::make_shared<SuperJet::Compiler::CodeGen::Cpp::ForwardDeclaration>(clazz));
+            // }
         }
 
         while (!nodes.empty())
         {
             std::shared_ptr<Java::Archive::ClassInfo> node = nodes.front();
 
-            std::shared_ptr<SuperJet::Compiler::CodeGen::Cpp::Class> clazz = std::make_shared<SuperJet::Compiler::CodeGen::Cpp::Class>(node);
-            spdlog::info(fmt::format("Compiling '{}'", clazz->getFullName()));
+            // std::shared_ptr<SuperJet::Compiler::CodeGen::Cpp::Class> clazz = std::make_shared<SuperJet::Compiler::CodeGen::Cpp::Class>(node);
+            // spdlog::info(fmt::format("Compiling '{}'", clazz->getFullName()));
 
-            if(clazz->hasNamespace())
-            {
-                std::shared_ptr<SuperJet::Compiler::CodeGen::Cpp::Namespace> ns = document.addNameSpace(node->getName());
-                ns->addClass(clazz);
-            }
-            else
-            {
-                document.addClass(clazz);
-            }
+            // if(clazz->hasNamespace())
+            // {
+            //     std::shared_ptr<SuperJet::Compiler::CodeGen::Cpp::Namespace> ns = document.addNameSpace(node->getName());
+            //     ns->addClass(clazz);
+            // }
+            // else
+            // {
+            //     document.addClass(clazz);
+            // }
 
-            for (const SuperJet::Java::Archive::FieldInfo& field : node->getFields())
-            {
+            // for (const SuperJet::Java::Archive::FieldInfo& field : node->getFields())
+            // {
                 
-            }
+            // }
 
 
             nodes.pop();

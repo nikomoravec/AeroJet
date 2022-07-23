@@ -20,12 +20,7 @@
 
 #include "Java/JVM/Runtime/Operations.h"
 
-#include "Compiler/AttributeInfoResolver.h"
-#include "Compiler/ClassInfoResolver.h"
 #include "Compiler/ClassInfoRerenceCollector.h"
-#include "Compiler/FieldInfoResolver.h"
-#include "Compiler/MethodInfoResolver.h"
-#include "Compiler/Resolver.h"
 #include "Compiler/Compiler.h"
 #include "Compiler/Environment.h"
 #include "Compiler/SourceDependencyGraph.h"
