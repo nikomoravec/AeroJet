@@ -1,9 +1,10 @@
-#ifndef SUPERJET_NAMESPACE_H
-#define SUPERJET_NAMESPACE_H
+#ifndef SUPERJET_CODEGEN_NAMESPACE_H
+#define SUPERJET_CODEGEN_NAMESPACE_H
 
 #include "Compiler/Compiler.h"
 #include "Compiler/Exceptions/RuntimeException.h"
 #include "Compiler/CodeGen/Node.h"
+#include "Utils/StringUtils.h"
 
 #include <string>
 #include <vector>
@@ -19,23 +20,30 @@ namespace SuperJet::Compiler::CodeGen::Cpp
     class Namespace : public Compiler::CodeGen::Node
     {
     public:
-        static constexpr auto JAVA_PACKAGE_DELIMITER = '/';
+        static constexpr char JAVA_PACKAGE_DELIMITER = '/';
         static constexpr auto CPP_NAMESPACE_DELIMITER = "::";
 
-        Namespace(const std::filesystem::path& package)
-        {   
-            for (auto it = package.begin(); it != package.end(); ++it)
-            {
-                parts.push((*it).string());
-            }
-
-            if (parts.empty())
+        Namespace (const std::filesystem::path& package, bool packageContainsClassName = true)
+        {
+            std::vector<std::string> split = SuperJet::Utils::StringUtils::split(package.string(), JAVA_PACKAGE_DELIMITER);
+            if (split.size() < 1)
             {
                 throw SuperJet::Compiler::RuntimeException("Namespace can not be empty!");
             }
+
+            if (packageContainsClassName == true)
+            {
+                parts = std::vector<std::string>(split.begin(), split.end() - 1);
+            }
+            else
+            {
+                parts = std::vector<std::string>(split.begin(), split.end());
+            }
+            
+            return;
         }
 
-        std::queue<std::string> getParts() const
+        std::vector<std::string> getParts() const
         {
             return parts;
         }
@@ -46,22 +54,12 @@ namespace SuperJet::Compiler::CodeGen::Cpp
 
         std::string asString() const
         {
-            std::queue<std::string> p = getParts();
-
             std::stringstream ss;
 
-            ss << p.front();
-            p.pop();
-
-            if (p.empty())
+            ss << parts[0];
+            for (int32_t index = 1; index < parts.size(); index++)
             {
-                return ss.str();
-            }
-
-            while(!p.empty())
-            {
-                ss << CPP_NAMESPACE_DELIMITER << p.front();
-                p.pop();
+                ss << CPP_NAMESPACE_DELIMITER << parts[index];
             }
 
             return ss.str();
@@ -82,8 +80,8 @@ namespace SuperJet::Compiler::CodeGen::Cpp
         }
 
     protected:
-        std::queue<std::string> parts;
+        std::vector<std::string> parts;
     };
 }
 
-#endif //SUPERJET_NAMESPACE_H
+#endif //SUPERJET_CODEGEN_NAMESPACE_H
