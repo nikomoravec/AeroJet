@@ -36,6 +36,9 @@ namespace SuperJet::Java::Archive
         std::optional<FieldDescriptor> getUnderlyingType() const;
         std::optional<std::string> getClassName() const;
         FieldType getFieldType() const;
+        bool isPrimitive() const;
+        bool isClass() const;
+        bool isArray() const;
         
     protected:
         FieldType resolve();

@@ -31,6 +31,26 @@ namespace SuperJet::Java::Archive
 
         return std::nullopt;
     }
+
+    FieldDescriptor::FieldType FieldDescriptor::getFieldType() const
+    {
+        return type;
+    }
+
+    bool FieldDescriptor::isPrimitive() const
+    {
+        return type != FieldType::CLASS && type != FieldType::ARRAY;
+    }
+
+    bool FieldDescriptor::isClass() const
+    {
+        return type == FieldType::CLASS;
+    }
+
+    bool FieldDescriptor::isArray() const
+    {
+        return type == FieldType::ARRAY;
+    }
     
     FieldDescriptor::FieldType FieldDescriptor::resolve()
     {
