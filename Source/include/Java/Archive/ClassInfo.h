@@ -11,6 +11,8 @@
 #include "MethodInfo.h"
 #include "fmt/format.h"
 
+#include "Utils/StringUtils.h"
+
 namespace SuperJet::Java::Archive
 {
     static constexpr JVM::u4 JAVA_CLASS_MAGIC  = 0xCAFEBABE;
@@ -115,6 +117,22 @@ namespace SuperJet::Java::Archive
             return constantPool.get<Java::Archive::ConstantPoolInfoUtf8>(nameIndex)->asString();
         }
 
+        bool isUnderPackage() const
+        {
+            return getName().find('/') != std::string::npos;
+        }
+
+        std::string getClassName() const
+        {
+            if (isUnderPackage())
+            {
+                std::vector<std::string> split = SuperJet::Utils::StringUtils::split(getName(), '/');
+                return split[split.size() - 1];
+            }
+
+            return getName();
+        }
+
     protected:
         JVM::u4 magic;
         JVM::u2 minorVersion;
@@ -128,18 +146,6 @@ namespace SuperJet::Java::Archive
         std::vector<MethodInfo> methods;
         std::vector<AttributeInfo> attributes;
     };
-
-    inline ClassInfo::AccessFlags operator| (ClassInfo::AccessFlags lhs, ClassInfo::AccessFlags rhs)
-    {
-        using T = std::underlying_type_t <ClassInfo::AccessFlags>;
-        return static_cast<ClassInfo::AccessFlags>(static_cast<T>(lhs) | static_cast<T>(rhs));
-    }
-
-    inline bool operator^ (ClassInfo::AccessFlags lhs, ClassInfo::AccessFlags rhs)
-    {
-        using T = std::underlying_type_t <ClassInfo::AccessFlags>;
-        return (static_cast<T>(lhs) & static_cast<T>(rhs)) == static_cast<T>(rhs);
-    }
 }
 
 namespace std
