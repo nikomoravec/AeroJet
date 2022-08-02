@@ -85,6 +85,11 @@ namespace SuperJet::Compiler::CodeGen::Cpp
             return static_cast<uint8_t>(flags) & static_cast<uint8_t>(Flags::NONE) && !isStatic() && !isConst() && !isPointer() && !isConstPointer() && !isReference();
         }
 
+        void addTemplateArgument(std::shared_ptr<Type> type)
+        {
+            templateArgumetnts.emplace_back(type);
+        }
+
         void dump(std::ostream& outputStream)
         {
             if (isStatic())
@@ -98,6 +103,19 @@ namespace SuperJet::Compiler::CodeGen::Cpp
             }
 
             outputStream << getName();
+            if (!templateArgumetnts.empty())
+            {
+                outputStream << '<';
+                for(int32_t TypeIndex = 0; TypeIndex < templateArgumetnts.size(); TypeIndex++)
+                {
+                    templateArgumetnts[TypeIndex]->dump(outputStream);
+                    if (TypeIndex < templateArgumetnts.size() - 1)
+                    {
+                        outputStream << ',';
+                    }
+                }
+                outputStream << '>';
+            }
 
             if (isPointer())
             {
@@ -118,6 +136,7 @@ namespace SuperJet::Compiler::CodeGen::Cpp
     protected:
         std::string name;
         Flags flags;
+        std::vector<std::shared_ptr<Type>> templateArgumetnts;
     };
 
     inline Type::Flags operator| (Type::Flags lhs, Type::Flags rhs)
