@@ -189,10 +189,6 @@ namespace SuperJet::Compiler
                         break;
                     }
                     
-                    if (fieldType->isStatic())
-                    {
-                        
-                    }
                     std::shared_ptr<SuperJet::Compiler::CodeGen::Cpp::Variable> memberVariable = std::make_shared<SuperJet::Compiler::CodeGen::Cpp::Variable>(fieldType, fieldName);
                     clazz->addVariable(memberVariable);
                 }
