@@ -79,6 +79,7 @@ namespace SuperJet::Compiler::CodeGen::Cpp
             for (const auto& child : childrens)
             {
                 child->dump(outputStream);
+                outputStream << "\n";
             }
             outputStream << "\n};";
         }

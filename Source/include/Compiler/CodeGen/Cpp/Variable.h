@@ -40,7 +40,7 @@ namespace SuperJet::Compiler::CodeGen::Cpp
 
             if (value != nullptr)
             {
-                outputStream << fmt::format(" = ");
+                outputStream << " = ";
                 value->dump(outputStream);
             }
 

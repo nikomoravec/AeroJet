@@ -19,13 +19,13 @@ namespace SuperJet::Compiler::CodeGen
             }
         }
 
-    protected:
-        Node() = default;
-
         void addNode(std::shared_ptr<SuperJet::Compiler::CodeGen::Node> node)
         {
             childrens.emplace_back(node);
         }
+
+    protected:
+        Node() = default;
 
     protected:
         std::vector<std::shared_ptr<SuperJet::Compiler::CodeGen::Node>> childrens;
