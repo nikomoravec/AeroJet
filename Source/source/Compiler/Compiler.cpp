@@ -4,6 +4,8 @@
 #include "Compiler/CodeGen/Cpp/Class.h"
 #include "Compiler/CodeGen/Cpp/Document.h"
 #include "Compiler/CodeGen/Cpp/ForwardDeclaration.h"
+#include "Compiler/CodeGen/Cpp/Function.h"
+#include "Compiler/CodeGen/Cpp/Variable.h"
 #include "Java/Archive/FieldDescriptor.h"
 #include "spdlog/spdlog.h"
 #include "fmt/format.h"
@@ -140,6 +142,9 @@ namespace SuperJet::Compiler
                 );
             }
 
+            std::vector<std::shared_ptr<SuperJet::Compiler::CodeGen::Cpp::Variable>> staticVariables;
+            std::vector<std::shared_ptr<SuperJet::Compiler::CodeGen::Cpp::Variable>> nonStaticVariables;
+
             const std::vector<Java::Archive::FieldInfo>& fields = node->getFields();
             for (const Java::Archive::FieldInfo& field : fields)
             {
@@ -154,6 +159,10 @@ namespace SuperJet::Compiler
 
                 if (field.isStatic())
                 {
+                    if (fieldName == "MIN_RADIX")
+                    {
+                        std::cout << constantPool.get<Java::Archive::ConstantPoolInfoUtf8>(112)->asString() << std::endl;
+                    }
                     fieldTypeFlags = fieldTypeFlags | SuperJet::Compiler::CodeGen::Cpp::Type::Flags::STATIC;
                 }
 
@@ -190,6 +199,15 @@ namespace SuperJet::Compiler
                     }
                     
                     std::shared_ptr<SuperJet::Compiler::CodeGen::Cpp::Variable> memberVariable = std::make_shared<SuperJet::Compiler::CodeGen::Cpp::Variable>(fieldType, fieldName);
+                    if (fieldType->isStatic())
+                    {
+                        staticVariables.emplace_back(memberVariable);
+                    }
+                    else
+                    {
+                        nonStaticVariables.emplace_back(memberVariable);
+                    }
+
                     clazz->addVariable(memberVariable);
                 }
                 else
@@ -206,7 +224,7 @@ namespace SuperJet::Compiler
                     }
                     if (fieldDescriptor.isArray())
                     {
-                        std::shared_ptr<SuperJet::Compiler::CodeGen::Cpp::Type> arrayRootType = std::make_shared<SuperJet::Compiler::CodeGen::Cpp::Type>("jvm::array", SuperJet::Compiler::CodeGen::Cpp::Type::Flags::POINTER);;
+                        std::shared_ptr<SuperJet::Compiler::CodeGen::Cpp::Type> arrayRootType = std::make_shared<SuperJet::Compiler::CodeGen::Cpp::Type>("jvm::array", fieldTypeFlags);;
                         std::shared_ptr<SuperJet::Compiler::CodeGen::Cpp::Type> currentType = arrayRootType;
                         Java::Archive::FieldDescriptor fd = fieldDescriptor;
                         while (fd.getUnderlyingType().has_value())
@@ -263,10 +281,33 @@ namespace SuperJet::Compiler
                             fd = fd.getUnderlyingType().value();
                         }
 
-                        clazz->addVariable(std::make_shared<SuperJet::Compiler::CodeGen::Cpp::Variable>(arrayRootType, fieldName));
+                        std::shared_ptr<SuperJet::Compiler::CodeGen::Cpp::Variable> memberVariable = std::make_shared<SuperJet::Compiler::CodeGen::Cpp::Variable>(arrayRootType, fieldName);
+                        clazz->addVariable(memberVariable);
+                        if (arrayRootType->isStatic())
+                        {
+                            staticVariables.emplace_back(memberVariable);
+                        }
+                        else
+                        {
+                            nonStaticVariables.emplace_back(memberVariable);
+                        }
                     }
                 }
-            }            
+            }
+
+            std::shared_ptr<SuperJet::Compiler::CodeGen::Cpp::Functuon> staticInitializerFunction = 
+            std::make_shared<SuperJet::Compiler::CodeGen::Cpp::Functuon>(
+                "STATIC_INIT", 
+                std::vector<std::shared_ptr<SuperJet::Compiler::CodeGen::Cpp::FunctionArgument>>(), 
+                std::make_shared<SuperJet::Compiler::CodeGen::Cpp::Type>("void", SuperJet::Compiler::CodeGen::Cpp::Type::Flags::STATIC)
+            );
+            
+            for (const std::shared_ptr<SuperJet::Compiler::CodeGen::Cpp::Variable>& staticVariable : staticVariables)
+            {
+                //staticInitializerFunction->addNode()
+            }
+
+            clazz->addNode(staticInitializerFunction);
 
             nodes.pop();
         }
