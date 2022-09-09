@@ -4,7 +4,9 @@
 #include "Compiler/Environment.h"
 #include "Compiler/Context.h"
 #include "Compiler/SourceDependencyGraph.h"
+#include "Compiler/CodeGen/Cpp/Type.h"
 #include "Java/Archive/Archive.h"
+#include "Java/Archive/FieldDescriptor.h"
 
 #include <string>
 #include <filesystem>
@@ -25,6 +27,9 @@ namespace SuperJet
         public:
             ByteCodeCompiler(const Environment& env);
             void run();
+
+        protected:
+            std::shared_ptr<SuperJet::Compiler::CodeGen::Cpp::Type> javaPrimitiveToCppType(const Java::Archive::FieldDescriptor& fieldDescriptor, SuperJet::Compiler::CodeGen::Cpp::Type::Flags flags = SuperJet::Compiler::CodeGen::Cpp::Type::Flags::NONE);
 
         protected:
             Context context;

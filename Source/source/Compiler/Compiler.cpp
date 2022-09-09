@@ -159,56 +159,13 @@ namespace SuperJet::Compiler
 
                 if (field.isStatic())
                 {
-                    if (fieldName == "MIN_RADIX")
-                    {
-                        std::cout << constantPool.get<Java::Archive::ConstantPoolInfoUtf8>(112)->asString() << std::endl;
-                    }
                     fieldTypeFlags = fieldTypeFlags | SuperJet::Compiler::CodeGen::Cpp::Type::Flags::STATIC;
                 }
 
+                std::shared_ptr<SuperJet::Compiler::CodeGen::Cpp::Variable> memberVariable = nullptr;
                 if (fieldDescriptor.isPrimitive())
                 {
-                    switch (fieldDescriptor.getFieldType())
-                    {
-                    case Java::Archive::FieldDescriptor::FieldType::BYTE:
-                        fieldType = std::make_shared<SuperJet::Compiler::CodeGen::Cpp::Type>("char", fieldTypeFlags);
-                        break;
-                    case Java::Archive::FieldDescriptor::FieldType::CHAR:
-                        fieldType = std::make_shared<SuperJet::Compiler::CodeGen::Cpp::Type>("wchar_t", fieldTypeFlags);
-                        break;
-                    case Java::Archive::FieldDescriptor::FieldType::DOUBLE:
-                        fieldType = std::make_shared<SuperJet::Compiler::CodeGen::Cpp::Type>("double", fieldTypeFlags);
-                        break;
-                    case Java::Archive::FieldDescriptor::FieldType::FLOAT:
-                        fieldType = std::make_shared<SuperJet::Compiler::CodeGen::Cpp::Type>("float", fieldTypeFlags);
-                        break;
-                    case Java::Archive::FieldDescriptor::FieldType::INTEGER:
-                        fieldType = std::make_shared<SuperJet::Compiler::CodeGen::Cpp::Type>("int", fieldTypeFlags);
-                        break;
-                    case Java::Archive::FieldDescriptor::FieldType::LONG:
-                        fieldType = std::make_shared<SuperJet::Compiler::CodeGen::Cpp::Type>("long long", fieldTypeFlags);
-                        break;
-                    case Java::Archive::FieldDescriptor::FieldType::SHORT:
-                        fieldType = std::make_shared<SuperJet::Compiler::CodeGen::Cpp::Type>("short", fieldTypeFlags);
-                        break;
-                    case Java::Archive::FieldDescriptor::FieldType::BOOLEAN:
-                        fieldType = std::make_shared<SuperJet::Compiler::CodeGen::Cpp::Type>("bool", fieldTypeFlags);
-                        break;
-                    default:
-                        break;
-                    }
-                    
-                    std::shared_ptr<SuperJet::Compiler::CodeGen::Cpp::Variable> memberVariable = std::make_shared<SuperJet::Compiler::CodeGen::Cpp::Variable>(fieldType, fieldName);
-                    if (fieldType->isStatic())
-                    {
-                        staticVariables.emplace_back(memberVariable);
-                    }
-                    else
-                    {
-                        nonStaticVariables.emplace_back(memberVariable);
-                    }
-
-                    clazz->addVariable(memberVariable);
+                    fieldType = javaPrimitiveToCppType(fieldDescriptor);
                 }
                 else
                 {
@@ -221,77 +178,54 @@ namespace SuperJet::Compiler
                         std::shared_ptr<SuperJet::Compiler::CodeGen::Cpp::Class> memberClass = std::make_shared<SuperJet::Compiler::CodeGen::Cpp::Class>(SuperJet::Utils::StringUtils::split(className, '/').back());
                         ns->addClass(memberClass);
                         fieldType = std::make_shared<SuperJet::Compiler::CodeGen::Cpp::Type>(memberClass->getFullName(), fieldTypeFlags);
+                        memberVariable = std::make_shared<SuperJet::Compiler::CodeGen::Cpp::Variable>(fieldType, className);
                     }
                     if (fieldDescriptor.isArray())
                     {
-                        std::shared_ptr<SuperJet::Compiler::CodeGen::Cpp::Type> arrayRootType = std::make_shared<SuperJet::Compiler::CodeGen::Cpp::Type>("jvm::array", fieldTypeFlags);;
-                        std::shared_ptr<SuperJet::Compiler::CodeGen::Cpp::Type> currentType = arrayRootType;
+                        fieldType = std::make_shared<SuperJet::Compiler::CodeGen::Cpp::Type>("jvm::array", fieldTypeFlags);;
+                        std::shared_ptr<SuperJet::Compiler::CodeGen::Cpp::Type> currentType = fieldType;
                         Java::Archive::FieldDescriptor fd = fieldDescriptor;
                         while (fd.getUnderlyingType().has_value())
                         {
                             Java::Archive::FieldDescriptor underlyingTypeDescriptor = fd.getUnderlyingType().value();
-
-                            SuperJet::Compiler::CodeGen::Cpp::Type::Flags underlyingTypeFlags = underlyingTypeDescriptor.isPrimitive() ? SuperJet::Compiler::CodeGen::Cpp::Type::Flags::NONE : SuperJet::Compiler::CodeGen::Cpp::Type::Flags::POINTER;
                             std::shared_ptr<SuperJet::Compiler::CodeGen::Cpp::Type> underlyingType = nullptr;
-                            switch (underlyingTypeDescriptor.getFieldType())
+                            SuperJet::Compiler::CodeGen::Cpp::Type::Flags underlyingTypeFlags = underlyingTypeDescriptor.isPrimitive() ? SuperJet::Compiler::CodeGen::Cpp::Type::Flags::NONE : SuperJet::Compiler::CodeGen::Cpp::Type::Flags::POINTER;
+
+                            if (underlyingTypeDescriptor.isPrimitive())
                             {
-                            case Java::Archive::FieldDescriptor::FieldType::BYTE:
-                                underlyingType = std::make_shared<SuperJet::Compiler::CodeGen::Cpp::Type>("char", underlyingTypeFlags);
-                                break;
-                            case Java::Archive::FieldDescriptor::FieldType::CHAR:
-                                underlyingType = std::make_shared<SuperJet::Compiler::CodeGen::Cpp::Type>("wchar_t", underlyingTypeFlags);
-                                break;
-                            case Java::Archive::FieldDescriptor::FieldType::DOUBLE:
-                                underlyingType = std::make_shared<SuperJet::Compiler::CodeGen::Cpp::Type>("double", underlyingTypeFlags);
-                                break;
-                            case Java::Archive::FieldDescriptor::FieldType::FLOAT:
-                                underlyingType = std::make_shared<SuperJet::Compiler::CodeGen::Cpp::Type>("float", underlyingTypeFlags);
-                                break;
-                            case Java::Archive::FieldDescriptor::FieldType::INTEGER:
-                                underlyingType = std::make_shared<SuperJet::Compiler::CodeGen::Cpp::Type>("int", underlyingTypeFlags);
-                                break;
-                            case Java::Archive::FieldDescriptor::FieldType::LONG:
-                                underlyingType = std::make_shared<SuperJet::Compiler::CodeGen::Cpp::Type>("long long", underlyingTypeFlags);
-                                break;
-                            case Java::Archive::FieldDescriptor::FieldType::SHORT:
-                                underlyingType = std::make_shared<SuperJet::Compiler::CodeGen::Cpp::Type>("short", underlyingTypeFlags);
-                                break;
-                            case Java::Archive::FieldDescriptor::FieldType::BOOLEAN:
-                                underlyingType = std::make_shared<SuperJet::Compiler::CodeGen::Cpp::Type>("bool", underlyingTypeFlags);
-                                break;
-                            case Java::Archive::FieldDescriptor::FieldType::CLASS:
+                                underlyingType = javaPrimitiveToCppType(underlyingTypeDescriptor);
+                            }
+                            else if (underlyingTypeDescriptor.isClass())
                             {
                                 std::string className = underlyingTypeDescriptor.getClassName().value();
                                 std::shared_ptr<SuperJet::Compiler::CodeGen::Cpp::Namespace> ns = std::make_shared<SuperJet::Compiler::CodeGen::Cpp::Namespace>(className);
                                 std::shared_ptr<SuperJet::Compiler::CodeGen::Cpp::Class> c = std::make_shared<SuperJet::Compiler::CodeGen::Cpp::Class>(SuperJet::Utils::StringUtils::split(className, '/').back());
                                 ns->addClass(c);
                                 underlyingType = std::make_shared<SuperJet::Compiler::CodeGen::Cpp::Type>(c->getFullName(), underlyingTypeFlags);
-                                break;
                             }
-                            case Java::Archive::FieldDescriptor::FieldType::ARRAY:
+                            else if (underlyingTypeDescriptor.isArray())
+                            {
                                 underlyingType = std::make_shared<SuperJet::Compiler::CodeGen::Cpp::Type>("jvm::array", underlyingTypeFlags);
-                                break;
-                            default:
-                                break;
                             }
 
                             currentType->addTemplateArgument(underlyingType);
                             currentType = underlyingType;
 
                             fd = fd.getUnderlyingType().value();
-                        }
-
-                        std::shared_ptr<SuperJet::Compiler::CodeGen::Cpp::Variable> memberVariable = std::make_shared<SuperJet::Compiler::CodeGen::Cpp::Variable>(arrayRootType, fieldName);
-                        clazz->addVariable(memberVariable);
-                        if (arrayRootType->isStatic())
-                        {
-                            staticVariables.emplace_back(memberVariable);
-                        }
-                        else
-                        {
-                            nonStaticVariables.emplace_back(memberVariable);
-                        }
+                        }                        
                     }
+                }
+
+                memberVariable = std::make_shared<SuperJet::Compiler::CodeGen::Cpp::Variable>(fieldType, fieldName);
+                clazz->addVariable(memberVariable);
+
+                if (fieldType->isStatic())
+                {
+                    staticVariables.emplace_back(memberVariable);
+                }
+                else
+                {
+                    nonStaticVariables.emplace_back(memberVariable);
                 }
             }
 
@@ -301,11 +235,6 @@ namespace SuperJet::Compiler
                 std::vector<std::shared_ptr<SuperJet::Compiler::CodeGen::Cpp::FunctionArgument>>(), 
                 std::make_shared<SuperJet::Compiler::CodeGen::Cpp::Type>("void", SuperJet::Compiler::CodeGen::Cpp::Type::Flags::STATIC)
             );
-            
-            for (const std::shared_ptr<SuperJet::Compiler::CodeGen::Cpp::Variable>& staticVariable : staticVariables)
-            {
-                //staticInitializerFunction->addNode()
-            }
 
             clazz->addNode(staticInitializerFunction);
 
@@ -322,5 +251,45 @@ namespace SuperJet::Compiler
     {
         ClassInfoReferenceCollector collector = ClassInfoReferenceCollector(context);
         dependencyGraph = collector.collect(context.getMainClass());
+    }
+
+    std::shared_ptr<SuperJet::Compiler::CodeGen::Cpp::Type> ByteCodeCompiler::javaPrimitiveToCppType(const Java::Archive::FieldDescriptor& fieldDescriptor, SuperJet::Compiler::CodeGen::Cpp::Type::Flags flags)
+    {
+        std::shared_ptr<SuperJet::Compiler::CodeGen::Cpp::Type> type = nullptr;
+
+        switch (fieldDescriptor.getFieldType())
+        {
+        case Java::Archive::FieldDescriptor::FieldType::BYTE:
+            type = std::make_shared<SuperJet::Compiler::CodeGen::Cpp::Type>("char", flags);
+            break;
+        case Java::Archive::FieldDescriptor::FieldType::CHAR:
+            type = std::make_shared<SuperJet::Compiler::CodeGen::Cpp::Type>("wchar_t", flags);
+            break;
+        case Java::Archive::FieldDescriptor::FieldType::DOUBLE:
+            type = std::make_shared<SuperJet::Compiler::CodeGen::Cpp::Type>("double", flags);
+            break;
+        case Java::Archive::FieldDescriptor::FieldType::FLOAT:
+            type = std::make_shared<SuperJet::Compiler::CodeGen::Cpp::Type>("float", flags);
+            break;
+        case Java::Archive::FieldDescriptor::FieldType::INTEGER:
+            type = std::make_shared<SuperJet::Compiler::CodeGen::Cpp::Type>("int", flags);
+            break;
+        case Java::Archive::FieldDescriptor::FieldType::LONG:
+            type = std::make_shared<SuperJet::Compiler::CodeGen::Cpp::Type>("long long", flags);
+            break;
+        case Java::Archive::FieldDescriptor::FieldType::SHORT:
+            type = std::make_shared<SuperJet::Compiler::CodeGen::Cpp::Type>("short", flags);
+            break;
+        case Java::Archive::FieldDescriptor::FieldType::BOOLEAN:
+            type = std::make_shared<SuperJet::Compiler::CodeGen::Cpp::Type>("bool", flags);
+            break;
+        case Java::Archive::FieldDescriptor::FieldType::CLASS:
+        case Java::Archive::FieldDescriptor::FieldType::ARRAY:
+        default:
+            throw Compiler::RuntimeException(fmt::format("fieldDescriptor contains not primitive type '{}'!", fieldDescriptor.getRawLiteral()));
+
+        }
+
+        return type;
     }
 }
