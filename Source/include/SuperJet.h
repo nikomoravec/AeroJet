@@ -39,7 +39,8 @@
 #include "Compiler/CodeGen/Cpp/Namespace.h"
 #include "Compiler/CodeGen/Cpp/Template.h"
 #include "Compiler/CodeGen/Cpp/Type.h"
-#include "Compiler/CodeGen/Cpp/Value.h"
+#include "Compiler/CodeGen/Cpp/NullPtr.h"
+#include "Compiler/CodeGen/Cpp/Number.h"
 #include "Compiler/CodeGen/Cpp/Variable.h"
 
 #endif //SUPERJET_JAVA_H
