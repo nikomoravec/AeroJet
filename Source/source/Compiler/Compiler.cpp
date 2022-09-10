@@ -6,7 +6,10 @@
 #include "Compiler/CodeGen/Cpp/ForwardDeclaration.h"
 #include "Compiler/CodeGen/Cpp/Function.h"
 #include "Compiler/CodeGen/Cpp/Variable.h"
+#include "Compiler/CodeGen/Cpp/NullPtr.h"
+#include "Compiler/CodeGen/Cpp/Number.h"
 #include "Java/Archive/FieldDescriptor.h"
+#include "Java/Archive/Attributes/ConstantValue.h"
 #include "spdlog/spdlog.h"
 #include "fmt/format.h"
 #include "Java/Archive/Archive.h"
@@ -97,7 +100,7 @@ namespace SuperJet::Compiler
         arrayClass->addVariable(
             std::make_shared<SuperJet::Compiler::CodeGen::Cpp::Variable>(
                 std::make_shared<SuperJet::Compiler::CodeGen::Cpp::Type>("int"), "length",
-                std::make_shared<SuperJet::Compiler::CodeGen::Cpp::NumericValue>(0)
+                std::make_shared<SuperJet::Compiler::CodeGen::Cpp::Number>(0)
             )
         );
 
@@ -137,7 +140,7 @@ namespace SuperJet::Compiler
                     std::make_shared<SuperJet::Compiler::CodeGen::Cpp::Variable>(
                         superClassType, 
                         "super", 
-                        std::make_shared<SuperJet::Compiler::CodeGen::Cpp::NullValue>()
+                        std::make_shared<SuperJet::Compiler::CodeGen::Cpp::NullPtr>()
                     )
                 );
             }

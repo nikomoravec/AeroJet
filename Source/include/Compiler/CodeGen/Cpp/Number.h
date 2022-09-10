@@ -1,5 +1,5 @@
-#ifndef SUPERJET_VALUE_TYPE_H
-#define SUPERJET_VALUE_TYPE_H
+#ifndef SUPERJET_CODEGEN_NUMBER_H
+#define SUPERJET_CODEGEN_NUMBER_H
 
 #include "Compiler/CodeGen/Node.h"
 #include "fmt/format.h"
@@ -8,36 +8,30 @@
 
 namespace SuperJet::Compiler::CodeGen::Cpp
 {
-    class Value : public SuperJet::Compiler::CodeGen::Node
-    {
-    protected:
-        Value() = default;
-    };
-
-    class NumericValue : public Value
+    class Number : public SuperJet::Compiler::CodeGen::Node
     {
     public:
-        NumericValue(int8_t val) : value({val})
+        Number(int8_t val) : value({val})
         {
         }
 
-        NumericValue(int16_t val) : value({val})
+        Number(int16_t val) : value({val})
         {
         }
 
-        NumericValue(int32_t val) : value({val})
+        Number(int32_t val) : value({val})
         {
         }
 
-        NumericValue(int64_t val) : value({val})
+        Number(int64_t val) : value({val})
         {
         }
 
-        NumericValue(float val) : value({val})
+        Number(float val) : value({val})
         {
         }
 
-        NumericValue(double val) : value({val})
+        Number(double val) : value({val})
         {
         }
 
@@ -69,15 +63,6 @@ namespace SuperJet::Compiler::CodeGen::Cpp
     protected:
         std::variant<int8_t, int16_t, int32_t, int64_t, float, double> value;
     };
-
-    class NullValue : public Value
-    {
-    public:
-        virtual void dump(std::ostream& outputStream) override
-        {
-            outputStream << "nullptr";
-        }
-    };
 }
 
-#endif // SUPERJET_VALUE_TYPE_H
+#endif // SUPERJET_CODEGEN_NUMBER_H

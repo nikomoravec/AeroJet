@@ -3,7 +3,6 @@
 
 #include "Compiler/CodeGen/Node.h"
 #include "Compiler/CodeGen/Cpp/Type.h"
-#include "Compiler/CodeGen/Cpp/Value.h"
 #include "Compiler/Exceptions/RuntimeException.h"
 
 #include "fmt/format.h"
@@ -15,7 +14,7 @@ namespace SuperJet::Compiler::CodeGen::Cpp
     class Variable : public SuperJet::Compiler::CodeGen::Node
     {
     public:
-        Variable(std::shared_ptr<SuperJet::Compiler::CodeGen::Cpp::Type> inType, const std::string& inName, std::shared_ptr<SuperJet::Compiler::CodeGen::Cpp::Value> inValue = nullptr) : type(inType), name(inName), value(inValue)
+        Variable(std::shared_ptr<SuperJet::Compiler::CodeGen::Cpp::Type> inType, const std::string& inName, std::shared_ptr<SuperJet::Compiler::CodeGen::Node> inValue = nullptr) : type(inType), name(inName), value(inValue)
         {
             if ((type->isReference() || type->isConst() || type->isConstPointer()) && value == nullptr)
             {
@@ -52,7 +51,7 @@ namespace SuperJet::Compiler::CodeGen::Cpp
     protected:
         std::shared_ptr<SuperJet::Compiler::CodeGen::Cpp::Type> type;
         std::string name;
-        std::shared_ptr<SuperJet::Compiler::CodeGen::Cpp::Value> value;
+        std::shared_ptr<SuperJet::Compiler::CodeGen::Node> value;
     };
 }
 
