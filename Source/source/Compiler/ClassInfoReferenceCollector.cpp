@@ -74,6 +74,20 @@ namespace SuperJet::Compiler
 
                 graph.add(rootClass, dependencyClassInfo, Type::Traits::isBaseOf(context, dependencyClassInfo, rootClass) ? ConnectionType::HARD : ConnectionType::SOFT);
             }
+
+            if (constantPoolEntry->getTag() == Java::Archive::ConstantPoolInfoTag::NAME_AND_TYPE)
+            {
+                std::shared_ptr<Java::Archive::ConstantPoolInfoNameAndType> constantPoolClassEntry = std::static_pointer_cast<Java::Archive::ConstantPoolInfoNameAndType>(constantPoolEntry);
+                Java::JVM::u2 descriptorIndex = constantPoolClassEntry->getDescriptorIndex();
+                const std::string& rawDescriptor = constantPool.get<Java::Archive::ConstantPoolInfoUtf8>(descriptorIndex)->asString();
+                if (rawDescriptor.starts_with(static_cast<char>(Java::Archive::FieldDescriptor::FieldType::CLASS)))
+                {
+                    Java::Archive::FieldDescriptor fieldDescriptor = Java::Archive::FieldDescriptor(rawDescriptor);
+
+                    std::shared_ptr<Java::Archive::ClassInfo> dependencyClassInfo = Compiler::loadClass(context, *fieldDescriptor.getClassName());
+                    graph.add(rootClass, dependencyClassInfo, ConnectionType::HARD);
+                }
+            }
         }
 
         visited.emplace(rootClass);
