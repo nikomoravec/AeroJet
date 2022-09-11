@@ -137,6 +137,37 @@ namespace SuperJet::Java::Archive
             return bytes;
         }
 
+        int32_t asInteger() const
+        {
+            return static_cast<int32_t>(bytes);
+        }
+
+        float asFloat() const
+        {
+            return static_cast<float>(bytes);
+        }
+        
+        bool asBool() const
+        {
+            return static_cast<bool>(bytes);
+        }
+
+        int8_t asByte() const
+        {
+            return static_cast<JVM::u1>(bytes);
+        }
+
+        int16_t asShort() const
+        {
+            return static_cast<JVM::u2>(bytes);
+        }
+
+        wchar_t asChar() const
+        {
+            return static_cast<wchar_t>(bytes);
+        }
+
+
     protected:
         JVM::u4 bytes;
     };
