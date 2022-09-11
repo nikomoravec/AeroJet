@@ -30,6 +30,7 @@ namespace SuperJet
 
         protected:
             std::shared_ptr<SuperJet::Compiler::CodeGen::Cpp::Type> javaPrimitiveToCppType(const Java::Archive::FieldDescriptor& fieldDescriptor, SuperJet::Compiler::CodeGen::Cpp::Type::Flags flags = SuperJet::Compiler::CodeGen::Cpp::Type::Flags::NONE);
+            std::shared_ptr<SuperJet::Compiler::CodeGen::Node> getDefaultValue(const Java::Archive::FieldDescriptor& fieldDescriptor);
 
         protected:
             Context context;

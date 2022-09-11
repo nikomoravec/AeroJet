@@ -1,13 +1,16 @@
 #include "Compiler/Compiler.h"
 #include "Compiler/ClassInfoRerenceCollector.h"
 #include "Compiler/Exceptions/RuntimeException.h"
+#include "Compiler/CodeGen/Cpp/AssignOperation.h"
+#include "Compiler/CodeGen/Cpp/Boolean.h"
 #include "Compiler/CodeGen/Cpp/Class.h"
 #include "Compiler/CodeGen/Cpp/Document.h"
 #include "Compiler/CodeGen/Cpp/ForwardDeclaration.h"
 #include "Compiler/CodeGen/Cpp/Function.h"
-#include "Compiler/CodeGen/Cpp/Variable.h"
 #include "Compiler/CodeGen/Cpp/NullPtr.h"
 #include "Compiler/CodeGen/Cpp/Number.h"
+#include "Compiler/CodeGen/Cpp/Variable.h"
+#include "Compiler/CodeGen/Cpp/WideCharacter.h"
 #include "Java/Archive/FieldDescriptor.h"
 #include "Java/Archive/Attributes/ConstantValue.h"
 #include "spdlog/spdlog.h"
@@ -145,8 +148,8 @@ namespace SuperJet::Compiler
                 );
             }
 
-            std::vector<std::shared_ptr<SuperJet::Compiler::CodeGen::Cpp::Variable>> staticVariables;
-            std::vector<std::shared_ptr<SuperJet::Compiler::CodeGen::Cpp::Variable>> nonStaticVariables;
+            std::map<std::shared_ptr<SuperJet::Compiler::CodeGen::Cpp::Variable>, std::shared_ptr<SuperJet::Compiler::CodeGen::Node>> staticVariables;
+            std::map<std::shared_ptr<SuperJet::Compiler::CodeGen::Cpp::Variable>, std::shared_ptr<SuperJet::Compiler::CodeGen::Node>> nonStaticVariables;
 
             const std::vector<Java::Archive::FieldInfo>& fields = node->getFields();
             for (const Java::Archive::FieldInfo& field : fields)
@@ -157,6 +160,68 @@ namespace SuperJet::Compiler
                 Java::JVM::u2 fieldDescriptorIndex = field.getDescriptorIndex();
                 const Java::Archive::FieldDescriptor& fieldDescriptor = Java::Archive::FieldDescriptor(constantPool.get<SuperJet::Java::Archive::ConstantPoolInfoUtf8>(fieldDescriptorIndex)->asString());
                 
+                std::shared_ptr<SuperJet::Compiler::CodeGen::Node> fieldDefaultValue = nullptr;
+                const std::vector<Java::Archive::AttributeInfo>& fieldAttributes = field.getAttributes();
+                if (!fieldAttributes.empty())
+                {
+                    for (const Java::Archive::AttributeInfo& fieldAttributeInfo : fieldAttributes)
+                    {
+                        const std::string& fieldAttributeName = constantPool.get<SuperJet::Java::Archive::ConstantPoolInfoUtf8>(fieldAttributeInfo.getAttributeNameIndex())->asString();
+                        if (fieldAttributeName == Java::Archive::Attributes::ConstantValue::CONSTANT_VALUE_ATTRIBUTE_NAME)
+                        {
+                            const Java::Archive::Attributes::ConstantValue& constantValueAttribute = Java::Archive::Attributes::ConstantValue(constantPool, fieldAttributeInfo);
+                            std::shared_ptr<Java::Archive::ConstantPoolEntry> valueEntry = constantPool.get(constantValueAttribute.getConstantValueIndex());
+                            
+                            switch (fieldDescriptor.getFieldType())
+                            {
+                                case Java::Archive::FieldDescriptor::FieldType::LONG:
+                                    fieldDefaultValue = std::make_shared<SuperJet::Compiler::CodeGen::Cpp::Number>(std::static_pointer_cast<Java::Archive::ConstantPoolInfoLong>(valueEntry)->asLong());
+                                    break;
+                                case Java::Archive::FieldDescriptor::FieldType::FLOAT:
+                                    fieldDefaultValue = std::make_shared<SuperJet::Compiler::CodeGen::Cpp::Number>(std::static_pointer_cast<Java::Archive::ConstantPoolFloat>(valueEntry)->asFloat());
+                                    break;
+                                case Java::Archive::FieldDescriptor::FieldType::DOUBLE:
+                                    fieldDefaultValue = std::make_shared<SuperJet::Compiler::CodeGen::Cpp::Number>(std::static_pointer_cast<Java::Archive::ConstantPoolInfoDouble>(valueEntry)->asDouble());
+                                    break;
+                                case Java::Archive::FieldDescriptor::FieldType::INTEGER:
+                                    fieldDefaultValue = std::make_shared<SuperJet::Compiler::CodeGen::Cpp::Number>(std::static_pointer_cast<Java::Archive::ConstantPoolInfoInteger>(valueEntry)->asInteger());
+                                    break;
+                                case Java::Archive::FieldDescriptor::FieldType::BOOLEAN:
+                                    fieldDefaultValue = std::make_shared<SuperJet::Compiler::CodeGen::Cpp::Boolean>(std::static_pointer_cast<Java::Archive::ConstantPoolInfoInteger>(valueEntry)->asBool());
+                                    break;
+                                case Java::Archive::FieldDescriptor::FieldType::BYTE:
+                                    fieldDefaultValue = std::make_shared<SuperJet::Compiler::CodeGen::Cpp::Number>(std::static_pointer_cast<Java::Archive::ConstantPoolInfoInteger>(valueEntry)->asByte());
+                                    break;
+                                case Java::Archive::FieldDescriptor::FieldType::SHORT:
+                                    fieldDefaultValue = std::make_shared<SuperJet::Compiler::CodeGen::Cpp::Number>(std::static_pointer_cast<Java::Archive::ConstantPoolInfoInteger>(valueEntry)->asShort());
+                                    break;
+                                case Java::Archive::FieldDescriptor::FieldType::CHAR:
+                                    fieldDefaultValue = std::make_shared<SuperJet::Compiler::CodeGen::Cpp::Character>(std::static_pointer_cast<Java::Archive::ConstantPoolInfoInteger>(valueEntry)->asChar());
+                                    break;
+                                case Java::Archive::FieldDescriptor::FieldType::CLASS:
+                                {
+                                    assert(fieldDescriptor.getClassName() == "java/lang/String");
+
+                                    const Java::JVM::u2 stringIndex = std::static_pointer_cast<Java::Archive::ConstantPoolInfoString>(valueEntry)->getStringIndex();
+                                    const std::string& str = constantPool.get<SuperJet::Java::Archive::ConstantPoolInfoUtf8>(stringIndex)->asString();
+                                    
+                                    /*
+                                     * TODO: Unfortunately string in not just string literal.
+                                     * It should be somehting like function call on JVM object instance
+                                     * for example jvm->allocate<java::lang::String>(classInfo) 
+                                     * @Author: Nikita Miroshnichenko (nikita.miroshnichenko@yahoo.com)
+                                    */
+
+                                    break;
+                                }
+                                case Java::Archive::FieldDescriptor::FieldType::ARRAY:
+                                default:
+                                    throw Compiler::RuntimeException(fmt::format("Type {} can not have ConstantValue attribute!", fieldDescriptor.getRawLiteral()));
+                            }
+                        }
+                    }
+                }
+
                 std::shared_ptr<SuperJet::Compiler::CodeGen::Cpp::Type> fieldType = nullptr;
                 SuperJet::Compiler::CodeGen::Cpp::Type::Flags fieldTypeFlags = fieldDescriptor.isPrimitive() ? SuperJet::Compiler::CodeGen::Cpp::Type::Flags::NONE : SuperJet::Compiler::CodeGen::Cpp::Type::Flags::POINTER;
 
@@ -168,7 +233,7 @@ namespace SuperJet::Compiler
                 std::shared_ptr<SuperJet::Compiler::CodeGen::Cpp::Variable> memberVariable = nullptr;
                 if (fieldDescriptor.isPrimitive())
                 {
-                    fieldType = javaPrimitiveToCppType(fieldDescriptor);
+                    fieldType = javaPrimitiveToCppType(fieldDescriptor, fieldTypeFlags);
                 }
                 else
                 {
@@ -222,24 +287,49 @@ namespace SuperJet::Compiler
                 memberVariable = std::make_shared<SuperJet::Compiler::CodeGen::Cpp::Variable>(fieldType, fieldName);
                 clazz->addVariable(memberVariable);
 
+                if (fieldDefaultValue == nullptr)
+                {
+                    fieldDefaultValue = getDefaultValue(fieldDescriptor);
+                }
+
                 if (fieldType->isStatic())
                 {
-                    staticVariables.emplace_back(memberVariable);
+                    staticVariables.insert({memberVariable, fieldDefaultValue});
                 }
                 else
                 {
-                    nonStaticVariables.emplace_back(memberVariable);
+                    nonStaticVariables.insert({memberVariable, fieldDefaultValue});
                 }
             }
 
             std::shared_ptr<SuperJet::Compiler::CodeGen::Cpp::Functuon> staticInitializerFunction = 
             std::make_shared<SuperJet::Compiler::CodeGen::Cpp::Functuon>(
-                "STATIC_INIT", 
+                "DEFAULT_STATIC_INIT", 
                 std::vector<std::shared_ptr<SuperJet::Compiler::CodeGen::Cpp::FunctionArgument>>(), 
                 std::make_shared<SuperJet::Compiler::CodeGen::Cpp::Type>("void", SuperJet::Compiler::CodeGen::Cpp::Type::Flags::STATIC)
             );
 
+            for (const auto& pair : staticVariables)
+            {
+                staticInitializerFunction->addNode(std::make_shared<SuperJet::Compiler::CodeGen::Cpp::VarialeAssignOperation>(pair.first, pair.second));
+            }
+
             clazz->addNode(staticInitializerFunction);
+
+
+            std::shared_ptr<SuperJet::Compiler::CodeGen::Cpp::Functuon> nonStaticInitializerFunction = 
+            std::make_shared<SuperJet::Compiler::CodeGen::Cpp::Functuon>(
+                "DEFAULT_INIT", 
+                std::vector<std::shared_ptr<SuperJet::Compiler::CodeGen::Cpp::FunctionArgument>>(), 
+                std::make_shared<SuperJet::Compiler::CodeGen::Cpp::Type>("void")
+            );
+
+            for (const auto& pair : nonStaticVariables)
+            {
+                nonStaticInitializerFunction->addNode(std::make_shared<SuperJet::Compiler::CodeGen::Cpp::VarialeAssignOperation>(pair.first, pair.second));
+            }
+
+            clazz->addNode(nonStaticInitializerFunction);
 
             nodes.pop();
         }
@@ -294,5 +384,26 @@ namespace SuperJet::Compiler
         }
 
         return type;
+    }
+
+    std::shared_ptr<SuperJet::Compiler::CodeGen::Node> ByteCodeCompiler::getDefaultValue(const Java::Archive::FieldDescriptor& fieldDescriptor)
+    {
+        switch(fieldDescriptor.getFieldType())
+        {
+            case Java::Archive::FieldDescriptor::FieldType::LONG:
+            case Java::Archive::FieldDescriptor::FieldType::INTEGER:
+            case Java::Archive::FieldDescriptor::FieldType::SHORT:
+            case Java::Archive::FieldDescriptor::FieldType::BYTE:
+            case Java::Archive::FieldDescriptor::FieldType::DOUBLE:
+            case Java::Archive::FieldDescriptor::FieldType::FLOAT:
+                return std::make_shared<SuperJet::Compiler::CodeGen::Cpp::Number>(0);
+            case Java::Archive::FieldDescriptor::FieldType::BOOLEAN:
+                return std::make_shared<SuperJet::Compiler::CodeGen::Cpp::Boolean>(false);
+            case Java::Archive::FieldDescriptor::FieldType::CHAR:
+                return std::make_shared<SuperJet::Compiler::CodeGen::Cpp::Character>();
+            case Java::Archive::FieldDescriptor::FieldType::ARRAY:
+            case Java::Archive::FieldDescriptor::FieldType::CLASS:
+                return std::make_shared<SuperJet::Compiler::CodeGen::Cpp::NullPtr>();
+        }
     }
 }
