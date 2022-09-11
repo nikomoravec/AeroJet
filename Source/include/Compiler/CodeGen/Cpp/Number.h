@@ -52,10 +52,10 @@ namespace SuperJet::Compiler::CodeGen::Cpp
                     outputStream << fmt::format("{}", std::get<int64_t>(value));
                     break;
                 case 4:
-                    outputStream << fmt::format("{}f", std::get<float>(value));
+                    outputStream << fmt::format("{:f}f", std::get<float>(value));
                     break;
                 case 5:
-                    outputStream << fmt::format("{}d", std::get<double>(value));
+                    outputStream << fmt::format("{:f}", std::get<double>(value));
                     break;
             }
         }
