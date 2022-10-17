@@ -43,6 +43,14 @@ namespace
 namespace SuperJet::Java::Archive
 {
     template<>
+    JVM::u1 read(std::istream& stream)
+    {
+        JVM::u1 read = 0;
+        stream.read((char*)&read, sizeof(read));
+        return read;
+    }
+
+    template<>
     JVM::u2 read(std::istream& stream)
     {
         JVM::u2 read = 0;
@@ -343,6 +351,7 @@ namespace SuperJet::Java::Archive
     {
         std::vector<JVM::u1> data;
         SuperJet::Java::JVM::Runtime::OperationCode opCode = static_cast<SuperJet::Java::JVM::Runtime::OperationCode>(stream.get());
+        spdlog::info(fmt::format("opcode {:#04x} pos {:#04x}", static_cast<JVM::u1>(opCode), stream.tellg()));
         switch (opCode)
         {
             case JVM::Runtime::OperationCode::aaload:
@@ -922,9 +931,73 @@ namespace SuperJet::Java::Archive
             }
             case JVM::Runtime::OperationCode::swap:
                 return std::make_shared<JVM::Runtime::swap>();
+            case JVM::Runtime::OperationCode::tableswitch:
+            {
+                // skip padding bytes
+                JVM::i1 paddingByte = 0;
+                {
+                    constexpr int PADDING_MAX = 3;
+                    int paddingSize = 0;
+                    do
+                    {
+                        paddingByte = read<JVM::u1>(stream);
+                        paddingSize++;
+
+                        if (paddingByte != 0)
+                        {
+                            break;
+                        }
+
+                    } while(paddingSize < PADDING_MAX);
+                }
+
+                JVM::i1 defaultByte1 = paddingByte == 0 ? read<JVM::i1>(stream) : paddingByte;
+                JVM::i1 defaultByte2 = read<JVM::i1>(stream);
+                JVM::i1 defaultByte3 = read<JVM::i1>(stream);
+                JVM::i1 defaultByte4 = read<JVM::i1>(stream);
+
+                JVM::i4 defaultBytes = JVM::i4(
+                    defaultByte1 << 24 |
+                    defaultByte2 << 16 |
+                    defaultByte3 << 8  |
+                    defaultByte4
+                );
+
+                JVM::i1 lowByte1 = read<JVM::i1>(stream);
+                JVM::i1 lowByte2 = read<JVM::i1>(stream);
+                JVM::i1 lowByte3 = read<JVM::i1>(stream);
+                JVM::i1 lowByte4 = read<JVM::i1>(stream);
+
+                JVM::i1 lowBytes = JVM::u4(
+                    lowByte1 << 24 |
+                    lowByte2 << 16 |
+                    lowByte3 << 8  |
+                    lowByte4
+                );
+
+                JVM::i1 highByte1 = read<JVM::i1>(stream);
+                JVM::i1 highByte2 = read<JVM::i1>(stream);
+                JVM::i1 highByte3 = read<JVM::i1>(stream);
+                JVM::i1 highByte4 = read<JVM::i1>(stream);
+
+                JVM::i1 highBytes = JVM::i1(
+                    highByte1 << 24 |
+                    highByte2 << 16 |
+                    highByte3 << 8  |
+                    highByte4
+                );
+
+                std::vector<JVM::u4> jumpOffsets;
+                uint32_t offsetCount = highBytes - lowBytes + 1;
+                for (int32_t offsetIndex = 0; offsetIndex < offsetCount; offsetIndex++)
+                {
+                    jumpOffsets.emplace_back(read<JVM::u4>(stream));
+                }
+
+                return std::make_shared<JVM::Runtime::tableswitch>(data, jumpOffsets);
+            }
             default:
             case JVM::Runtime::OperationCode::lookupswitch:
-            case JVM::Runtime::OperationCode::tableswitch:
             case JVM::Runtime::OperationCode::wide:
                 throw Compiler::OperationNotSupportedException(opCode);
                 return nullptr;
