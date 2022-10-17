@@ -12,7 +12,7 @@
 #include <strstream>
 #include <type_traits>
 #include "spdlog/spdlog.h"
-#pragma optimize( "", off )
+
 namespace
 {
     template<typename T>
@@ -1004,5 +1004,3 @@ namespace SuperJet::Java::Archive
         }
     }
 }
-
-#pragma optimize( "", on )
