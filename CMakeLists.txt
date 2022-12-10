@@ -24,6 +24,7 @@ add_executable(SuperJet
         Source/source/Java/Archive/Attributes/LocalVariableTable.cpp
         Source/source/Java/Archive/ClassInfo.cpp
         Source/source/Compiler/CodeGen/Cpp/Namespace.cpp
+        Source/source/Java/Archive/Attributes/ConstantValue.cpp
 )
 
 target_include_directories(SuperJet PUBLIC
