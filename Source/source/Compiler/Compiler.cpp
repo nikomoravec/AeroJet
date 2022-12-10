@@ -16,6 +16,7 @@
 #include "spdlog/spdlog.h"
 #include "fmt/format.h"
 #include "Java/Archive/Archive.h"
+#include "Java/Archive/Attributes/Code.h"
 #include "Utils/StringUtils.h"
 
 #include <fstream>
@@ -66,7 +67,6 @@ namespace SuperJet::Compiler
     {
         std::shared_ptr<Compiler::CodeGen::Cpp::Document> document = std::make_shared<Compiler::CodeGen::Cpp::Document>();
         std::queue<std::shared_ptr<Java::Archive::ClassInfo>> nodes = dependencyGraph.topology();
-
 
         for(std::shared_ptr<Java::Archive::ClassInfo> node : dependencyGraph.nodes())
         {
@@ -331,6 +331,27 @@ namespace SuperJet::Compiler
 
             clazz->addNode(nonStaticInitializerFunction);
 
+            for (const Java::Archive::MethodInfo& methodInfo : node->getMethods())
+            {
+                const Java::Archive::MethodInfo::AccessFlags accessFlags = methodInfo.getAccessFlags();
+
+                const Java::JVM::u2 nameIndex = methodInfo.getNameIndex();
+                const std::string& methodName = constantPool.get<SuperJet::Java::Archive::ConstantPoolInfoUtf8>(nameIndex)->asString();
+
+                const Java::JVM::u2 descriptorIndex = methodInfo.getDescriptorIndex();
+                const std::string& descriptorString = constantPool.get<SuperJet::Java::Archive::ConstantPoolInfoUtf8>(descriptorIndex)->asString();
+
+                const std::vector<Java::Archive::AttributeInfo>& methodAttributes = methodInfo.getAttributes();
+                for (const Java::Archive::AttributeInfo& methodAttribute : methodAttributes)
+                {
+                    if (constantPool.get<SuperJet::Java::Archive::ConstantPoolInfoUtf8>(methodAttribute.getAttributeNameIndex())->asString() == Java::Archive::Attributes::Code::CODE_ATTRIBUTE_NAME)
+                    {
+                        const Java::Archive::Attributes::Code& codeAttribute = Java::Archive::Attributes::Code(constantPool, methodAttribute);
+                        const std::vector<std::shared_ptr<Java::JVM::Runtime::Operation>>& code = codeAttribute.getCode();
+                    }
+                }
+            }
+
             nodes.pop();
         }
         
@@ -343,7 +364,7 @@ namespace SuperJet::Compiler
     ByteCodeCompiler::ByteCodeCompiler(const Environment& env) : context(env)
     {
         ClassInfoReferenceCollector collector = ClassInfoReferenceCollector(context);
-        dependencyGraph = collector.collect(context.getMainClass());
+        //dependencyGraph = collector.collect(context.getMainClass());
     }
 
     std::shared_ptr<SuperJet::Compiler::CodeGen::Cpp::Type> ByteCodeCompiler::javaPrimitiveToCppType(const Java::Archive::FieldDescriptor& fieldDescriptor, SuperJet::Compiler::CodeGen::Cpp::Type::Flags flags)

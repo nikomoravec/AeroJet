@@ -2112,108 +2112,42 @@ namespace SuperJet::Java::JVM::Runtime
     class tableswitch : public Operation
     {
     public:
-        tableswitch(const OperationData& inOperationData, const std::vector<JVM::u4>& inJumpOffsets) : Operation(OperationCode::tableswitch, inOperationData), jumpOffsets(inJumpOffsets)
+        tableswitch(const OperationData& inOperationData, const std::vector<JVM::i4>& inJumpOffsets) : Operation(OperationCode::tableswitch, inOperationData), jumpOffsets(inJumpOffsets)
         {
-            static constexpr int32_t DATA_SIZE = 12;
+            static constexpr int32_t DATA_SIZE = sizeof(JVM::i4) * 3;
 
             if (data.size() < DATA_SIZE)
             {
                 throw Compiler::IncorrectDataSizeException(DATA_SIZE, data.size());
             }
 
-            defaultbyte1 = static_cast<JVM::i1>(data[0]);
-            defaultbyte2 = static_cast<JVM::i1>(data[1]);
-            defaultbyte3 = static_cast<JVM::i1>(data[2]);
-            defaultbyte4 = static_cast<JVM::i1>(data[3]);
-
-            lowbyte1 = static_cast<JVM::i1>(data[4]);
-            lowbyte2 = static_cast<JVM::i1>(data[5]);
-            lowbyte3 = static_cast<JVM::i1>(data[6]);
-            lowbyte4 = static_cast<JVM::i1>(data[7]);
-
-            highbyte1 = static_cast<JVM::i1>(data[8]);
-            highbyte2 = static_cast<JVM::i1>(data[9]);
-            highbyte3 = static_cast<JVM::i1>(data[10]);
-            highbyte4 = static_cast<JVM::i1>(data[11]);
+            std::memcpy(&defaulValue, &(inOperationData[0]), sizeof(defaulValue));
+            std::memcpy(&lowValue, &(inOperationData[4]), sizeof(lowValue));
+            std::memcpy(&highValue, &(inOperationData[8]), sizeof(highValue));
         }
 
-        JVM::i1 getDefaultbyte1() const
+        JVM::i4 getDefaultValue() const
         {
-            return defaultbyte1;
+            return defaulValue;
         }
 
-        JVM::i1 getDefaultbyte2() const
+
+        JVM::i4 getLowValue() const
         {
-            return defaultbyte2;
+            return lowValue;
         }
 
-        JVM::i1 getDefaultbyte3() const
+        JVM::i4 getHighValue() const
         {
-            return defaultbyte3;
-        }
-
-        JVM::i1 getDefaultbyte4() const
-        {
-            return defaultbyte4;
-        }
-
-        JVM::i1 getLowbyte1() const
-        {
-            return lowbyte1;
-        }
-
-        JVM::i1 getLowbyte2() const
-        {
-            return lowbyte2;
-        }
-
-        JVM::i1 getLowbyte3() const
-        {
-            return lowbyte3;
-        }
-
-        JVM::i1 getLowbyte4() const
-        {
-            return lowbyte4;
-        }
-
-        JVM::i1 getHighbyte1() const
-        {
-            return highbyte1;
-        }
-
-        JVM::i1 getHighbyte2() const
-        {
-            return highbyte2;
-        }
-        
-        JVM::i1 getHighbyte3() const
-        {
-            return highbyte3;
-        }
-        
-        JVM::i1 getHighbyte4() const
-        {
-            return highbyte4;
+            return highValue;
         }
 
     protected:
-        JVM::i1 defaultbyte1;
-        JVM::i1 defaultbyte2;
-        JVM::i1 defaultbyte3;
-        JVM::i1 defaultbyte4;
+        JVM::i4 defaulValue;
+        JVM::i4 lowValue;
+        JVM::i4 highValue;
 
-        JVM::i1 lowbyte1;
-        JVM::i1 lowbyte2;
-        JVM::i1 lowbyte3;
-        JVM::i1 lowbyte4;
-
-        JVM::i1 highbyte1;
-        JVM::i1 highbyte2;
-        JVM::i1 highbyte3;
-        JVM::i1 highbyte4;
-
-        std::vector<JVM::u4> jumpOffsets;
+        std::vector<JVM::i4> jumpOffsets;
     };
 
     class wide : public Operation

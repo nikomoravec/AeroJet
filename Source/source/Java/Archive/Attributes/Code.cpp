@@ -23,12 +23,15 @@ namespace SuperJet::Java::Archive::Attributes
             maxStack = read<JVM::u2>(ss);
             maxLocals = read<JVM::u2>(ss);
 
-            const JVM::u4& codeLength = read<JVM::u4>(ss);
-            const uint32_t endPos = static_cast<uint32_t>(ss.tellg()) + codeLength;
+            const JVM::u4 codeLength = read<JVM::u4>(ss);
 
+            const JVM::u4 currentPos = static_cast<JVM::u4>(ss.tellg());
+            const JVM::u4 endPos = currentPos + codeLength;
+            const JVM::u4 firstOpCodeOffset = currentPos + attributeInfo.getInfoOffset();
+            const JVM::u4 firstOpCodeLocalOffset = currentPos + 1;
             while (ss.tellg() != endPos)
             {
-                code.emplace_back(read<std::shared_ptr<SuperJet::Java::JVM::Runtime::Operation>>(ss));
+                code.emplace_back(read<std::shared_ptr<SuperJet::Java::JVM::Runtime::Operation>>(ss, firstOpCodeOffset, firstOpCodeLocalOffset));
             }
 
             const JVM::u2& exceptionTableLength = read<JVM::u2>(ss);

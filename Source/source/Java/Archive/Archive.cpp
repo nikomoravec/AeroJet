@@ -42,30 +42,47 @@ namespace
 
 namespace SuperJet::Java::Archive
 {
+    template<typename T>
+    static inline T readInternal(std::istream& stream)
+    {
+        if (stream.eof())
+        {
+            throw Compiler::RuntimeException(fmt::format("stream EOF at {:#08x}! Read size was {}", stream.tellg(), sizeof(T)));
+        }
+        
+        T read {};
+        stream.read((char*)&read, sizeof(read));
+
+        if (sizeof(T) > 1)
+        {
+            read = swapEndian(read);
+        }
+
+        return read;
+    }
+
     template<>
     JVM::u1 read(std::istream& stream)
     {
-        JVM::u1 read = 0;
-        stream.read((char*)&read, sizeof(read));
-        return read;
+        return readInternal<JVM::u1>(stream);
     }
 
     template<>
     JVM::u2 read(std::istream& stream)
     {
-        JVM::u2 read = 0;
-        stream.read((char*)&read, sizeof(read));
-        read = swapEndian(read);
-        return read;
+        return readInternal<JVM::u2>(stream);
     }
 
     template<>
     JVM::u4 read(std::istream& stream)
     {
-        JVM::u4 read = 0;
-        stream.read((char*)&read, sizeof(read));
-        read = swapEndian(read);
-        return read;
+        return readInternal<JVM::u4>(stream);
+    }
+
+    template<>
+    JVM::i4 read(std::istream& stream)
+    {
+        return readInternal<JVM::i4>(stream);
     }
 
 
@@ -75,9 +92,7 @@ namespace SuperJet::Java::Archive
     template<>
     ConstantPoolInfoTag read(std::istream& stream)
     {
-        ConstantPoolInfoTag tag;
-        stream.read((char*)&tag, sizeof(tag));
-        return tag;
+        return readInternal<ConstantPoolInfoTag>(stream);
     }
 
     template<>
@@ -149,7 +164,7 @@ namespace SuperJet::Java::Archive
     template<>
     ConstantPoolInfoMethodHandle read(std::istream& stream, ConstantPoolInfoTag tag)
     {
-        const JVM::u1 readReferenceKind = stream.get();
+        const JVM::u1 readReferenceKind = read<JVM::u1>(stream);
         const JVM::u2 readReferenceIndex = read<JVM::u2>(stream);
 
         return ConstantPoolInfoMethodHandle{tag, readReferenceKind, readReferenceIndex};
@@ -181,10 +196,10 @@ namespace SuperJet::Java::Archive
         attributeInfo.reserve(readAttributeInfoSize);
         for (int32_t attributeInfoIndex = 0; attributeInfoIndex < readAttributeInfoSize; attributeInfoIndex++)
         {
-            attributeInfo.emplace_back(stream.get());
+            attributeInfo.emplace_back(read<JVM::u1>(stream));
         }
 
-        return AttributeInfo{readAttributeNameIndex, attributeInfo};
+        return AttributeInfo{readAttributeNameIndex, attributeInfo, static_cast<JVM::u4>(stream.tellg())};
     }
 
     template<>
@@ -347,11 +362,11 @@ namespace SuperJet::Java::Archive
     }
 
     template<>
-    std::shared_ptr<SuperJet::Java::JVM::Runtime::Operation> read(std::istream& stream)
+    std::shared_ptr<SuperJet::Java::JVM::Runtime::Operation> read(std::istream& stream, JVM::u4 firstInstructionOffset, JVM::u4 firstOpCodeLocalOffset)
     {
         std::vector<JVM::u1> data;
-        SuperJet::Java::JVM::Runtime::OperationCode opCode = static_cast<SuperJet::Java::JVM::Runtime::OperationCode>(stream.get());
-        spdlog::info(fmt::format("opcode {:#04x} pos {:#04x}", static_cast<JVM::u1>(opCode), stream.tellg()));
+        SuperJet::Java::JVM::Runtime::OperationCode opCode = static_cast<SuperJet::Java::JVM::Runtime::OperationCode>(read<JVM::u1>(stream));
+        spdlog::info(fmt::format("opcode {:#04x} pos {:#04x} offset {:#08x}", static_cast<JVM::u1>(opCode), stream.tellg(), firstInstructionOffset + static_cast<JVM::u4>(stream.tellg())));
         switch (opCode)
         {
             case JVM::Runtime::OperationCode::aaload:
@@ -361,7 +376,7 @@ namespace SuperJet::Java::Archive
             case JVM::Runtime::OperationCode::aconst_null:
                 return std::make_shared<JVM::Runtime::aconst_null>();
             case JVM::Runtime::OperationCode::aload:
-                data.emplace_back(stream.get());
+                data.emplace_back(read<JVM::u1>(stream));
                 return std::make_shared<JVM::Runtime::aload>(data);
             case JVM::Runtime::OperationCode::aload_0:
                 return std::make_shared<JVM::Runtime::aload_0>();
@@ -373,8 +388,8 @@ namespace SuperJet::Java::Archive
                 return std::make_shared<JVM::Runtime::aload_3>();
             case JVM::Runtime::OperationCode::anewarray:
             {
-                data.emplace_back(stream.get());
-                data.emplace_back(stream.get());
+                data.emplace_back(read<JVM::u1>(stream));
+                data.emplace_back(read<JVM::u1>(stream));
 
                 return std::make_shared<JVM::Runtime::anewarray>(data);
             }
@@ -383,7 +398,7 @@ namespace SuperJet::Java::Archive
             case JVM::Runtime::OperationCode::arraylength:
                 return std::make_shared<JVM::Runtime::arraylength>();
             case JVM::Runtime::OperationCode::astore:
-                data.emplace_back(stream.get());
+                data.emplace_back(read<JVM::u1>(stream));
                 return std::make_shared<JVM::Runtime::astore>(data);
             case JVM::Runtime::OperationCode::astore_0:
                 return std::make_shared<JVM::Runtime::astore_0>();
@@ -400,7 +415,7 @@ namespace SuperJet::Java::Archive
             case JVM::Runtime::OperationCode::bastore:
                 return std::make_shared<JVM::Runtime::bastore>();
             case JVM::Runtime::OperationCode::bipush:
-                data.emplace_back(stream.get());
+                data.emplace_back(read<JVM::u1>(stream));
                 return std::make_shared<JVM::Runtime::bipush>(data);
             case JVM::Runtime::OperationCode::caload:
                 return std::make_shared<JVM::Runtime::caload>();
@@ -408,8 +423,8 @@ namespace SuperJet::Java::Archive
                 return std::make_shared<JVM::Runtime::castore>();
             case JVM::Runtime::OperationCode::checkcast:
             {
-                data.emplace_back(stream.get());
-                data.emplace_back(stream.get());
+                data.emplace_back(read<JVM::u1>(stream));
+                data.emplace_back(read<JVM::u1>(stream));
 
                 return std::make_shared<JVM::Runtime::checkcast>(data);
             }
@@ -436,7 +451,7 @@ namespace SuperJet::Java::Archive
             case JVM::Runtime::OperationCode::ddiv:
                 return std::make_shared<JVM::Runtime::ddiv>();
             case JVM::Runtime::OperationCode::dload:
-                data.emplace_back(stream.get());
+                data.emplace_back(read<JVM::u1>(stream));
                 return std::make_shared<JVM::Runtime::dload>(data);
             case JVM::Runtime::OperationCode::dload_0:
                 return std::make_shared<JVM::Runtime::dload_0>();
@@ -455,7 +470,7 @@ namespace SuperJet::Java::Archive
             case JVM::Runtime::OperationCode::dreturn:
                 return std::make_shared<JVM::Runtime::dreturn>();
             case JVM::Runtime::OperationCode::dstore:
-                data.emplace_back(stream.get());
+                data.emplace_back(read<JVM::u1>(stream));
                 return std::make_shared<JVM::Runtime::dstore>(data);
             case JVM::Runtime::OperationCode::dstore_0:
                 return std::make_shared<JVM::Runtime::dstore_0>();
@@ -504,7 +519,7 @@ namespace SuperJet::Java::Archive
             case JVM::Runtime::OperationCode::fdiv:
                 return std::make_shared<JVM::Runtime::fdiv>();
             case JVM::Runtime::OperationCode::fload:
-                data.emplace_back(stream.get());
+                data.emplace_back(read<JVM::u1>(stream));
                 return std::make_shared<JVM::Runtime::fload>(data);
             case JVM::Runtime::OperationCode::fload_0:
                 return std::make_shared<JVM::Runtime::fload_0>();
@@ -523,7 +538,7 @@ namespace SuperJet::Java::Archive
             case JVM::Runtime::OperationCode::freturn:
                 return std::make_shared<JVM::Runtime::freturn>();
             case JVM::Runtime::OperationCode::fstore:
-                data.emplace_back(stream.get());
+                data.emplace_back(read<JVM::u1>(stream));
                 return std::make_shared<JVM::Runtime::fstore>(data);
             case JVM::Runtime::OperationCode::fstore_0:
                 return std::make_shared<JVM::Runtime::fstore_0>();
@@ -537,28 +552,28 @@ namespace SuperJet::Java::Archive
                 return std::make_shared<JVM::Runtime::fsub>();
             case JVM::Runtime::OperationCode::getfield:
             {
-                data.emplace_back(stream.get());
-                data.emplace_back(stream.get());
+                data.emplace_back(read<JVM::u1>(stream));
+                data.emplace_back(read<JVM::u1>(stream));
                 return std::make_shared<JVM::Runtime::getfield>(data);
             }
             case JVM::Runtime::OperationCode::getstatic:
             {
-                data.emplace_back(stream.get());
-                data.emplace_back(stream.get());
+                data.emplace_back(read<JVM::u1>(stream));
+                data.emplace_back(read<JVM::u1>(stream));
                 return std::make_shared<JVM::Runtime::getstatic>(data);
             }
             case JVM::Runtime::OperationCode::GOTO:
             {
-                data.emplace_back(stream.get());
-                data.emplace_back(stream.get());
+                data.emplace_back(read<JVM::u1>(stream));
+                data.emplace_back(read<JVM::u1>(stream));
                 return std::make_shared<JVM::Runtime::GOTO>(data);
             }
             case JVM::Runtime::OperationCode::goto_w:
             {
-                data.emplace_back(stream.get());
-                data.emplace_back(stream.get());
-                data.emplace_back(stream.get());
-                data.emplace_back(stream.get());
+                data.emplace_back(read<JVM::u1>(stream));
+                data.emplace_back(read<JVM::u1>(stream));
+                data.emplace_back(read<JVM::u1>(stream));
+                data.emplace_back(read<JVM::u1>(stream));
                 return std::make_shared<JVM::Runtime::goto_w>(data);
             }
             case JVM::Runtime::OperationCode::i2b:
@@ -599,108 +614,108 @@ namespace SuperJet::Java::Archive
                 return std::make_shared<JVM::Runtime::idiv>();
             case JVM::Runtime::OperationCode::if_acmpeq:
             {
-                data.emplace_back(stream.get());
-                data.emplace_back(stream.get());
+                data.emplace_back(read<JVM::u1>(stream));
+                data.emplace_back(read<JVM::u1>(stream));
                 return std::make_shared<JVM::Runtime::if_acmpeq>(data);
             }
             case JVM::Runtime::OperationCode::if_acmpne:
             {
-                data.emplace_back(stream.get());
-                data.emplace_back(stream.get());
+                data.emplace_back(read<JVM::u1>(stream));
+                data.emplace_back(read<JVM::u1>(stream));
                 return std::make_shared<JVM::Runtime::if_acmpne>(data);
             }
             case JVM::Runtime::OperationCode::if_icmpeq:
             {
-                data.emplace_back(stream.get());
-                data.emplace_back(stream.get());
+                data.emplace_back(read<JVM::u1>(stream));
+                data.emplace_back(read<JVM::u1>(stream));
                 return std::make_shared<JVM::Runtime::if_icmpeq>(data);
             }
             case JVM::Runtime::OperationCode::if_icmpne:
             {
-                data.emplace_back(stream.get());
-                data.emplace_back(stream.get());
+                data.emplace_back(read<JVM::u1>(stream));
+                data.emplace_back(read<JVM::u1>(stream));
                 return std::make_shared<JVM::Runtime::if_icmpne>(data);
             }
             case JVM::Runtime::OperationCode::if_icmplt:
             {
-                data.emplace_back(stream.get());
-                data.emplace_back(stream.get());
+                data.emplace_back(read<JVM::u1>(stream));
+                data.emplace_back(read<JVM::u1>(stream));
                 return std::make_shared<JVM::Runtime::if_icmplt>(data);
             }
             case JVM::Runtime::OperationCode::if_icmpge:
             {
-                data.emplace_back(stream.get());
-                data.emplace_back(stream.get());
+                data.emplace_back(read<JVM::u1>(stream));
+                data.emplace_back(read<JVM::u1>(stream));
                 return std::make_shared<JVM::Runtime::if_icmpge>(data);
             }
             case JVM::Runtime::OperationCode::if_icmpgt:
             {
-                data.emplace_back(stream.get());
-                data.emplace_back(stream.get());
+                data.emplace_back(read<JVM::u1>(stream));
+                data.emplace_back(read<JVM::u1>(stream));
                 return std::make_shared<JVM::Runtime::if_icmpgt>(data);
             }
             case JVM::Runtime::OperationCode::if_icmple:
             {
-                data.emplace_back(stream.get());
-                data.emplace_back(stream.get());
+                data.emplace_back(read<JVM::u1>(stream));
+                data.emplace_back(read<JVM::u1>(stream));
                 return std::make_shared<JVM::Runtime::if_icmple>(data);
             }
             case JVM::Runtime::OperationCode::ifeq:
             {
-                data.emplace_back(stream.get());
-                data.emplace_back(stream.get());
+                data.emplace_back(read<JVM::u1>(stream));
+                data.emplace_back(read<JVM::u1>(stream));
                 return std::make_shared<JVM::Runtime::ifeq>(data);
             }
             case JVM::Runtime::OperationCode::ifne:
             {
-                data.emplace_back(stream.get());
-                data.emplace_back(stream.get());
+                data.emplace_back(read<JVM::u1>(stream));
+                data.emplace_back(read<JVM::u1>(stream));
                 return std::make_shared<JVM::Runtime::ifne>(data);
             }
             case JVM::Runtime::OperationCode::iflt:
             {
-                data.emplace_back(stream.get());
-                data.emplace_back(stream.get());
+                data.emplace_back(read<JVM::u1>(stream));
+                data.emplace_back(read<JVM::u1>(stream));
                 return std::make_shared<JVM::Runtime::iflt>(data);
             }
             case JVM::Runtime::OperationCode::ifge:
             {
-                data.emplace_back(stream.get());
-                data.emplace_back(stream.get());
+                data.emplace_back(read<JVM::u1>(stream));
+                data.emplace_back(read<JVM::u1>(stream));
                 return std::make_shared<JVM::Runtime::ifge>(data);
             }
             case JVM::Runtime::OperationCode::ifgt:
             {
-                data.emplace_back(stream.get());
-                data.emplace_back(stream.get());
+                data.emplace_back(read<JVM::u1>(stream));
+                data.emplace_back(read<JVM::u1>(stream));
                 return std::make_shared<JVM::Runtime::ifgt>(data);
             }
             case JVM::Runtime::OperationCode::ifle:
             {
-                data.emplace_back(stream.get());
-                data.emplace_back(stream.get());
+                data.emplace_back(read<JVM::u1>(stream));
+                data.emplace_back(read<JVM::u1>(stream));
                 return std::make_shared<JVM::Runtime::ifle>(data);
             }
             case JVM::Runtime::OperationCode::ifnonnull:
             {
-                data.emplace_back(stream.get());
-                data.emplace_back(stream.get());
+                data.emplace_back(read<JVM::u1>(stream));
+                data.emplace_back(read<JVM::u1>(stream));
                 return std::make_shared<JVM::Runtime::ifnonnull>(data);
             }
             case JVM::Runtime::OperationCode::ifnull:
             {
-                data.emplace_back(stream.get());
-                data.emplace_back(stream.get());
+                data.emplace_back(read<JVM::u1>(stream));
+                data.emplace_back(read<JVM::u1>(stream));
                 return std::make_shared<JVM::Runtime::ifnull>(data);
             }
             case JVM::Runtime::OperationCode::iinc:
             {
-                data.emplace_back(stream.get());
-                data.emplace_back(stream.get());
+                data.emplace_back(read<JVM::u1>(stream));
+                data.emplace_back(read<JVM::u1>(stream));
                 return std::make_shared<JVM::Runtime::iinc>(data);
             }
             case JVM::Runtime::OperationCode::iload:
-                data.emplace_back(stream.get());
+                data.emplace_back(read<JVM::u1>(stream));
                 return std::make_shared<JVM::Runtime::iload>(data);
             case JVM::Runtime::OperationCode::iload_0:
                 return std::make_shared<JVM::Runtime::iload_0>();
@@ -716,42 +731,42 @@ namespace SuperJet::Java::Archive
                 return std::make_shared<JVM::Runtime::ineg>();
             case JVM::Runtime::OperationCode::instanceof:
             {
-                data.emplace_back(stream.get());
-                data.emplace_back(stream.get());
+                data.emplace_back(read<JVM::u1>(stream));
+                data.emplace_back(read<JVM::u1>(stream));
                 return std::make_shared<JVM::Runtime::instanceof>(data);
             }
             case JVM::Runtime::OperationCode::invokedynamic:
             {
-                data.emplace_back(stream.get());
-                data.emplace_back(stream.get());
-                data.emplace_back(stream.get());
-                data.emplace_back(stream.get());
+                data.emplace_back(read<JVM::u1>(stream));
+                data.emplace_back(read<JVM::u1>(stream));
+                data.emplace_back(read<JVM::u1>(stream));
+                data.emplace_back(read<JVM::u1>(stream));
                 return std::make_shared<JVM::Runtime::invokedynamic>(data);
             }
             case JVM::Runtime::OperationCode::invokeinterface:
             {
-                data.emplace_back(stream.get());
-                data.emplace_back(stream.get());
-                data.emplace_back(stream.get());
-                data.emplace_back(stream.get());
+                data.emplace_back(read<JVM::u1>(stream));
+                data.emplace_back(read<JVM::u1>(stream));
+                data.emplace_back(read<JVM::u1>(stream));
+                data.emplace_back(read<JVM::u1>(stream));
                 return std::make_shared<JVM::Runtime::invokeinterface>(data);
             }
             case JVM::Runtime::OperationCode::invokespecial:
             {
-                data.emplace_back(stream.get());
-                data.emplace_back(stream.get());
+                data.emplace_back(read<JVM::u1>(stream));
+                data.emplace_back(read<JVM::u1>(stream));
                 return std::make_shared<JVM::Runtime::invokespecial>(data);
             }
             case JVM::Runtime::OperationCode::invokestatic:
             {
-                data.emplace_back(stream.get());
-                data.emplace_back(stream.get());
+                data.emplace_back(read<JVM::u1>(stream));
+                data.emplace_back(read<JVM::u1>(stream));
                 return std::make_shared<JVM::Runtime::invokestatic>(data);
             }
             case JVM::Runtime::OperationCode::invokevirtual:
             {
-                data.emplace_back(stream.get());
-                data.emplace_back(stream.get());
+                data.emplace_back(read<JVM::u1>(stream));
+                data.emplace_back(read<JVM::u1>(stream));
                 return std::make_shared<JVM::Runtime::invokevirtual>(data);
             }
             case JVM::Runtime::OperationCode::ior:
@@ -765,7 +780,7 @@ namespace SuperJet::Java::Archive
             case JVM::Runtime::OperationCode::ishr:
                 return std::make_shared<JVM::Runtime::ishr>();
             case JVM::Runtime::OperationCode::istore:
-                data.emplace_back(stream.get());
+                data.emplace_back(read<JVM::u1>(stream));
                 return std::make_shared<JVM::Runtime::istore>(data);
             case JVM::Runtime::OperationCode::istore_0:
                 return std::make_shared<JVM::Runtime::istore_0>();
@@ -783,16 +798,16 @@ namespace SuperJet::Java::Archive
                 return std::make_shared<JVM::Runtime::ixor>();
             case JVM::Runtime::OperationCode::jsr:
             {
-                data.emplace_back(stream.get());
-                data.emplace_back(stream.get());
+                data.emplace_back(read<JVM::u1>(stream));
+                data.emplace_back(read<JVM::u1>(stream));
                 return std::make_shared<JVM::Runtime::jsr>(data);
             }
             case JVM::Runtime::OperationCode::jsr_w:
             {
-                data.emplace_back(stream.get());
-                data.emplace_back(stream.get());
-                data.emplace_back(stream.get());
-                data.emplace_back(stream.get());
+                data.emplace_back(read<JVM::u1>(stream));
+                data.emplace_back(read<JVM::u1>(stream));
+                data.emplace_back(read<JVM::u1>(stream));
+                data.emplace_back(read<JVM::u1>(stream));
                 return std::make_shared<JVM::Runtime::jsr_w>(data);
             }
             case JVM::Runtime::OperationCode::l2d:
@@ -816,24 +831,24 @@ namespace SuperJet::Java::Archive
             case JVM::Runtime::OperationCode::lconst_1:
                 return std::make_shared<JVM::Runtime::lconst_1>();
             case JVM::Runtime::OperationCode::ldc:
-                data.emplace_back(stream.get());
+                data.emplace_back(read<JVM::u1>(stream));
                 return std::make_shared<JVM::Runtime::ldc>(data);
             case JVM::Runtime::OperationCode::ldc_w:
             {
-                data.emplace_back(stream.get());
-                data.emplace_back(stream.get());
+                data.emplace_back(read<JVM::u1>(stream));
+                data.emplace_back(read<JVM::u1>(stream));
                 return std::make_shared<JVM::Runtime::ldc_w>(data);
             }
             case JVM::Runtime::OperationCode::ldc2_w:
             {
-                data.emplace_back(stream.get());
-                data.emplace_back(stream.get());
+                data.emplace_back(read<JVM::u1>(stream));
+                data.emplace_back(read<JVM::u1>(stream));
                 return std::make_shared<JVM::Runtime::ldc2_w>(data);
             }
             case JVM::Runtime::OperationCode::ldiv:
                 return std::make_shared<JVM::Runtime::ldiv>();
             case JVM::Runtime::OperationCode::lload:
-                data.emplace_back(stream.get());
+                data.emplace_back(read<JVM::u1>(stream));
                 return std::make_shared<JVM::Runtime::lload>(data);
             case JVM::Runtime::OperationCode::lload_0:
                 return std::make_shared<JVM::Runtime::lload_0>();
@@ -844,10 +859,10 @@ namespace SuperJet::Java::Archive
             case JVM::Runtime::OperationCode::lload_3:
                 return std::make_shared<JVM::Runtime::lload_3>();
             case JVM::Runtime::OperationCode::lmul:
-                data.emplace_back(stream.get());
+                data.emplace_back(read<JVM::u1>(stream));
                 return std::make_shared<JVM::Runtime::lmul>(data);
             case JVM::Runtime::OperationCode::lneg:
-                data.emplace_back(stream.get());
+                data.emplace_back(read<JVM::u1>(stream));
                 return std::make_shared<JVM::Runtime::lneg>(data);
             case JVM::Runtime::OperationCode::lor:
                 return std::make_shared<JVM::Runtime::lor>();
@@ -860,7 +875,7 @@ namespace SuperJet::Java::Archive
             case JVM::Runtime::OperationCode::lshr:
                 return std::make_shared<JVM::Runtime::lshr>();
             case JVM::Runtime::OperationCode::lstore:
-                data.emplace_back(stream.get());
+                data.emplace_back(read<JVM::u1>(stream));
                 return std::make_shared<JVM::Runtime::lstore>(data);
             case JVM::Runtime::OperationCode::lstore_0:
                 return std::make_shared<JVM::Runtime::lstore_0>();
@@ -882,19 +897,19 @@ namespace SuperJet::Java::Archive
                 return std::make_shared<JVM::Runtime::monitorexit>();
             case JVM::Runtime::OperationCode::multianewarray:
             {
-                data.emplace_back(stream.get());
-                data.emplace_back(stream.get());
-                data.emplace_back(stream.get());
+                data.emplace_back(read<JVM::u1>(stream));
+                data.emplace_back(read<JVM::u1>(stream));
+                data.emplace_back(read<JVM::u1>(stream));
                 return std::make_shared<JVM::Runtime::multianewarray>(data);
             }
             case JVM::Runtime::OperationCode::NEW:
             {
-                data.emplace_back(stream.get());
-                data.emplace_back(stream.get());
+                data.emplace_back(read<JVM::u1>(stream));
+                data.emplace_back(read<JVM::u1>(stream));
                 return std::make_shared<JVM::Runtime::NEW>(data);
             }
             case JVM::Runtime::OperationCode::newarray:
-                data.emplace_back(stream.get());
+                data.emplace_back(read<JVM::u1>(stream));
                 return std::make_shared<JVM::Runtime::newarray>(data);
             case JVM::Runtime::OperationCode::nop:
                 return std::make_shared<JVM::Runtime::nop>();
@@ -904,18 +919,18 @@ namespace SuperJet::Java::Archive
                 return std::make_shared<JVM::Runtime::pop2>();
             case JVM::Runtime::OperationCode::putfield:
             {
-                data.emplace_back(stream.get());
-                data.emplace_back(stream.get());
+                data.emplace_back(read<JVM::u1>(stream));
+                data.emplace_back(read<JVM::u1>(stream));
                 return std::make_shared<JVM::Runtime::putfield>(data);
             }
             case JVM::Runtime::OperationCode::putstatic:
             {
-                data.emplace_back(stream.get());
-                data.emplace_back(stream.get());
+                data.emplace_back(read<JVM::u1>(stream));
+                data.emplace_back(read<JVM::u1>(stream));
                 return std::make_shared<JVM::Runtime::putstatic>(data);
             }
             case JVM::Runtime::OperationCode::ret:
-                data.emplace_back(stream.get());
+                data.emplace_back(read<JVM::u1>(stream));
                 return std::make_shared<JVM::Runtime::ret>(data);
             case JVM::Runtime::OperationCode::RETURN:
                 return std::make_shared<JVM::Runtime::RETURN>();
@@ -925,74 +940,71 @@ namespace SuperJet::Java::Archive
                 return std::make_shared<JVM::Runtime::sastore>();
             case JVM::Runtime::OperationCode::sipush:
             {
-                data.emplace_back(stream.get());
-                data.emplace_back(stream.get());
+                data.emplace_back(read<JVM::u1>(stream));
+                data.emplace_back(read<JVM::u1>(stream));
                 return std::make_shared<JVM::Runtime::sipush>(data);
             }
             case JVM::Runtime::OperationCode::swap:
                 return std::make_shared<JVM::Runtime::swap>();
             case JVM::Runtime::OperationCode::tableswitch:
             {
+                std::stringstream::pos_type localOffset = stream.tellg();
+
                 // skip padding bytes
-                JVM::i1 paddingByte = 0;
+                JVM::u4 padding = firstInstructionOffset % 4;
+                while(padding > 0)
                 {
-                    constexpr int PADDING_MAX = 3;
-                    int paddingSize = 0;
-                    do
+                    if(static_cast<JVM::u1>(read<JVM::u1>(stream)) != 0)
                     {
-                        paddingByte = read<JVM::u1>(stream);
-                        paddingSize++;
+                        throw Compiler::RuntimeException(fmt::format("Possibly incorrect read operation occured"));
+                    }
 
-                        if (paddingByte != 0)
-                        {
-                            break;
-                        }
-
-                    } while(paddingSize < PADDING_MAX);
+                    padding--;
                 }
+                
+                JVM::i4 defaultValue = (static_cast<JVM::u4>(localOffset) - firstOpCodeLocalOffset) + read<JVM::i4>(stream);
+                JVM::i4 lowValue = read<JVM::i4>(stream);
+                JVM::i4 highValue = read<JVM::i4>(stream);
 
-                JVM::i1 defaultByte1 = paddingByte == 0 ? read<JVM::i1>(stream) : paddingByte;
-                JVM::i1 defaultByte2 = read<JVM::i1>(stream);
-                JVM::i1 defaultByte3 = read<JVM::i1>(stream);
-                JVM::i1 defaultByte4 = read<JVM::i1>(stream);
-
-                JVM::i4 defaultBytes = JVM::i4(
-                    defaultByte1 << 24 |
-                    defaultByte2 << 16 |
-                    defaultByte3 << 8  |
-                    defaultByte4
-                );
-
-                JVM::i1 lowByte1 = read<JVM::i1>(stream);
-                JVM::i1 lowByte2 = read<JVM::i1>(stream);
-                JVM::i1 lowByte3 = read<JVM::i1>(stream);
-                JVM::i1 lowByte4 = read<JVM::i1>(stream);
-
-                JVM::i1 lowBytes = JVM::u4(
-                    lowByte1 << 24 |
-                    lowByte2 << 16 |
-                    lowByte3 << 8  |
-                    lowByte4
-                );
-
-                JVM::i1 highByte1 = read<JVM::i1>(stream);
-                JVM::i1 highByte2 = read<JVM::i1>(stream);
-                JVM::i1 highByte3 = read<JVM::i1>(stream);
-                JVM::i1 highByte4 = read<JVM::i1>(stream);
-
-                JVM::i1 highBytes = JVM::i1(
-                    highByte1 << 24 |
-                    highByte2 << 16 |
-                    highByte3 << 8  |
-                    highByte4
-                );
-
-                std::vector<JVM::u4> jumpOffsets;
-                uint32_t offsetCount = highBytes - lowBytes + 1;
-                for (int32_t offsetIndex = 0; offsetIndex < offsetCount; offsetIndex++)
+                std::vector<JVM::i4> jumpOffsets;
+                const JVM::i4 jumpOffsetsCount = highValue - lowValue + 1;
+                jumpOffsets.reserve(jumpOffsetsCount);
+                for (size_t jumpOffsetIndex = 0; jumpOffsetIndex < jumpOffsetsCount; jumpOffsetIndex++)
                 {
-                    jumpOffsets.emplace_back(read<JVM::u4>(stream));
+                    std::stringstream::pos_type currentPos = stream.tellg();
+                    JVM::i4 jumpOffset =  read<JVM::i4>(stream);
+                    jumpOffsets.emplace_back(jumpOffset);
                 }
+
+                JVM::u1 defaultByte1 = (defaultValue & 0x000000ff);
+                JVM::u1 defaultByte2 = (defaultValue & 0x0000ff00) >> 8;
+                JVM::u1 defaultByte3 = (defaultValue & 0x00ff0000) >> 16;
+                JVM::u1 defaultByte4 = (defaultValue & 0xff000000) >> 24;
+
+                JVM::u1 lowByte1 = (lowValue & 0x000000ff);
+                JVM::u1 lowByte2 = (lowValue & 0x0000ff00) >> 8;
+                JVM::u1 lowByte3 = (lowValue & 0x00ff0000) >> 16;
+                JVM::u1 lowByte4 = (lowValue & 0xff000000) >> 24;
+
+                JVM::u1 highByte1 = (highValue & 0x000000ff);
+                JVM::u1 highByte2 = (highValue & 0x0000ff00) >> 8;
+                JVM::u1 highByte3 = (highValue & 0x00ff0000) >> 16;
+                JVM::u1 highByte4 = (highValue & 0xff000000) >> 24;
+
+                data.emplace_back(defaultByte1);
+                data.emplace_back(defaultByte2);
+                data.emplace_back(defaultByte3);
+                data.emplace_back(defaultByte4);
+
+                data.emplace_back(lowByte1);
+                data.emplace_back(lowByte2);
+                data.emplace_back(lowByte3);
+                data.emplace_back(lowByte4);
+
+                data.emplace_back(highByte1);
+                data.emplace_back(highByte2);
+                data.emplace_back(highByte3);
+                data.emplace_back(highByte4);
 
                 return std::make_shared<JVM::Runtime::tableswitch>(data, jumpOffsets);
             }

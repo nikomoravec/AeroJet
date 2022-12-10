@@ -5,6 +5,7 @@
 #include <filesystem>
 #include <string>
 #include <stdexcept>
+#include "Java/Types.h"
 
 namespace SuperJet::Java::Archive
 {
@@ -12,6 +13,12 @@ namespace SuperJet::Java::Archive
 
     template<typename T>
     T read(std::istream& stream);
+
+    template<typename T>
+    T read(std::istream& stream);
+
+    template<typename T>
+    T read(std::istream& stream, JVM::u4 firstInstructionOffset, JVM::u4 firstInstructionLocalOffset);
 
     template<typename T>
     T read(const std::filesystem::path& classFilePath)
