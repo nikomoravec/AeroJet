@@ -972,7 +972,7 @@ namespace SuperJet::Java::Archive
                 for (size_t jumpOffsetIndex = 0; jumpOffsetIndex < jumpOffsetsCount; jumpOffsetIndex++)
                 {
                     std::stringstream::pos_type currentPos = stream.tellg();
-                    JVM::i4 jumpOffset =  read<JVM::i4>(stream);
+                    JVM::i4 jumpOffset = (static_cast<JVM::u4>(localOffset) - firstOpCodeLocalOffset) + read<JVM::i4>(stream);
                     jumpOffsets.emplace_back(jumpOffset);
                 }
 
