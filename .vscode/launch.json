@@ -32,9 +32,9 @@
         },
         "args":
         [
-            "--jar", "/home/niko/Desktop/HelloWorld.jar",
-            "--jhome", "/home/niko/Desktop/jdk1.2.2",
-            "--main", "HelloWorld"
+          "--jar", "/Users/niko/Projects/SuperJet/Source/Java/1.2/HelloWorld.jar",
+          "--jhome", "/Users/niko/Projects/SuperJet/Source/Java/1.2/jdk",
+          "--main", "HelloWorld"
         ],
 
         "cwd": "${workspaceFolder}/.build",
