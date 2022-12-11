@@ -364,7 +364,7 @@ namespace SuperJet::Compiler
     ByteCodeCompiler::ByteCodeCompiler(const Environment& env) : context(env)
     {
         ClassInfoReferenceCollector collector = ClassInfoReferenceCollector(context);
-        //dependencyGraph = collector.collect(context.getMainClass());
+        dependencyGraph = collector.collect(context.getMainClass());
     }
 
     std::shared_ptr<SuperJet::Compiler::CodeGen::Cpp::Type> ByteCodeCompiler::javaPrimitiveToCppType(const Java::Archive::FieldDescriptor& fieldDescriptor, SuperJet::Compiler::CodeGen::Cpp::Type::Flags flags)

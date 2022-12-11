@@ -27,7 +27,7 @@ namespace SuperJet::Java::Archive::Attributes
 
             const JVM::u4 currentPos = static_cast<JVM::u4>(ss.tellg());
             const JVM::u4 endPos = currentPos + codeLength;
-            const JVM::u4 firstOpCodeOffset = currentPos + attributeInfo.getInfoOffset();
+            const JVM::u4 firstOpCodeOffset = currentPos + attributeInfo.getInfoOffset() - 3;
             const JVM::u4 firstOpCodeLocalOffset = currentPos + 1;
             while (ss.tellg() != endPos)
             {

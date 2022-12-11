@@ -189,6 +189,8 @@ namespace SuperJet::Java::Archive
     template<>
     AttributeInfo read(std::istream& stream)
     {
+        const JVM::u4 infoOffset = static_cast<JVM::u4>(stream.tellg());
+
         const JVM::u2 readAttributeNameIndex = read<JVM::u2>(stream);
         const JVM::u4 readAttributeInfoSize = read<JVM::u4>(stream);
 
@@ -199,7 +201,7 @@ namespace SuperJet::Java::Archive
             attributeInfo.emplace_back(read<JVM::u1>(stream));
         }
 
-        return AttributeInfo{readAttributeNameIndex, attributeInfo, static_cast<JVM::u4>(stream.tellg())};
+        return AttributeInfo{readAttributeNameIndex, attributeInfo, infoOffset};
     }
 
     template<>
@@ -948,21 +950,21 @@ namespace SuperJet::Java::Archive
                 return std::make_shared<JVM::Runtime::swap>();
             case JVM::Runtime::OperationCode::tableswitch:
             {
-                std::stringstream::pos_type localOffset = stream.tellg();
-
+                JVM::u4 localOffset = static_cast<JVM::u4>(stream.tellg()) - 9;
+                
                 // skip padding bytes
-                JVM::u4 padding = firstInstructionOffset % 4;
-                while(padding > 0)
+                JVM::u4 padding = (firstInstructionOffset + 9);
+                while(padding % 4 != 0)
                 {
                     if(static_cast<JVM::u1>(read<JVM::u1>(stream)) != 0)
                     {
                         throw Compiler::RuntimeException(fmt::format("Possibly incorrect read operation occured"));
                     }
 
-                    padding--;
+                    padding++;
                 }
                 
-                JVM::i4 defaultValue = (static_cast<JVM::u4>(localOffset) - firstOpCodeLocalOffset) + read<JVM::i4>(stream);
+                JVM::i4 defaultValue = localOffset + read<JVM::i4>(stream);
                 JVM::i4 lowValue = read<JVM::i4>(stream);
                 JVM::i4 highValue = read<JVM::i4>(stream);
 
@@ -972,7 +974,7 @@ namespace SuperJet::Java::Archive
                 for (size_t jumpOffsetIndex = 0; jumpOffsetIndex < jumpOffsetsCount; jumpOffsetIndex++)
                 {
                     std::stringstream::pos_type currentPos = stream.tellg();
-                    JVM::i4 jumpOffset = (static_cast<JVM::u4>(localOffset) - firstOpCodeLocalOffset) + read<JVM::i4>(stream);
+                    JVM::i4 jumpOffset = localOffset + read<JVM::i4>(stream);
                     jumpOffsets.emplace_back(jumpOffset);
                 }
 
