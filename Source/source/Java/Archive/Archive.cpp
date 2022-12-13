@@ -7,11 +7,11 @@
 #include "Compiler/Exceptions/OperationNotSupportedException.h"
 #include "Compiler/Exceptions/UnknownConstantPoolTagException.h"
 #include "fmt/format.h"
+#include "spdlog/spdlog.h"
 
 #include <bit>
 #include <strstream>
 #include <type_traits>
-#include "spdlog/spdlog.h"
 
 namespace
 {
@@ -37,6 +37,14 @@ namespace
         }
 
         return dst.object;
+    }
+}
+
+namespace
+{
+    unsigned int allign(unsigned int n)
+    {
+        return (n + 3) & ~3;
     }
 }
 
@@ -368,7 +376,7 @@ namespace SuperJet::Java::Archive
     {
         std::vector<JVM::u1> data;
         SuperJet::Java::JVM::Runtime::OperationCode opCode = static_cast<SuperJet::Java::JVM::Runtime::OperationCode>(read<JVM::u1>(stream));
-        spdlog::info(fmt::format("opcode {:#04x} pos {:#04x} offset {:#08x}", static_cast<JVM::u1>(opCode), stream.tellg(), firstInstructionOffset + static_cast<JVM::u4>(stream.tellg())));
+        spdlog::info(fmt::format("opcode {:#04x}, offset {:#08x}", static_cast<JVM::u1>(opCode), stream.tellg(), firstInstructionOffset + static_cast<JVM::u4>(stream.tellg())));
         switch (opCode)
         {
             case JVM::Runtime::OperationCode::aaload:
@@ -950,19 +958,19 @@ namespace SuperJet::Java::Archive
                 return std::make_shared<JVM::Runtime::swap>();
             case JVM::Runtime::OperationCode::tableswitch:
             {
-                JVM::u4 localOffset = static_cast<JVM::u4>(stream.tellg()) - 9;
-                
-                // skip padding bytes
-                JVM::u4 padding = (firstInstructionOffset + 9);
-                while(padding % 4 != 0)
-                {
-                    if(static_cast<JVM::u1>(read<JVM::u1>(stream)) != 0)
-                    {
-                        throw Compiler::RuntimeException(fmt::format("Possibly incorrect read operation occured"));
-                    }
+                const JVM::u4 localOffset = (static_cast<JVM::u4>(stream.tellg()) - 9);
 
-                    padding++;
+                // skip padding bytes
+                const JVM::u4 padding = allign(localOffset + 1) - localOffset;
+                {
+                    JVM::u4 paddingIndex = padding;
+                    while((paddingIndex - 1) > 0)
+                    {                        
+                        read<JVM::u1>(stream);
+                        paddingIndex--;
+                    }
                 }
+
                 
                 JVM::i4 defaultValue = localOffset + read<JVM::i4>(stream);
                 JVM::i4 lowValue = read<JVM::i4>(stream);
@@ -1010,11 +1018,80 @@ namespace SuperJet::Java::Archive
 
                 return std::make_shared<JVM::Runtime::tableswitch>(data, jumpOffsets);
             }
-            default:
             case JVM::Runtime::OperationCode::lookupswitch:
+            {
+                const JVM::u4 localOffset = (static_cast<JVM::u4>(stream.tellg()) - 9);
+
+                // skip padding bytes
+                const JVM::u4 padding = allign(localOffset + 1) - localOffset;
+                {
+                    JVM::u4 paddingIndex = padding;
+                    while((paddingIndex - 1) > 0)
+                    {                        
+                        read<JVM::u1>(stream);
+                        paddingIndex--;
+                    }
+                }
+
+                JVM::i4 defaultValue = localOffset + read<JVM::i4>(stream);
+                JVM::i4 npairsCount = read<JVM::i4>(stream);
+                for (JVM::i4 npairIndex = 0; npairIndex < npairsCount; npairIndex++)
+                {
+                    JVM::i4 match = read<JVM::i4>(stream);
+                    JVM::i4 offset = read<JVM::i4>(stream);
+                }
+                
+
+                return std::make_shared<JVM::Runtime::lookupswitch>(data);
+            }
             case JVM::Runtime::OperationCode::wide:
+            {
+                const JVM::Runtime::OperationCode nextOpCode = static_cast<JVM::Runtime::OperationCode>(read<JVM::u1>(stream));
+                data.emplace_back(static_cast<JVM::u1>(nextOpCode));
+
+                switch (nextOpCode)
+                {
+                case JVM::Runtime::OperationCode::iload:
+                case JVM::Runtime::OperationCode::fload:
+                case JVM::Runtime::OperationCode::aload:
+                case JVM::Runtime::OperationCode::lload:
+                case JVM::Runtime::OperationCode::dload:
+                case JVM::Runtime::OperationCode::istore:
+                case JVM::Runtime::OperationCode::fstore:
+                case JVM::Runtime::OperationCode::astore:
+                case JVM::Runtime::OperationCode::lstore:
+                case JVM::Runtime::OperationCode::dstore:
+                case JVM::Runtime::OperationCode::ret:
+                {
+                    JVM::u1 indexByte1 = read<JVM::u1>(stream);
+                    JVM::u1 indexByte2 = read<JVM::u1>(stream);
+                    data.emplace_back(indexByte1);
+                    data.emplace_back(indexByte2);
+                    return std::make_shared<JVM::Runtime::wide>(data);
+                    break;
+                }
+                case JVM::Runtime::OperationCode::iinc:
+                {
+                    JVM::u1 indexByte1 = read<JVM::u1>(stream);
+                    JVM::u1 indexByte2 = read<JVM::u1>(stream);
+                    JVM::u1 constByte1 = read<JVM::u1>(stream);
+                    JVM::u1 constByte2 = read<JVM::u1>(stream);
+                    data.emplace_back(indexByte1);
+                    data.emplace_back(indexByte2);
+                    data.emplace_back(constByte1);
+                    data.emplace_back(constByte1);
+                    return std::make_shared<JVM::Runtime::wide>(data);
+                    break;
+                }
+                
+                default:
+                    throw Compiler::OperationNotSupportedException(opCode);
+                    break;
+                }
+            }
+            default:
                 throw Compiler::OperationNotSupportedException(opCode);
-                return nullptr;
+                break;
         }
     }
 }
