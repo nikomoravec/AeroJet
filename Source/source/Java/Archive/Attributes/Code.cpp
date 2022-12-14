@@ -31,7 +31,7 @@ namespace SuperJet::Java::Archive::Attributes
             const JVM::u4 firstOpCodeLocalOffset = currentPos + 1;
             while (ss.tellg() != endPos)
             {
-                code.emplace_back(read<std::shared_ptr<SuperJet::Java::JVM::Runtime::Operation>>(ss, firstOpCodeOffset, firstOpCodeLocalOffset));
+                code.emplace_back(read<SuperJet::Java::JVM::Runtime::Instruction>(ss, firstOpCodeOffset, firstOpCodeLocalOffset));
             }
 
             const JVM::u2& exceptionTableLength = read<JVM::u2>(ss);

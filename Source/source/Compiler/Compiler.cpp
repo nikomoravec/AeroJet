@@ -347,7 +347,7 @@ namespace SuperJet::Compiler
                     if (constantPool.get<SuperJet::Java::Archive::ConstantPoolInfoUtf8>(methodAttribute.getAttributeNameIndex())->asString() == Java::Archive::Attributes::Code::CODE_ATTRIBUTE_NAME)
                     {
                         const Java::Archive::Attributes::Code& codeAttribute = Java::Archive::Attributes::Code(constantPool, methodAttribute);
-                        const std::vector<std::shared_ptr<Java::JVM::Runtime::Operation>>& code = codeAttribute.getCode();
+                        const std::vector<Java::JVM::Runtime::Instruction>& code = codeAttribute.getCode();
                     }
                 }
             }

@@ -4,6 +4,7 @@
 #include "Java/Types.h"
 #include "Java/Archive/AttributeInfo.h"
 #include "Java/Archive/ConstantPool.h"
+#include "Java/JVM/Runtime/Instruction.h"
 #include "Java/JVM/Runtime/Operations.h"
 #include <string>
 #include <vector>
@@ -72,7 +73,7 @@ namespace SuperJet::Java::Archive::Attributes
             return maxLocals;
         }
 
-        const std::vector<std::shared_ptr<JVM::Runtime::Operation>>& getCode() const
+        const std::vector<Java::JVM::Runtime::Instruction>& getCode() const
         {
             return code;
         }
@@ -92,7 +93,7 @@ namespace SuperJet::Java::Archive::Attributes
         JVM::u4 attributeLength;
         JVM::u2 maxStack;
         JVM::u2 maxLocals;
-        std::vector<std::shared_ptr<JVM::Runtime::Operation>> code;
+        std::vector<Java::JVM::Runtime::Instruction> code;
         std::vector<ExceptionTableEntry> exceptionTable;
         std::vector<Archive::AttributeInfo> attributes;
     };
