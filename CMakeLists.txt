@@ -1,45 +1,24 @@
-cmake_minimum_required(VERSION 3.21)
+cmake_minimum_required(VERSION 3.0)
 project(SuperJet)
 
 set(CMAKE_CXX_STANDARD 20)
 
 add_subdirectory(Source/third-party/fmtlib)
 add_subdirectory(Source/third-party/backwandcpp)
-#add_subdirectory(Source/third-party/llvm/llvm)
-add_subdirectory(Source/third-party/cxxopts)
-add_subdirectory(Source/third-party/spdlog)
 add_subdirectory(Source/third-party/zip)
 
-add_executable(SuperJet
-        SuperJet.cpp
-        Source/source/Java/Archive/Archive.cpp
-        Source/source/Java/Archive/FieldDescriptor.cpp
-        Source/source/Java/Archive/MethodDescriptor.cpp
-        Source/source/Java/Archive/Attributes/Code.cpp
-        Source/source/Java/Archive/Attributes/LineNumberTable.cpp
-        Source/source/Java/Archive/Attributes/SourceFile.cpp
-        Source/source/Java/Archive/Jar.cpp
-        Source/source/Compiler/ClassInfoReferenceCollector.cpp
-        Source/source/Compiler/Compiler.cpp
-        Source/source/Java/Archive/Attributes/LocalVariableTable.cpp
-        Source/source/Java/Archive/ClassInfo.cpp
-        Source/source/Compiler/CodeGen/Cpp/Namespace.cpp
-        Source/source/Java/Archive/Attributes/ConstantValue.cpp
-)
-
-target_include_directories(SuperJet PUBLIC
-        Source/include
-        Source/third-party/fmtlib/include
-        Source/third-party/backwandcpp
-        Source/third-party/cxxopts/include
-        Source/third-party/spdlog/include
+include_directories(
         Source/third-party/zip/src
-        Source/third-party/digraph
 )
 
-target_link_libraries(SuperJet PUBLIC
-        fmt
-        backward
-        spdlog
-        zip
-)
+add_subdirectory(Source/AeroJet)
+add_subdirectory(Source/Tools)
+
+
+option(AEROJET_RUN_TESTS "Enable tests" ON)
+
+if(AEROJET_RUN_TESTS)
+    enable_testing()
+    add_subdirectory(Source/Tests)
+endif()
+
