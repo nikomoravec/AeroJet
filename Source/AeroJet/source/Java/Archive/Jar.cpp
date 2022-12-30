@@ -103,7 +103,7 @@ namespace AeroJet::Java::Archive
             throw Exceptions::FileNotFoundException(path);
         }
 
-        m_zip = zip_open(path.c_str(), 0, 'r');
+        m_zip = zip_open(path.string().c_str(), 0, 'r');
         if (m_zip == nullptr)
         {
             throw Exceptions::RuntimeException(fmt::format("Failed to open JAR archive \"{}\"", path.string()));
