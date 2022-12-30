@@ -41,7 +41,7 @@ namespace AeroJet::Java::Archive
 
     Jar::Entry::Entry(zip_t* zip, const std::filesystem::path& path) : Entry(zip)
     {
-        i4 open = zip_entry_open(m_zip, path.c_str());
+        i4 open = zip_entry_open(m_zip, path.string().c_str());
         if (open != 0)
         {
             throw Exceptions::RuntimeException(fmt::format("Failed to read entry \"{}\"! Error: {}", path.string(), open));
