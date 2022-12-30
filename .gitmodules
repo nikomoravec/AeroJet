@@ -16,3 +16,6 @@
 [submodule "Source/third-party/digraph"]
 	path = Source/third-party/digraph
 	url = git@github.com:grame-cncm/digraph.git
+[submodule "Source/third-party/doctest"]
+	path = Source/third-party/doctest
+	url = git@github.com:doctest/doctest.git

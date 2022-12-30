@@ -294,6 +294,6 @@ AeroJet::Java::ClassFile::ConstantPoolEntry AeroJet::Stream::Reader::read(std::i
                     ));
     }
 
-    std::vector<AeroJet::u1> dataBytes = AeroJet::Stream::StreamUtils::streamToBytes(dataStream);
+    std::vector<AeroJet::u1> dataBytes = AeroJet::Stream::Utils::streamToBytes(dataStream);
     return {tag, dataBytes};
 }

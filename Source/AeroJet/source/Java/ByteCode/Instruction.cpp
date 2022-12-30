@@ -382,6 +382,6 @@ AeroJet::Java::ByteCode::Instruction AeroJet::Stream::Reader::read(std::istream&
             throw AeroJet::Exceptions::OperationNotSupportedException(opCode);
     }
 
-    std::vector<AeroJet::u1> dataBytes = AeroJet::Stream::StreamUtils::streamToBytes(dataStream);
+    std::vector<AeroJet::u1> dataBytes = AeroJet::Stream::Utils::streamToBytes(dataStream);
     return {opCode, std::move(dataBytes)};
 }

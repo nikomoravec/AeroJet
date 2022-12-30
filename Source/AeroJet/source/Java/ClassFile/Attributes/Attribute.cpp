@@ -25,6 +25,7 @@
 #include "Java/ClassFile/Attributes/Attribute.hpp"
 #include "Java/ClassFile/Utils/ConstantPoolEntryUtils.hpp"
 #include "Exceptions/IncorrectAttributeTypeException.hpp"
+#include "Stream/StreamUtils.hpp"
 
 namespace AeroJet::Java::ClassFile
 {
@@ -41,8 +42,7 @@ namespace AeroJet::Java::ClassFile
         m_attributeNameIndex = nameIndex;
         m_attributeLength = attributeInfo.size();
 
-        const std::vector<u1>& info = attributeInfo.info();
-        std::move(info.begin(), info.end(), std::ostream_iterator<u1>(m_infoDataStream));
+        m_infoDataStream = Stream::Utils::bytesToStream(attributeInfo.info());
     }
 
     u2 Attribute::attributeNameIndex() const

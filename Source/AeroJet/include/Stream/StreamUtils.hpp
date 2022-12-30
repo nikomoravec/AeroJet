@@ -30,9 +30,10 @@
 
 namespace AeroJet::Stream
 {
-    class StreamUtils
+    class Utils
     {
     public:
         static std::vector<u1> streamToBytes(std::stringstream& stream);
+        static std::stringstream bytesToStream(const std::vector<u1>& bytes);
     };
 }

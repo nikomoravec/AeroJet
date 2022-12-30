@@ -26,7 +26,7 @@
 
 namespace AeroJet::Stream
 {
-    std::vector<u1> StreamUtils::streamToBytes(std::stringstream& stream)
+    std::vector<u1> Utils::streamToBytes(std::stringstream& stream)
     {
         stream.seekg(0, std::ios::end);
         std::streampos dataSize = stream.tellg();
@@ -37,5 +37,13 @@ namespace AeroJet::Stream
 
         bytes.assign(std::istreambuf_iterator<char>(stream), std::istreambuf_iterator<char>());
         return bytes;
+    }
+
+    std::stringstream Utils::bytesToStream(const std::vector<u1>& bytes)
+    {
+        std::stringstream stream;
+        std::move(bytes.begin(), bytes.end(), std::ostream_iterator<u1>(stream));
+
+        return stream;
     }
 }
