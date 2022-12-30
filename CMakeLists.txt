@@ -17,8 +17,9 @@ add_subdirectory(Source/Tools)
 
 option(AEROJET_RUN_TESTS "Enable tests" ON)
 
-if(AEROJET_RUN_TESTS)
-    enable_testing()
-    add_subdirectory(Source/Tests)
-endif()
+#if(AEROJET_RUN_TESTS)
+#    enable_testing()
+#    include_directories(Source/third-party/doctest/doctest)
+#    add_subdirectory(Source/Tests)
+#endif()
 
