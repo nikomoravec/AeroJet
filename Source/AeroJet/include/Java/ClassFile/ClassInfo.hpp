@@ -29,6 +29,7 @@
 #include "Java/ClassFile/FieldInfo.hpp"
 #include "Java/ClassFile/MethodInfo.hpp"
 #include "Types.hpp"
+#include <optional>
 #include <vector>
 
 namespace AeroJet::Java::ClassFile

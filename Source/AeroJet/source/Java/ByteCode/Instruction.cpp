@@ -374,7 +374,7 @@ AeroJet::Java::ByteCode::Instruction AeroJet::Stream::Reader::read(std::istream&
                     break;
                 }
                 default:
-                    throw AeroJet::Exceptions::RuntimeException(fmt::format("Unexpected OpCode ({:#04x}) after 'wide'!"));
+                    throw AeroJet::Exceptions::RuntimeException(fmt::format("Unexpected OpCode ({:#04x}) after 'wide'!", static_cast<AeroJet::u1>(nextOpCode)));
             }
             break;
         }
