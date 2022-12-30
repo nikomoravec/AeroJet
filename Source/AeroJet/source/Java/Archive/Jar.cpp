@@ -41,7 +41,7 @@ namespace AeroJet::Java::Archive
 
     Jar::Entry::Entry(zip_t* zip, const std::filesystem::path& path) : Entry(zip)
     {
-        const i4 open = zip_entry_open(m_zip, path.c_str());
+        i4 open = zip_entry_open(m_zip, path.c_str());
         if (open != 0)
         {
             throw Exceptions::RuntimeException(fmt::format("Failed to read entry \"{}\"! Error: {}", path.string(), open));
@@ -55,7 +55,7 @@ namespace AeroJet::Java::Archive
     {
         m_index = index;
 
-        const int open = zip_entry_openbyindex(zip, m_index);
+        i4 open = zip_entry_openbyindex(zip, m_index);
         if (open != 0)
         {
             throw Exceptions::RuntimeException(fmt::format("Failed to read entry at index \"{}\"! Error: {}", m_index, open));
@@ -113,7 +113,7 @@ namespace AeroJet::Java::Archive
     Jar::Jar(const Jar& other)
     {
         this->m_location = other.m_location;
-        this->m_zip = zip_open(m_location.c_str(), 0, 'r');
+        this->m_zip = zip_open(m_location.string().c_str(), 0, 'r');
 
         if (m_zip == nullptr)
         {
