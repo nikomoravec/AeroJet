@@ -1,21 +1,21 @@
 [submodule "Source/third-party/fmtlib"]
 	path = Source/third-party/fmtlib
-	url = git@github.com:fmtlib/fmt.git
+	url = https://github.com/fmtlib/fmt.git
 [submodule "Source/third-party/backwandcpp"]
 	path = Source/third-party/backwandcpp
-	url = git@github.com:bombela/backward-cpp.git
+	url = https://github.com/bombela/backward-cpp.git
 [submodule "Source/third-party/cxxopts"]
 	path = Source/third-party/cxxopts
-	url = git@github.com:jarro2783/cxxopts.git
+	url = https://github.com/jarro2783/cxxopts.git
 [submodule "Source/third-party/spdlog"]
 	path = Source/third-party/spdlog
-	url = git@github.com:gabime/spdlog.git
+	url = https://github.com/gabime/spdlog.git
 [submodule "Source/third-party/zip"]
 	path = Source/third-party/zip
-	url = git@github.com:kuba--/zip.git
+	url = https://github.com/kuba--/zip.git
 [submodule "Source/third-party/digraph"]
 	path = Source/third-party/digraph
-	url = git@github.com:grame-cncm/digraph.git
+	url = https://github.com/grame-cncm/digraph.git
 [submodule "Source/third-party/doctest"]
 	path = Source/third-party/doctest
-	url = git@github.com:doctest/doctest.git
+	url = https://github.com/doctest/doctest.git
