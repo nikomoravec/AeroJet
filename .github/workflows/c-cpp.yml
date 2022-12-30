@@ -18,4 +18,4 @@ jobs:
     - name: generate project
       run: mkdir .build && cd .build && cmake ..
     - name: build
-      run: cmake --build . --target AeroJet
+      run: cmake --build .build --target AeroJet
