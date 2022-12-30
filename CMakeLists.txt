@@ -12,7 +12,7 @@ include_directories(
 )
 
 add_subdirectory(Source/AeroJet)
-add_subdirectory(Source/Tools)
+#add_subdirectory(Source/Tools)
 
 
 option(AEROJET_RUN_TESTS "Enable tests" ON)
