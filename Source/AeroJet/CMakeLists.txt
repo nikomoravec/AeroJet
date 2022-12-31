@@ -89,6 +89,7 @@ add_library(AeroJet ${AEROJET_LIB_TYPE}
 
 target_include_directories(AeroJet PUBLIC
         include
+        ${CMAKE_SOURCE_DIR}/Source/third-party/zip/src
 )
 
 target_link_libraries(AeroJet PRIVATE

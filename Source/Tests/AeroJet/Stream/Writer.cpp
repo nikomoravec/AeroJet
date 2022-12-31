@@ -1,0 +1,54 @@
+/*
+ * Writer.cpp
+ *
+ * Copyright © 2022 AeroJet Developers. All Rights Reserved.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the “Software”), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES
+ * OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+#define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
+
+#include "AeroJet.hpp"
+#include "doctest.h"
+
+#define READ_TEST(type, expectedValue)       \
+{                                            \
+    type read = {};                          \
+    ss.read((char*)&read, sizeof(type));     \
+    REQUIRE_EQ(read, expectedValue);         \
+}                                            \
+
+
+TEST_CASE("AeroJet::Stream::Writer::write")
+{
+    std::stringstream ss;
+
+    SUBCASE("Numeric types")
+    {
+        AeroJet::Stream::Writer::write(ss, AeroJet::u1{0xFF});
+        AeroJet::Stream::Writer::write(ss, AeroJet::u2{0xFFFF});
+        AeroJet::Stream::Writer::write(ss, AeroJet::u4{0xFFFFFFFF});
+        AeroJet::Stream::Writer::write(ss, AeroJet::u8{0xFFFFFFFFFFFFFFFF});
+
+        READ_TEST(AeroJet::u1, 0xFF)
+        READ_TEST(AeroJet::u2, 0xFFFF)
+        READ_TEST(AeroJet::u4, 0xFFFFFFFF)
+        READ_TEST(AeroJet::u8, 0xFFFFFFFFFFFFFFFF)
+    }
+}
