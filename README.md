@@ -1,4 +1,5 @@
 [![Build](https://github.com/nikitamiroshnichenko/AeroJet/actions/workflows/c-cpp.yml/badge.svg)](https://github.com/nikitamiroshnichenko/AeroJet/actions/workflows/c-cpp.yml)
+[![Tests](https://github.com/nikitamiroshnichenko/AeroJet/actions/workflows/run-tests.yml/badge.svg)](https://github.com/nikitamiroshnichenko/AeroJet/actions/workflows/run-tests.yml)
 
 **Aero Jet** - Java AOT Compiler (WIP)
 
