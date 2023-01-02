@@ -46,7 +46,7 @@ namespace AeroJet::Java::ByteCode
         return m_opCode;
     }
 
-    const std::vector<u1> &Instruction::data() const
+    const std::vector<u1>& Instruction::data() const
     {
         return m_data;
     }
