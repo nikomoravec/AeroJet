@@ -23,3 +23,4 @@
 
 link_libraries(AeroJet)
 add_subdirectory(Stream)
+add_subdirectory(ClassFile)
