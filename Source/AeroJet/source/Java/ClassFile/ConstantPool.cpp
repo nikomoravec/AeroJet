@@ -28,7 +28,7 @@ namespace AeroJet::Java::ClassFile
 {
     u2 ConstantPool::size() const
     {
-        return m_entries.size() + 1;
+        return m_entries.size();
     }
 
     void ConstantPool::addEntry(u2 index, ConstantPoolEntry&& entry)
@@ -46,12 +46,12 @@ namespace AeroJet::Java::ClassFile
         return getEntry(index);
     }
 
-    auto ConstantPool::begin() const
+    std::map<u2, ConstantPoolEntry>::const_iterator ConstantPool::begin() const
     {
         return m_entries.begin();
     }
 
-    auto ConstantPool::end() const
+    std::map<u2, ConstantPoolEntry>::const_iterator ConstantPool::end() const
     {
         return m_entries.end();
     }

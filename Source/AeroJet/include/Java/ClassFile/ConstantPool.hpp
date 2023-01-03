@@ -44,10 +44,10 @@ namespace AeroJet::Java::ClassFile
         void addEntry(u2 index, ConstantPoolEntry&& entry);
 
         [[nodiscard]]
-        auto begin() const;
+        std::map<u2, ConstantPoolEntry>::const_iterator begin() const;
 
         [[nodiscard]]
-        auto end() const;
+        std::map<u2, ConstantPoolEntry>::const_iterator end() const;
 
     private:
         std::map<u2, ConstantPoolEntry> m_entries;
