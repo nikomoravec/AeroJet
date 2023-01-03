@@ -23,7 +23,6 @@
  */
 
 #include "Java/ClassFile/Attributes/Attribute.hpp"
-#include "Java/ClassFile/Utils/ConstantPoolEntryUtils.hpp"
 #include "Exceptions/IncorrectAttributeTypeException.hpp"
 #include "Stream/StreamUtils.hpp"
 
@@ -32,7 +31,7 @@ namespace AeroJet::Java::ClassFile
     Attribute::Attribute(const ConstantPool& constantPool, const AttributeInfo& attributeInfo, std::string_view requiredAttributeName)
     {
         const u2 nameIndex = attributeInfo.attributeNameIndex();
-        const std::string attributeName = Utils::ConstantPoolInfoUtf8::asString(constantPool[nameIndex]);
+        const std::string_view attributeName = constantPool[nameIndex].as<ConstantPoolInfoUtf8>().asString();
 
         if (attributeName != requiredAttributeName)
         {

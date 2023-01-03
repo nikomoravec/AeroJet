@@ -29,32 +29,6 @@
 #include "Stream/StreamUtils.hpp"
 #include "Stream/Writer.hpp"
 
-namespace
-{
-    inline void checkDataSize(const AeroJet::Java::ClassFile::ConstantPoolEntry& entry, AeroJet::u8 requiredSize)
-    {
-
-        const std::size_t dataSize = entry.data().size();
-        if (dataSize < requiredSize)
-        {
-            throw AeroJet::Exceptions::RuntimeException(fmt::format("Data size '{}' is less than required '{}'", dataSize, requiredSize));
-        }
-    }
-
-    inline void verifyTag(const AeroJet::Java::ClassFile::ConstantPoolEntry& entry, AeroJet::Java::ClassFile::ConstantPoolInfoTag requiredTag)
-    {
-        const AeroJet::Java::ClassFile::ConstantPoolInfoTag tag = entry.tag();
-        if (tag != requiredTag)
-        {
-            throw AeroJet::Exceptions::RuntimeException(
-                    fmt::format("entry tag '{}' is not equal to required '{}'",
-                                static_cast<AeroJet::u1>(tag),
-                                static_cast<AeroJet::u1>(requiredTag))
-            );
-        }
-    }
-}
-
 namespace AeroJet::Java::ClassFile
 {
     constexpr u2 CONSTANT_POOL_INFO_CLASS_DATA_SIZE = 2;
@@ -81,138 +55,136 @@ namespace AeroJet::Java::ClassFile
         return m_data;
     }
 
-    u2 ConstantPoolInfoUtf8::length(const ConstantPoolEntry& entry)
+    ConstantPoolInfoUtf8::ConstantPoolInfoUtf8(const std::vector<u1>& bytes) : m_string(bytes.begin(), bytes.end())
     {
-        verifyTag(entry, ConstantPoolInfoTag::UTF_8);
-        return entry.data().size();
     }
 
-    u2 ConstantPoolInfoClass::nameIndex(const ConstantPoolEntry& entry)
+    u2 ConstantPoolInfoUtf8::length()
     {
-        constexpr u2 NAME_INDEX_OFFSET = 0;
-
-        verifyTag(entry, ConstantPoolInfoTag::CLASS);
-        checkDataSize(entry, CONSTANT_POOL_INFO_CLASS_DATA_SIZE);
-        return *(u2*)(&entry.data()[NAME_INDEX_OFFSET]);
+        return m_string.size();
     }
 
-    u2 ConstantPoolInfoFieldRef::classIndex(const ConstantPoolEntry& entry)
+    std::string_view ConstantPoolInfoUtf8::asString() const
     {
-        constexpr u2 CLASS_INDEX_OFFSET = 0;
-
-        verifyTag(entry, ConstantPoolInfoTag::FIELD_REF);
-        checkDataSize(entry, CONSTANT_POOL_INFO_FIELD_REF_SIZE);
-        return *(u2*)(&entry.data()[CLASS_INDEX_OFFSET]);
+        return m_string;
     }
 
-    u2 ConstantPoolInfoFieldRef::nameAndTypeIndex(const ConstantPoolEntry& entry)
+    std::vector<u1> ConstantPoolInfoUtf8::bytes() const
     {
-        constexpr u2 NAME_AND_TYPE_INDEX_OFFSET = 2;
-
-        verifyTag(entry, ConstantPoolInfoTag::FIELD_REF);
-        checkDataSize(entry, CONSTANT_POOL_INFO_FIELD_REF_SIZE);
-        return *(u2*)(&entry.data()[NAME_AND_TYPE_INDEX_OFFSET]);
+        return  std::vector<u1>{m_string.begin(), m_string.end()};
     }
 
-    u2 ConstantPoolInfoString::stringIndex(const ConstantPoolEntry& entry)
+    ConstantPoolInfoInteger::ConstantPoolInfoInteger(u4 bytes) : m_bytes(bytes)
     {
-        constexpr u2 STRING_INDEX_OFFSET = 0;
-
-        verifyTag(entry, ConstantPoolInfoTag::STRING);
-        checkDataSize(entry, CONSTANT_POOL_INFO_STRING_SIZE);
-        return *(u2*)(&entry.data()[STRING_INDEX_OFFSET]);
     }
 
-    u4 ConstantPoolInfoInteger::bytes(const ConstantPoolEntry& entry)
+    u4 ConstantPoolInfoInteger::bytes()
     {
-        constexpr u2 BYTES_OFFSET = 0;
-
-        verifyTag(entry, ConstantPoolInfoTag::INTEGER);
-        checkDataSize(entry, CONSTANT_POOL_INFO_INTEGER_SIZE);
-        return *(u4*)(&entry.data()[BYTES_OFFSET]);
+        return m_bytes;
     }
 
-    u4 ConstantPoolInfoLong::highBytes(const ConstantPoolEntry& entry)
+    ConstantPoolInfoLong::ConstantPoolInfoLong(u4 highBytes, u4 lowBytes) : m_highBytes(highBytes), m_lowBytes(lowBytes)
     {
-        constexpr u2 HIGH_BYTES_OFFSET = 0;
-
-        verifyTag(entry, ConstantPoolInfoTag::LONG);
-        checkDataSize(entry, CONSTANT_POOL_INFO_LONG_SIZE);
-        return *(u4*)(&entry.data()[HIGH_BYTES_OFFSET]);
     }
 
-    u4 ConstantPoolInfoLong::lowBytes(const ConstantPoolEntry& entry)
+    u4 ConstantPoolInfoLong::highBytes()
     {
-        constexpr u2 LOW_BYTES_OFFSET = 4;
-
-        verifyTag(entry, ConstantPoolInfoTag::LONG);
-        checkDataSize(entry, CONSTANT_POOL_INFO_LONG_SIZE);
-        return *(u4*)(&entry.data()[LOW_BYTES_OFFSET]);
+        return m_highBytes;
     }
 
-    u2 ConstantPoolInfoNameAndType::nameIndex(const ConstantPoolEntry& entry)
+    u4 ConstantPoolInfoLong::lowBytes()
     {
-        constexpr u2 NAME_INDEX_OFFSET = 0;
-
-        verifyTag(entry, ConstantPoolInfoTag::NAME_AND_TYPE);
-        checkDataSize(entry, CONSTANT_POOL_INFO_NAME_AND_TYPE_SIZE);
-        return *(u2*)(&entry.data()[NAME_INDEX_OFFSET]);
+        return m_lowBytes;
     }
 
-    u2 ConstantPoolInfoNameAndType::descriptorIndex(const ConstantPoolEntry& entry)
+    ConstantPoolInfoClass::ConstantPoolInfoClass(u2 nameIndex) : m_nameIndex(nameIndex)
     {
-        constexpr u2 DESCRIPTOR_INDEX_OFFSET = 2;
-
-        verifyTag(entry, ConstantPoolInfoTag::NAME_AND_TYPE);
-        checkDataSize(entry, CONSTANT_POOL_INFO_NAME_AND_TYPE_SIZE);
-        return *(u2*)(&entry.data()[DESCRIPTOR_INDEX_OFFSET]);
     }
 
-    ConstantPoolInfoMethodHandle::ReferenceKind ConstantPoolInfoMethodHandle::referenceKind(const ConstantPoolEntry& entry)
+    u2 ConstantPoolInfoClass::nameIndex()
     {
-        constexpr u2 REFERENCE_KIND_OFFSET = 0;
-
-        verifyTag(entry, ConstantPoolInfoTag::METHOD_HANDLE);
-        checkDataSize(entry, CONSTANT_POOL_INFO_METHOD_HANDLE_SIZE);
-        return static_cast<ConstantPoolInfoMethodHandle::ReferenceKind>(*(u1*)(&entry.data()[REFERENCE_KIND_OFFSET]));
+        return m_nameIndex;
     }
 
-    u2 ConstantPoolInfoMethodHandle::referenceIndex(const ConstantPoolEntry& entry)
+    ConstantPoolInfoString::ConstantPoolInfoString(u2 stringIndex) : m_stringIndex(stringIndex)
     {
-        constexpr u2 REFERENCE_INDEX_OFFSET = 1;
-
-        verifyTag(entry, ConstantPoolInfoTag::METHOD_HANDLE);
-        checkDataSize(entry, CONSTANT_POOL_INFO_METHOD_HANDLE_SIZE);
-        return *(u2*)(&entry.data()[REFERENCE_INDEX_OFFSET]);
     }
 
-    u2 ConstantPoolInfoMethodType::descriptorIndex(const ConstantPoolEntry& entry)
+    u2 ConstantPoolInfoString::stringIndex()
     {
-        constexpr u2 DESCRIPTOR_INDEX_OFFSET = 0;
-
-        verifyTag(entry, ConstantPoolInfoTag::METHOD_TYPE);
-        checkDataSize(entry, CONSTANT_POOL_INFO_METHOD_TYPE_SIZE);
-        return *(u2*)(&entry.data()[DESCRIPTOR_INDEX_OFFSET]);
+        return m_stringIndex;
     }
 
-    u2 ConstantPoolInfoInvokeDynamic::bootstrapMethodAttributeIndex(const ConstantPoolEntry& entry)
+    ConstantPoolInfoFieldRef::ConstantPoolInfoFieldRef(u2 classIndex, u2 nameAndTypeIndex) : m_classIndex(classIndex), m_nameAndTypeIndex(nameAndTypeIndex)
     {
-        constexpr u2 BOOTSTRAP_METHOD_ATTRIBUTE_INDEX_OFFSET = 0;
-
-        verifyTag(entry, ConstantPoolInfoTag::INVOKE_DYNAMIC);
-        checkDataSize(entry, CONSTANT_POOL_INFO_INVOKE_DYNAMIC_SIZE);
-        return *(u2*)(&entry.data()[BOOTSTRAP_METHOD_ATTRIBUTE_INDEX_OFFSET]);
     }
 
-    u2 ConstantPoolInfoInvokeDynamic::nameAndTypeIndex(const ConstantPoolEntry& entry)
+    u2 ConstantPoolInfoFieldRef::classIndex()
     {
-        constexpr u2 NAME_AND_TYPE_INDEX_OFFSET = 2;
+        return m_classIndex;
+    }
 
-        verifyTag(entry, ConstantPoolInfoTag::INVOKE_DYNAMIC);
-        checkDataSize(entry, CONSTANT_POOL_INFO_INVOKE_DYNAMIC_SIZE);
-        return *(u2*)(&entry.data()[NAME_AND_TYPE_INDEX_OFFSET]);
+    u2 ConstantPoolInfoFieldRef::nameAndTypeIndex()
+    {
+        return m_nameAndTypeIndex;
+    }
+
+    ConstantPoolInfoNameAndType::ConstantPoolInfoNameAndType(u2 nameIndex, u2 descriptorIndex) : m_nameIndex(nameIndex), m_descriptorIndex(descriptorIndex)
+    {
+    }
+
+    u2 ConstantPoolInfoNameAndType::nameIndex()
+    {
+        return m_nameIndex;
+    }
+
+    u2 ConstantPoolInfoNameAndType::descriptorIndex()
+    {
+        return m_descriptorIndex;
+    }
+
+    ConstantPoolInfoMethodHandle::ConstantPoolInfoMethodHandle(ConstantPoolInfoMethodHandle::ReferenceKind referenceKind, u2 referenceIndex) :
+        m_referenceKind(referenceKind),
+        m_referenceIndex(referenceIndex)
+    {
+    }
+
+    ConstantPoolInfoMethodHandle::ReferenceKind ConstantPoolInfoMethodHandle::referenceKind()
+    {
+        return m_referenceKind;
+    }
+
+    u2 ConstantPoolInfoMethodHandle::referenceIndex()
+    {
+        return m_referenceIndex;
+    }
+
+    ConstantPoolInfoMethodType::ConstantPoolInfoMethodType(u2 descriptorIndex) : m_descriptorIndex(descriptorIndex)
+    {
+    }
+
+    u2 ConstantPoolInfoMethodType::descriptorIndex()
+    {
+        return m_descriptorIndex;
+    }
+
+    ConstantPoolInfoInvokeDynamic::ConstantPoolInfoInvokeDynamic(u2 bootstrapMethodAttributeIndex, u2 nameAndTypeIndex) :
+        m_bootstrapMethodAttributeIndex(bootstrapMethodAttributeIndex),
+        m_nameAndTypeIndex(nameAndTypeIndex)
+    {
+    }
+
+    u2 ConstantPoolInfoInvokeDynamic::bootstrapMethodAttributeIndex()
+    {
+        return m_bootstrapMethodAttributeIndex;
+    }
+
+    u2 ConstantPoolInfoInvokeDynamic::nameAndTypeIndex()
+    {
+        return m_nameAndTypeIndex;
     }
 }
+
 
 template<>
 AeroJet::Java::ClassFile::ConstantPoolEntry AeroJet::Stream::Reader::read(std::istream& stream)

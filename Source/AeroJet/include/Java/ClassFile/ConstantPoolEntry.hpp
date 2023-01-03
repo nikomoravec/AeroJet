@@ -24,7 +24,9 @@
 
 #pragma once
 
+#include "Stream/StreamUtils.hpp"
 #include "Types.hpp"
+#include <concepts>
 #include <string>
 #include <utility>
 #include <vector>
@@ -49,82 +51,131 @@ namespace AeroJet::Java::ClassFile
         INVOKE_DYNAMIC = 18
     };
 
-    class ConstantPoolEntry
+    template <typename T>
+    concept ConstantPoolInfo =
+            std::same_as<T, class ConstantPoolInfoUtf8>          ||
+            std::same_as<T, class ConstantPoolInfoInteger>       ||
+            std::same_as<T, class ConstantPoolInfoLong>          ||
+            std::same_as<T, class ConstantPoolInfoClass>         ||
+            std::same_as<T, class ConstantPoolInfoString>        ||
+            std::same_as<T, class ConstantPoolInfoFieldRef>      ||
+            std::same_as<T, class ConstantPoolInfoNameAndType>   ||
+            std::same_as<T, class ConstantPoolInfoMethodHandle>  ||
+            std::same_as<T, class ConstantPoolInfoMethodType>    ||
+            std::same_as<T, class ConstantPoolInfoInvokeDynamic>;
+
+    class ConstantPoolInfoUtf8
     {
     public:
-        ConstantPoolEntry(ConstantPoolInfoTag tag, const std::vector<u1>& data);
+        explicit ConstantPoolInfoUtf8(const std::vector<u1>& bytes);
 
         [[nodiscard]]
-        ConstantPoolInfoTag tag() const;
+        u2 length();
 
         [[nodiscard]]
-        const std::vector<u1>& data() const;
+        std::vector<u1> bytes() const;
 
-    protected:
-        ConstantPoolInfoTag m_tag;
-        std::vector<u1> m_data;
+        [[nodiscard]]
+        std::string_view asString() const;
+
+    private:
+        std::string m_string;
     };
 
-    namespace ConstantPoolInfoUtf8
+    class ConstantPoolInfoInteger
     {
-        [[nodiscard]]
-        u2 length(const ConstantPoolEntry& entry);
-    }
+    public:
+        explicit ConstantPoolInfoInteger(u4 bytes);
 
-    namespace ConstantPoolInfoClass
+        [[nodiscard]]
+        u4 bytes();
+
+    private:
+        u4 m_bytes;
+    };
+
+    using ConstantPoolInfoFloat = ConstantPoolInfoInteger;
+
+    class ConstantPoolInfoLong
     {
-        [[nodiscard]]
-        u2 nameIndex(const ConstantPoolEntry& entry);
-    }
+    public:
+        ConstantPoolInfoLong(u4 highBytes, u4 lowBytes);
 
-    namespace ConstantPoolInfoFieldRef
+        [[nodiscard]]
+        u4 highBytes();
+
+        [[nodiscard]]
+        u4 lowBytes();
+
+    private:
+        u4 m_highBytes;
+        u4 m_lowBytes;
+    };
+
+    using ConstantPoolInfoDouble = ConstantPoolInfoLong;
+
+    class ConstantPoolInfoClass
     {
-        [[nodiscard]]
-        u2 classIndex(const ConstantPoolEntry& entry);
+    public:
+        explicit ConstantPoolInfoClass(u2 nameIndex);
 
         [[nodiscard]]
-        u2 nameAndTypeIndex(const ConstantPoolEntry& entry);
-    }
+        u2 nameIndex();
 
-    namespace ConstantPoolInfoMethodRef = ConstantPoolInfoFieldRef;
-    namespace ConstantPoolInfoInterfaceMethodRef = ConstantPoolInfoFieldRef;
+    private:
+        u2 m_nameIndex;
+    };
 
-    namespace ConstantPoolInfoString
+    class ConstantPoolInfoString
     {
-        [[nodiscard]]
-        u2 stringIndex(const ConstantPoolEntry& entry);
-    }
+    public:
+        explicit ConstantPoolInfoString(u2 stringIndex);
 
-    namespace ConstantPoolInfoInteger
+        [[nodiscard]]
+        u2 stringIndex();
+
+    private:
+        u2 m_stringIndex;
+    };
+
+    class ConstantPoolInfoFieldRef
     {
+    public:
+        ConstantPoolInfoFieldRef(u2 classIndex, u2 nameAndTypeIndex);
+
         [[nodiscard]]
-        u4 bytes(const ConstantPoolEntry& entry);
-    }
+        u2 classIndex();
 
-    namespace ConstantPoolFloat = ConstantPoolInfoInteger;
+        [[nodiscard]]
+        u2 nameAndTypeIndex();
 
-    namespace ConstantPoolInfoLong
+    private:
+        u2 m_classIndex;
+        u2 m_nameAndTypeIndex;
+    };
+
+    using ConstantPoolInfoMethodRef = ConstantPoolInfoFieldRef;
+    using ConstantPoolInfoInterfaceMethodRef = ConstantPoolInfoFieldRef;
+
+    class ConstantPoolInfoNameAndType
     {
-        [[nodiscard]]
-        u4 highBytes(const ConstantPoolEntry& entry);
+    public:
+        ConstantPoolInfoNameAndType(u2 nameIndex, u2 descriptorIndex);
 
         [[nodiscard]]
-        u4 lowBytes(const ConstantPoolEntry& entry);
-    }
+        u2 nameIndex();
 
-    namespace ConstantPoolInfoDouble = ConstantPoolInfoLong;
+        [[nodiscard]]
+        u2 descriptorIndex();
 
-    namespace ConstantPoolInfoNameAndType
+    private:
+        u2 m_nameIndex;
+        u2 m_descriptorIndex;
+    };
+
+    class ConstantPoolInfoMethodHandle
     {
-        [[nodiscard]]
-        u2 nameIndex(const ConstantPoolEntry& entry);
-
-        [[nodiscard]]
-        u2 descriptorIndex(const ConstantPoolEntry& entry);
-    }
-
-    namespace ConstantPoolInfoMethodHandle
-    {
+    public:
         enum class ReferenceKind : u1
         {
             REF_getField = 1,
@@ -138,25 +189,129 @@ namespace AeroJet::Java::ClassFile
             REF_invokeInterface = 9
         };
 
-        [[nodiscard]]
-        ReferenceKind referenceKind(const ConstantPoolEntry& entry);
+        ConstantPoolInfoMethodHandle(ReferenceKind referenceKind, u2 referenceIndex);
 
         [[nodiscard]]
-        u2 referenceIndex(const ConstantPoolEntry& entry);
-    }
+        ReferenceKind referenceKind();
 
-    namespace ConstantPoolInfoMethodType
+        [[nodiscard]]
+        u2 referenceIndex();
+
+    private:
+        ReferenceKind m_referenceKind;
+        u2 m_referenceIndex;
+    };
+
+    class ConstantPoolInfoMethodType
     {
-        [[nodiscard]]
-        u2 descriptorIndex(const ConstantPoolEntry& entry);
-    }
+    public:
+        explicit ConstantPoolInfoMethodType(u2 descriptorIndex);
 
-    namespace ConstantPoolInfoInvokeDynamic
+        [[nodiscard]]
+        u2 descriptorIndex();
+
+    private:
+        u2 m_descriptorIndex;
+    };
+
+    class ConstantPoolInfoInvokeDynamic
     {
-        [[nodiscard]]
-        u2 bootstrapMethodAttributeIndex(const ConstantPoolEntry& entry);
+    public:
+        ConstantPoolInfoInvokeDynamic(u2 bootstrapMethodAttributeIndex, u2 nameAndTypeIndex);
 
         [[nodiscard]]
-        u2 nameAndTypeIndex(const ConstantPoolEntry& entry);
+        u2 bootstrapMethodAttributeIndex();
+
+        [[nodiscard]]
+        u2 nameAndTypeIndex();
+
+    private:
+        u2 m_bootstrapMethodAttributeIndex;
+        u2 m_nameAndTypeIndex;
+    };
+
+    class ConstantPoolEntry
+    {
+    public:
+        ConstantPoolEntry(ConstantPoolInfoTag tag, const std::vector<u1>& data);
+
+        [[nodiscard]]
+        ConstantPoolInfoTag tag() const;
+
+        [[nodiscard]]
+        const std::vector<u1>& data() const;
+
+        template<typename T>
+        T as() const requires ConstantPoolInfo<T>
+        {
+            if constexpr (std::is_same_v<T, ConstantPoolInfoUtf8>)
+            {
+                return ConstantPoolInfoUtf8{data()};
+            }
+            else if constexpr (std::is_same_v<T, ConstantPoolInfoInteger>)
+            {
+                constexpr u2 BYTES_OFFSET = 0;
+
+                return ConstantPoolInfoInteger{*(u4*)(&m_data[BYTES_OFFSET])};
+            }
+            else if constexpr (std::is_same_v<T, ConstantPoolInfoLong>)
+            {
+                constexpr u2 HIGH_BYTES_OFFSET = 0;
+                constexpr u2 LOW_BYTES_OFFSET = 4;
+
+                return ConstantPoolInfoLong{*(u4*)(&m_data[HIGH_BYTES_OFFSET]), *(u4*)(&m_data[LOW_BYTES_OFFSET])};
+            }
+            else if constexpr (std::is_same_v<T, ConstantPoolInfoClass>)
+            {
+                constexpr u2 NAME_INDEX_OFFSET = 0;
+
+                return ConstantPoolInfoClass{*(u2*)(&m_data[NAME_INDEX_OFFSET])};
+            }
+            else if constexpr (std::is_same_v<T, ConstantPoolInfoString>)
+            {
+                constexpr u2 STRING_INDEX_OFFSET = 0;
+
+                return ConstantPoolInfoString{*(u2*)(&m_data[STRING_INDEX_OFFSET])};
+            }
+            else if constexpr (std::is_same_v<T, ConstantPoolInfoFieldRef>)
+            {
+                constexpr u2 CLASS_INDEX_OFFSET = 0;
+                constexpr u2 NAME_AND_TYPE_INDEX_OFFSET = 2;
+
+                return ConstantPoolInfoFieldRef{*(u2*)(&m_data[CLASS_INDEX_OFFSET]), *(u2*)(&m_data[NAME_AND_TYPE_INDEX_OFFSET])};
+            }
+            else if constexpr (std::is_same_v<T, ConstantPoolInfoNameAndType>)
+            {
+                constexpr u2 NAME_INDEX_OFFSET = 0;
+                constexpr u2 DESCRIPTOR_INDEX_OFFSET = 2;
+
+                return ConstantPoolInfoNameAndType{*(u2*)(&m_data[NAME_INDEX_OFFSET]), *(u2*)(&m_data[DESCRIPTOR_INDEX_OFFSET])};
+            }
+            else if constexpr (std::is_same_v<T, ConstantPoolInfoMethodHandle>)
+            {
+                constexpr u2 REFERENCE_KIND_OFFSET = 0;
+                constexpr u2 REFERENCE_INDEX_OFFSET = 1;
+
+                return ConstantPoolInfoMethodHandle{static_cast<ConstantPoolInfoMethodHandle::ReferenceKind>(*(u2*)(&m_data[REFERENCE_KIND_OFFSET])),
+                                                    *(u2*)(&m_data[REFERENCE_INDEX_OFFSET])};
+            }
+            else if constexpr (std::is_same_v<T, ConstantPoolInfoMethodType>)
+            {
+                constexpr u2 DESCRIPTOR_INDEX_OFFSET = 0;
+
+                return ConstantPoolInfoMethodType{*(u2*)(&m_data[DESCRIPTOR_INDEX_OFFSET])};
+            }
+            else if constexpr (std::is_same_v<T, ConstantPoolInfoInvokeDynamic>)
+            {
+                constexpr u2 BOOTSTRAP_METHOD_ATTRIBUTE_INDEX_OFFSET = 0;
+                constexpr u2 NAME_AND_TYPE_INDEX_OFFSET = 2;
+
+                return ConstantPoolInfoInvokeDynamic{*(u2*)(&m_data[BOOTSTRAP_METHOD_ATTRIBUTE_INDEX_OFFSET]), *(u2*)(&m_data[NAME_AND_TYPE_INDEX_OFFSET])};
+            }
+        }
+
+    protected:
+        ConstantPoolInfoTag m_tag;
+        std::vector<u1> m_data;
     };
 }
