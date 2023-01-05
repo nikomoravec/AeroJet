@@ -51,19 +51,6 @@ namespace AeroJet::Java::ClassFile
         INVOKE_DYNAMIC = 18
     };
 
-    template <typename T>
-    concept ConstantPoolInfo =
-            std::same_as<T, class ConstantPoolInfoUtf8>          ||
-            std::same_as<T, class ConstantPoolInfoInteger>       ||
-            std::same_as<T, class ConstantPoolInfoLong>          ||
-            std::same_as<T, class ConstantPoolInfoClass>         ||
-            std::same_as<T, class ConstantPoolInfoString>        ||
-            std::same_as<T, class ConstantPoolInfoFieldRef>      ||
-            std::same_as<T, class ConstantPoolInfoNameAndType>   ||
-            std::same_as<T, class ConstantPoolInfoMethodHandle>  ||
-            std::same_as<T, class ConstantPoolInfoMethodType>    ||
-            std::same_as<T, class ConstantPoolInfoInvokeDynamic>;
-
     class ConstantPoolInfoUtf8
     {
     public:
@@ -242,73 +229,7 @@ namespace AeroJet::Java::ClassFile
         const std::vector<u1>& data() const;
 
         template<typename T>
-        T as() const requires ConstantPoolInfo<T>
-        {
-            if constexpr (std::is_same_v<T, ConstantPoolInfoUtf8>)
-            {
-                return ConstantPoolInfoUtf8{data()};
-            }
-            else if constexpr (std::is_same_v<T, ConstantPoolInfoInteger>)
-            {
-                constexpr u2 BYTES_OFFSET = 0;
-
-                return ConstantPoolInfoInteger{*(u4*)(&m_data[BYTES_OFFSET])};
-            }
-            else if constexpr (std::is_same_v<T, ConstantPoolInfoLong>)
-            {
-                constexpr u2 HIGH_BYTES_OFFSET = 0;
-                constexpr u2 LOW_BYTES_OFFSET = 4;
-
-                return ConstantPoolInfoLong{*(u4*)(&m_data[HIGH_BYTES_OFFSET]), *(u4*)(&m_data[LOW_BYTES_OFFSET])};
-            }
-            else if constexpr (std::is_same_v<T, ConstantPoolInfoClass>)
-            {
-                constexpr u2 NAME_INDEX_OFFSET = 0;
-
-                return ConstantPoolInfoClass{*(u2*)(&m_data[NAME_INDEX_OFFSET])};
-            }
-            else if constexpr (std::is_same_v<T, ConstantPoolInfoString>)
-            {
-                constexpr u2 STRING_INDEX_OFFSET = 0;
-
-                return ConstantPoolInfoString{*(u2*)(&m_data[STRING_INDEX_OFFSET])};
-            }
-            else if constexpr (std::is_same_v<T, ConstantPoolInfoFieldRef>)
-            {
-                constexpr u2 CLASS_INDEX_OFFSET = 0;
-                constexpr u2 NAME_AND_TYPE_INDEX_OFFSET = 2;
-
-                return ConstantPoolInfoFieldRef{*(u2*)(&m_data[CLASS_INDEX_OFFSET]), *(u2*)(&m_data[NAME_AND_TYPE_INDEX_OFFSET])};
-            }
-            else if constexpr (std::is_same_v<T, ConstantPoolInfoNameAndType>)
-            {
-                constexpr u2 NAME_INDEX_OFFSET = 0;
-                constexpr u2 DESCRIPTOR_INDEX_OFFSET = 2;
-
-                return ConstantPoolInfoNameAndType{*(u2*)(&m_data[NAME_INDEX_OFFSET]), *(u2*)(&m_data[DESCRIPTOR_INDEX_OFFSET])};
-            }
-            else if constexpr (std::is_same_v<T, ConstantPoolInfoMethodHandle>)
-            {
-                constexpr u2 REFERENCE_KIND_OFFSET = 0;
-                constexpr u2 REFERENCE_INDEX_OFFSET = 1;
-
-                return ConstantPoolInfoMethodHandle{static_cast<ConstantPoolInfoMethodHandle::ReferenceKind>(*(u2*)(&m_data[REFERENCE_KIND_OFFSET])),
-                                                    *(u2*)(&m_data[REFERENCE_INDEX_OFFSET])};
-            }
-            else if constexpr (std::is_same_v<T, ConstantPoolInfoMethodType>)
-            {
-                constexpr u2 DESCRIPTOR_INDEX_OFFSET = 0;
-
-                return ConstantPoolInfoMethodType{*(u2*)(&m_data[DESCRIPTOR_INDEX_OFFSET])};
-            }
-            else if constexpr (std::is_same_v<T, ConstantPoolInfoInvokeDynamic>)
-            {
-                constexpr u2 BOOTSTRAP_METHOD_ATTRIBUTE_INDEX_OFFSET = 0;
-                constexpr u2 NAME_AND_TYPE_INDEX_OFFSET = 2;
-
-                return ConstantPoolInfoInvokeDynamic{*(u2*)(&m_data[BOOTSTRAP_METHOD_ATTRIBUTE_INDEX_OFFSET]), *(u2*)(&m_data[NAME_AND_TYPE_INDEX_OFFSET])};
-            }
-        }
+        T as() const;
 
     protected:
         ConstantPoolInfoTag m_tag;

@@ -183,6 +183,86 @@ namespace AeroJet::Java::ClassFile
     {
         return m_nameAndTypeIndex;
     }
+
+    template<>
+    ConstantPoolInfoUtf8 ConstantPoolEntry::as() const
+    {
+        return ConstantPoolInfoUtf8{data()};
+    }
+
+    template<>
+    ConstantPoolInfoInteger ConstantPoolEntry::as() const
+    {
+        constexpr u2 BYTES_OFFSET = 0;
+        return ConstantPoolInfoInteger{*(u4*)(&m_data[BYTES_OFFSET])};
+    }
+
+    template<>
+    ConstantPoolInfoLong ConstantPoolEntry::as() const
+    {
+        constexpr u2 HIGH_BYTES_OFFSET = 0;
+        constexpr u2 LOW_BYTES_OFFSET = 4;
+
+        return ConstantPoolInfoLong{*(u4*)(&m_data[HIGH_BYTES_OFFSET]), *(u4*)(&m_data[LOW_BYTES_OFFSET])};
+    }
+
+    template<>
+    ConstantPoolInfoClass ConstantPoolEntry::as() const
+    {
+        constexpr u2 NAME_INDEX_OFFSET = 0;
+        return ConstantPoolInfoClass{*(u2*)(&m_data[NAME_INDEX_OFFSET])};
+    }
+
+    template<>
+    ConstantPoolInfoString ConstantPoolEntry::as() const
+    {
+        constexpr u2 STRING_INDEX_OFFSET = 0;
+        return ConstantPoolInfoString{*(u2*)(&m_data[STRING_INDEX_OFFSET])};
+    }
+
+    template<>
+    ConstantPoolInfoFieldRef ConstantPoolEntry::as() const
+    {
+        constexpr u2 CLASS_INDEX_OFFSET = 0;
+        constexpr u2 NAME_AND_TYPE_INDEX_OFFSET = 2;
+
+        return ConstantPoolInfoFieldRef{*(u2*)(&m_data[CLASS_INDEX_OFFSET]), *(u2*)(&m_data[NAME_AND_TYPE_INDEX_OFFSET])};
+    }
+
+    template<>
+    ConstantPoolInfoNameAndType ConstantPoolEntry::as() const
+    {
+        constexpr u2 NAME_INDEX_OFFSET = 0;
+        constexpr u2 DESCRIPTOR_INDEX_OFFSET = 2;
+
+        return ConstantPoolInfoNameAndType{*(u2*)(&m_data[NAME_INDEX_OFFSET]), *(u2*)(&m_data[DESCRIPTOR_INDEX_OFFSET])};
+    }
+
+    template<>
+    ConstantPoolInfoMethodHandle ConstantPoolEntry::as() const
+    {
+        constexpr u2 REFERENCE_KIND_OFFSET = 0;
+        constexpr u2 REFERENCE_INDEX_OFFSET = 1;
+
+        return ConstantPoolInfoMethodHandle{static_cast<ConstantPoolInfoMethodHandle::ReferenceKind>(*(u2*)(&m_data[REFERENCE_KIND_OFFSET])),
+                                            *(u2*)(&m_data[REFERENCE_INDEX_OFFSET])};
+    }
+
+    template<>
+    ConstantPoolInfoMethodType ConstantPoolEntry::as() const
+    {
+        constexpr u2 DESCRIPTOR_INDEX_OFFSET = 0;
+        return ConstantPoolInfoMethodType{*(u2*)(&m_data[DESCRIPTOR_INDEX_OFFSET])};
+    }
+
+    template<>
+    ConstantPoolInfoInvokeDynamic ConstantPoolEntry::as() const
+    {
+        constexpr u2 BOOTSTRAP_METHOD_ATTRIBUTE_INDEX_OFFSET = 0;
+        constexpr u2 NAME_AND_TYPE_INDEX_OFFSET = 2;
+
+        return ConstantPoolInfoInvokeDynamic{*(u2*)(&m_data[BOOTSTRAP_METHOD_ATTRIBUTE_INDEX_OFFSET]), *(u2*)(&m_data[NAME_AND_TYPE_INDEX_OFFSET])};
+    }
 }
 
 
