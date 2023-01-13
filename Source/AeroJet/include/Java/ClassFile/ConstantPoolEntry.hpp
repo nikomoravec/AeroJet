@@ -26,7 +26,6 @@
 
 #include "Stream/StreamUtils.hpp"
 #include "Types.hpp"
-#include <concepts>
 #include <string>
 #include <utility>
 #include <vector>
@@ -228,6 +227,10 @@ namespace AeroJet::Java::ClassFile
         [[nodiscard]]
         const std::vector<u1>& data() const;
 
+        /*
+         * FIXME: this is kinda unsafe because of no m_tag validation inside specialized realizations
+         * Author: Nikita Miroshnichenko (nikita.miroshnichenko@yahoo.com)
+         */
         template<typename T>
         T as() const;
 

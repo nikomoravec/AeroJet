@@ -31,16 +31,6 @@
 
 namespace AeroJet::Java::ClassFile
 {
-    constexpr u2 CONSTANT_POOL_INFO_CLASS_DATA_SIZE = 2;
-    constexpr u2 CONSTANT_POOL_INFO_FIELD_REF_SIZE = 4;
-    constexpr u2 CONSTANT_POOL_INFO_STRING_SIZE = 2;
-    constexpr u2 CONSTANT_POOL_INFO_INTEGER_SIZE = 4;
-    constexpr u2 CONSTANT_POOL_INFO_LONG_SIZE = 8;
-    constexpr u2 CONSTANT_POOL_INFO_NAME_AND_TYPE_SIZE = 4;
-    constexpr u2 CONSTANT_POOL_INFO_METHOD_HANDLE_SIZE = 3;
-    constexpr u2 CONSTANT_POOL_INFO_METHOD_TYPE_SIZE = 2;
-    constexpr u2 CONSTANT_POOL_INFO_INVOKE_DYNAMIC_SIZE = 2;
-
     ConstantPoolEntry::ConstantPoolEntry(const ConstantPoolInfoTag tag, const std::vector<u1>& data) : m_tag(tag), m_data(data)
     {
     }
