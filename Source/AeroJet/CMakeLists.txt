@@ -72,6 +72,8 @@ add_library(AeroJet ${AEROJET_LIB_TYPE}
         source/Java/ClassFile/Utils/ClassInfoUtils.cpp
         include/Exceptions/FileNotFoundException.hpp
         source/Exceptions/FileNotFoundException.cpp
+        include/Exceptions/IncorrectAttributeTypeException.hpp
+        source/Exceptions/IncorrectAttributeTypeException.cpp
         include/Exceptions/OperationNotSupportedException.hpp
         source/Exceptions/OperationNotSupportedException.cpp
         include/Exceptions/RuntimeException.hpp
