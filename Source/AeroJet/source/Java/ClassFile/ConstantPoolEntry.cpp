@@ -54,7 +54,7 @@ namespace AeroJet::Java::ClassFile
         return m_string.size();
     }
 
-    std::string_view ConstantPoolInfoUtf8::asString() const
+    std::string ConstantPoolInfoUtf8::asString() const
     {
         return m_string;
     }

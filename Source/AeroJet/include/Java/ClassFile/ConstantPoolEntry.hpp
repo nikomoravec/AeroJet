@@ -62,7 +62,7 @@ namespace AeroJet::Java::ClassFile
         std::vector<u1> bytes() const;
 
         [[nodiscard]]
-        std::string_view asString() const;
+        std::string asString() const;
 
     private:
         std::string m_string;
