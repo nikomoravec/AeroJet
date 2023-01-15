@@ -65,7 +65,7 @@ to read the following Java Class Structures:
 libAeroJet is also able to read Java classes from JAR archives.
 
 ### Build Instructions
-1. Clone AeroJet project with dependencies via `git clone --recurse-submodules https://github.com/nikitamiroshnichenko/AeroJet.git`
+1. Clone AeroJet project with dependencies via `git clone --recurse-submodules https://github.com/nikitamiroshnichenko/libAeroJet.git`
 2. Navigate to the AeroJet folder you just clone `cd AeroJet `
 3. Create build folder `mkdir .build`
 4. Navigate to the `.build` directory with `cd .build` command
