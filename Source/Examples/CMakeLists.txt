@@ -21,20 +21,11 @@
 # SOFTWARE.
 #
 
-cmake_minimum_required(VERSION 3.0)
-project(SuperJet)
+add_executable(SimpleClassPrinter
+        SimpleClassPrinter.cpp
+)
 
-set(CMAKE_CXX_STANDARD 20)
-
-add_subdirectory(Source/third-party/fmtlib)
-add_subdirectory(Source/third-party/backwandcpp)
-add_subdirectory(Source/third-party/zip)
-add_subdirectory(Source/Examples)
-
-add_subdirectory(Source/AeroJet)
-
-if(NOT CMAKE_DISABLE_TESTING)
-    enable_testing()
-    include_directories(Source/third-party/doctest/doctest)
-    add_subdirectory(Source/Tests)
-endif()
+target_link_libraries(SimpleClassPrinter PRIVATE
+        AeroJet
+        fmt
+)
