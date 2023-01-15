@@ -82,7 +82,7 @@ libAeroJet is also able to read Java classes from JAR archives.
 ### Example
 Here is simple program that prints given java class methods and their bytecode :)
 
-```
+```cpp
 #include "AeroJet.hpp"
 #include "fmt/format.h"
 #include <filesystem>
