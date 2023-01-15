@@ -110,7 +110,7 @@ namespace AeroJet::Java::ClassFile
         return m_exceptionTable;
     }
 
-    const std::vector<AttributeInfo> &Code::attributes() const
+    const std::vector<AttributeInfo>& Code::attributes() const
     {
         return m_attributes;
     }
