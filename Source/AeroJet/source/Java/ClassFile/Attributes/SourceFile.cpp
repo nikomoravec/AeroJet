@@ -31,7 +31,7 @@ namespace AeroJet::Java::ClassFile
 {
     SourceFile::SourceFile(const ConstantPool& constantPool, const AttributeInfo& attributeInfo) : Attribute(constantPool, attributeInfo, SOURCE_FILE_ATTRIBUTE_NAME)
     {
-        m_sourceFileIndex = Stream::Reader::read<u2>(m_infoDataStream);
+        m_sourceFileIndex = Stream::Reader::read<u2>(m_infoDataStream, Stream::ByteOrder::INVERSE);
     }
 
     u2 SourceFile::sourceFileIndex() const

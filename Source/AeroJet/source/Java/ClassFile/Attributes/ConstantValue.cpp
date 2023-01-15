@@ -29,7 +29,7 @@ namespace AeroJet::Java::ClassFile
 {
     ConstantValue::ConstantValue(const ConstantPool& constantPool, const AttributeInfo& attributeInfo) : Attribute(constantPool, attributeInfo, CONSTANT_VALUE_ATTRIBUTE_NAME)
     {
-        m_constantValueIndex = Stream::Reader::read<u2>(m_infoDataStream);
+        m_constantValueIndex = Stream::Reader::read<u2>(m_infoDataStream, Stream::ByteOrder::INVERSE);
     }
 
     u2 ConstantValue::constantValueIndex() const

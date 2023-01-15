@@ -46,6 +46,6 @@ namespace AeroJet::Java::ClassFile
     protected:
         u2 m_attributeNameIndex;
         u4 m_attributeLength;
-        std::stringstream m_infoDataStream;
+        Stream::MemoryStream m_infoDataStream;
     };
 }

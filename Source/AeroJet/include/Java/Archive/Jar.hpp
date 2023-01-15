@@ -25,6 +25,7 @@
 #pragma once
 
 #include "zip.h"
+#include "Stream/Stream.hpp"
 #include <filesystem>
 #include <string_view>
 
@@ -41,7 +42,7 @@ namespace AeroJet::Java::Archive
             ~Entry();
 
             [[nodiscard]]
-            std::stringstream read() const;
+            Stream::MemoryStream read() const;
 
             [[nodiscard]]
             std::string_view name() const;

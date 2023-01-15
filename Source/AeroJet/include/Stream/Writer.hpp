@@ -24,13 +24,24 @@
 
 #pragma once
 
+#include "Stream.hpp"
 #include <ostream>
 
 namespace AeroJet::Stream::Writer
 {
     template<typename T>
-    inline void write(std::ostream& stream, T object)
+    inline void write(std::ostream& stream, T object, ByteOrder byteOrder = ByteOrder::DEFAULT)
     {
-        stream.write((char*)&object, sizeof(object));
+        constexpr size_t size = sizeof(object);
+
+        if (size > 1 && byteOrder == ByteOrder::INVERSE)
+        {
+            T obj = swapEndian(object);
+            stream.write((char*)&obj, sizeof(object));
+        }
+        else
+        {
+            stream.write((char*)&object, sizeof(object));
+        }
     }
 }

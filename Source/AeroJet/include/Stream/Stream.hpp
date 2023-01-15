@@ -1,5 +1,5 @@
 /*
- * StreamUtils.cpp
+ * Stream.hpp
  *
  * Copyright © 2023 AeroJet Developers. All Rights Reserved.
  *
@@ -22,37 +22,44 @@
  * SOFTWARE.
  */
 
-#include "Stream/StreamUtils.hpp"
-#include <iterator>
+#pragma once
+
+#include "Types.hpp"
+#include <climits>
+#include <cstddef>
+#include <sstream>
 
 namespace AeroJet::Stream
 {
-    std::vector<u1> Utils::streamToBytes(Stream::MemoryStream& stream)
+    enum class ByteOrder : u1
     {
-        stream.seekg(0, std::ios::end);
-        std::streampos dataSize = stream.tellg();
-        stream.seekg(0, std::ios::beg);
+        DEFAULT,
+        INVERSE
+    };
 
-        std::vector<u1> bytes;
-        bytes.reserve(dataSize);
+    using MemoryStream = std::stringstream;
 
-        bytes.assign(std::istreambuf_iterator<char>(stream), std::istreambuf_iterator<char>());
-        return bytes;
-    }
-
-    Stream::MemoryStream Utils::bytesToStream(const std::vector<u1>& bytes)
+    template<typename T>
+    static T swapEndian(const T& data)
     {
-        Stream::MemoryStream stream;
-        std::copy(bytes.begin(), bytes.end(), std::ostream_iterator<u1>(stream));
+        static_assert(CHAR_BIT == 8, "CHAR_BIT != 8");
 
-        return stream;
-    }
+        union ByteObjectRepresentation
+        {
+            T object;
+            unsigned char bytes[sizeof(T)];
+        };
 
-    Stream::MemoryStream Utils::bytesToStream(std::vector<u1>&& bytes)
-    {
-        Stream::MemoryStream stream;
-        std::move(bytes.begin(), bytes.end(), std::ostream_iterator<u1>(stream));
+        ByteObjectRepresentation source{};
+        ByteObjectRepresentation dst{};
 
-        return stream;
+        source.object = data;
+
+        for (size_t k = 0; k < sizeof(T); k++)
+        {
+            dst.bytes[k] = source.bytes[sizeof(T) - k - 1];
+        }
+
+        return dst.object;
     }
 }

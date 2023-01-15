@@ -27,6 +27,7 @@
 #include "Exceptions/RuntimeException.hpp"
 #include "fmt/format.h"
 #include "Types.hpp"
+#include "Stream/Stream.hpp"
 #include <sstream>
 
 namespace AeroJet::Java::Archive
@@ -69,13 +70,13 @@ namespace AeroJet::Java::Archive
         zip_entry_close(m_zip);
     }
 
-    std::stringstream Jar::Entry::read() const
+    Stream::MemoryStream Jar::Entry::read() const
     {
         const u8 bufferSize = zip_entry_size(m_zip);
         auto* const buffer = static_cast<u1*>(calloc(sizeof(u1), bufferSize));
         zip_entry_noallocread(m_zip, buffer, bufferSize);
 
-        std::stringstream ss;
+        Stream::MemoryStream ss;
         std::move(&buffer[0], &buffer[bufferSize], std::ostream_iterator<u1>(ss));
 
         return ss;

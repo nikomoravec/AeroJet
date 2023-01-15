@@ -53,11 +53,14 @@ namespace AeroJet::Java::ByteCode
 }
 
 template<>
-AeroJet::Java::ByteCode::Instruction AeroJet::Stream::Reader::read(std::istream& stream)
+AeroJet::Java::ByteCode::Instruction AeroJet::Stream::Reader::read(std::istream& stream, ByteOrder byteOrder)
 {
-    std::stringstream dataStream;
+    Stream::MemoryStream dataStream;
 
-    const AeroJet::Java::ByteCode::OperationCode opCode = static_cast<AeroJet::Java::ByteCode::OperationCode>(AeroJet::Stream::Reader::read<u1>(stream));
+    const AeroJet::Java::ByteCode::OperationCode opCode = static_cast<AeroJet::Java::ByteCode::OperationCode>(
+            AeroJet::Stream::Reader::read<u1>(stream, byteOrder)
+    );
+
     switch (opCode)
     {
         case AeroJet::Java::ByteCode::OperationCode::aaload:
@@ -222,7 +225,7 @@ AeroJet::Java::ByteCode::Instruction AeroJet::Stream::Reader::read(std::istream&
         case AeroJet::Java::ByteCode::OperationCode::lstore:
         case AeroJet::Java::ByteCode::OperationCode::newarray:
         case AeroJet::Java::ByteCode::OperationCode::ret:
-            AeroJet::Stream::Writer::write(dataStream, AeroJet::Stream::Reader::read<u1>(stream));
+            AeroJet::Stream::Writer::write(dataStream, AeroJet::Stream::Reader::read<u1>(stream, byteOrder));
             break;
         case AeroJet::Java::ByteCode::OperationCode::anewarray:
         case AeroJet::Java::ByteCode::OperationCode::checkcast:
@@ -258,15 +261,15 @@ AeroJet::Java::ByteCode::Instruction AeroJet::Stream::Reader::read(std::istream&
         case AeroJet::Java::ByteCode::OperationCode::putstatic:
         case AeroJet::Java::ByteCode::OperationCode::sipush:
         {
-            AeroJet::Stream::Writer::write(dataStream, AeroJet::Stream::Reader::read<u1>(stream));
-            AeroJet::Stream::Writer::write(dataStream, AeroJet::Stream::Reader::read<u1>(stream));
+            AeroJet::Stream::Writer::write(dataStream, AeroJet::Stream::Reader::read<u1>(stream, byteOrder));
+            AeroJet::Stream::Writer::write(dataStream, AeroJet::Stream::Reader::read<u1>(stream, byteOrder));
             break;
         }
         case AeroJet::Java::ByteCode::OperationCode::multianewarray:
         {
-            AeroJet::Stream::Writer::write(dataStream, AeroJet::Stream::Reader::read<u1>(stream));
-            AeroJet::Stream::Writer::write(dataStream, AeroJet::Stream::Reader::read<u1>(stream));
-            AeroJet::Stream::Writer::write(dataStream, AeroJet::Stream::Reader::read<u1>(stream));
+            AeroJet::Stream::Writer::write(dataStream, AeroJet::Stream::Reader::read<u1>(stream, byteOrder));
+            AeroJet::Stream::Writer::write(dataStream, AeroJet::Stream::Reader::read<u1>(stream, byteOrder));
+            AeroJet::Stream::Writer::write(dataStream, AeroJet::Stream::Reader::read<u1>(stream, byteOrder));
             break;
         }
         case AeroJet::Java::ByteCode::OperationCode::goto_w:
@@ -274,10 +277,10 @@ AeroJet::Java::ByteCode::Instruction AeroJet::Stream::Reader::read(std::istream&
         case AeroJet::Java::ByteCode::OperationCode::invokeinterface:
         case AeroJet::Java::ByteCode::OperationCode::jsr_w:
         {
-            AeroJet::Stream::Writer::write(dataStream, AeroJet::Stream::Reader::read<AeroJet::u1>(stream));
-            AeroJet::Stream::Writer::write(dataStream, AeroJet::Stream::Reader::read<AeroJet::u1>(stream));
-            AeroJet::Stream::Writer::write(dataStream, AeroJet::Stream::Reader::read<AeroJet::u1>(stream));
-            AeroJet::Stream::Writer::write(dataStream, AeroJet::Stream::Reader::read<AeroJet::u1>(stream));
+            AeroJet::Stream::Writer::write(dataStream, AeroJet::Stream::Reader::read<AeroJet::u1>(stream, byteOrder));
+            AeroJet::Stream::Writer::write(dataStream, AeroJet::Stream::Reader::read<AeroJet::u1>(stream, byteOrder));
+            AeroJet::Stream::Writer::write(dataStream, AeroJet::Stream::Reader::read<AeroJet::u1>(stream, byteOrder));
+            AeroJet::Stream::Writer::write(dataStream, AeroJet::Stream::Reader::read<AeroJet::u1>(stream, byteOrder));
             break;
         }
         case AeroJet::Java::ByteCode::OperationCode::tableswitch:
@@ -298,45 +301,42 @@ AeroJet::Java::ByteCode::Instruction AeroJet::Stream::Reader::read(std::istream&
                 u4 paddingIndex = padding;
                 while((paddingIndex - 1) > 0)
                 {
-                    AeroJet::Stream::Reader::read<u1>(stream);
+                    AeroJet::Stream::Reader::read<u1>(stream, byteOrder);
                     paddingIndex--;
                 }
             }
 
             if (opCode == AeroJet::Java::ByteCode::OperationCode::tableswitch)
             {
-                const AeroJet::i4 defaultValue = localOffset + AeroJet::Stream::Reader::read<AeroJet::i4>(stream);
-                const AeroJet::i4 lowValue = AeroJet::Stream::Reader::read<AeroJet::i4>(stream);
-                const AeroJet::i4 highValue = AeroJet::Stream::Reader::read<AeroJet::i4>(stream);
+                const AeroJet::i4 defaultValue = localOffset + AeroJet::Stream::Reader::read<AeroJet::i4>(stream, byteOrder);
+                const AeroJet::i4 lowValue = AeroJet::Stream::Reader::read<AeroJet::i4>(stream, byteOrder);
+                const AeroJet::i4 highValue = AeroJet::Stream::Reader::read<AeroJet::i4>(stream, byteOrder);
 
-                std::vector<AeroJet::i4> jumpOffsets;
+                AeroJet::Stream::Writer::write(dataStream, defaultValue, AeroJet::Stream::ByteOrder::INVERSE);
+                AeroJet::Stream::Writer::write(dataStream, lowValue, AeroJet::Stream::ByteOrder::INVERSE);
+                AeroJet::Stream::Writer::write(dataStream, highValue, AeroJet::Stream::ByteOrder::INVERSE);
+
                 const AeroJet::i4 jumpOffsetsCount = highValue - lowValue + 1;
-                jumpOffsets.reserve(jumpOffsetsCount);
                 for (size_t jumpOffsetIndex = 0; jumpOffsetIndex < jumpOffsetsCount; jumpOffsetIndex++)
                 {
-                    const AeroJet::i4 jumpOffset = localOffset + AeroJet::Stream::Reader::read<AeroJet::i4>(stream);
-                    jumpOffsets.emplace_back(jumpOffset);
+                    AeroJet::Stream::Writer::write(dataStream, localOffset + AeroJet::Stream::Reader::read<AeroJet::i4>(stream, byteOrder), AeroJet::Stream::ByteOrder::INVERSE);
                 }
-
-                AeroJet::Stream::Writer::write(dataStream, defaultValue);
-                AeroJet::Stream::Writer::write(dataStream, lowValue);
-                AeroJet::Stream::Writer::write(dataStream, highValue);
 
                 break;
             }
 
             if (opCode == AeroJet::Java::ByteCode::OperationCode::lookupswitch)
             {
-                const AeroJet::i4 defaultValue = localOffset + AeroJet::Stream::Reader::read<AeroJet::i4>(stream);
-                AeroJet::Stream::Writer::write(dataStream, defaultValue);
+                const AeroJet::i4 defaultValue = localOffset + AeroJet::Stream::Reader::read<AeroJet::i4>(stream, byteOrder);
+                AeroJet::Stream::Writer::write(dataStream, defaultValue, AeroJet::Stream::ByteOrder::INVERSE);
 
-                const AeroJet::i4 npairsCount = AeroJet::Stream::Reader::read<AeroJet::i4>(stream);
-                AeroJet::Stream::Writer::write(dataStream, npairsCount);
+                const AeroJet::i4 npairsCount = AeroJet::Stream::Reader::read<AeroJet::i4>(stream, byteOrder);
+                AeroJet::Stream::Writer::write(dataStream, npairsCount, AeroJet::Stream::ByteOrder::INVERSE);
 
                 for (AeroJet::i4 npairIndex = 0; npairIndex < npairsCount; npairIndex++)
                 {
-                    AeroJet::Stream::Writer::write(dataStream, AeroJet::Stream::Reader::read<AeroJet::i4>(stream));
-                    AeroJet::Stream::Writer::write(dataStream, AeroJet::Stream::Reader::read<AeroJet::i4>(stream));
+                    AeroJet::Stream::Writer::write(dataStream, AeroJet::Stream::Reader::read<AeroJet::i4>(stream, byteOrder), AeroJet::Stream::ByteOrder::INVERSE);
+                    AeroJet::Stream::Writer::write(dataStream, AeroJet::Stream::Reader::read<AeroJet::i4>(stream, byteOrder), AeroJet::Stream::ByteOrder::INVERSE);
                 }
 
                 break;
@@ -344,7 +344,9 @@ AeroJet::Java::ByteCode::Instruction AeroJet::Stream::Reader::read(std::istream&
         }
         case AeroJet::Java::ByteCode::OperationCode::wide:
         {
-            const AeroJet::Java::ByteCode::OperationCode nextOpCode = static_cast<AeroJet::Java::ByteCode::OperationCode>(AeroJet::Stream::Reader::read<AeroJet::u1>(stream));
+            const AeroJet::Java::ByteCode::OperationCode nextOpCode = static_cast<AeroJet::Java::ByteCode::OperationCode>(
+                    AeroJet::Stream::Reader::read<AeroJet::u1>(stream, byteOrder)
+            );
             AeroJet::Stream::Writer::write(dataStream, static_cast<AeroJet::u1>(nextOpCode));
 
             switch (nextOpCode)
@@ -361,16 +363,16 @@ AeroJet::Java::ByteCode::Instruction AeroJet::Stream::Reader::read(std::istream&
                 case AeroJet::Java::ByteCode::OperationCode::dstore:
                 case AeroJet::Java::ByteCode::OperationCode::ret:
                 {
-                    AeroJet::Stream::Writer::write(dataStream, AeroJet::Stream::Reader::read<AeroJet::u1>(stream));
-                    AeroJet::Stream::Writer::write(dataStream, AeroJet::Stream::Reader::read<AeroJet::u1>(stream));
+                    AeroJet::Stream::Writer::write(dataStream, AeroJet::Stream::Reader::read<AeroJet::u1>(stream, byteOrder));
+                    AeroJet::Stream::Writer::write(dataStream, AeroJet::Stream::Reader::read<AeroJet::u1>(stream, byteOrder));
                     break;
                 }
                 case AeroJet::Java::ByteCode::OperationCode::iinc:
                 {
-                    AeroJet::Stream::Writer::write(dataStream, AeroJet::Stream::Reader::read<AeroJet::u1>(stream));
-                    AeroJet::Stream::Writer::write(dataStream, AeroJet::Stream::Reader::read<AeroJet::u1>(stream));
-                    AeroJet::Stream::Writer::write(dataStream, AeroJet::Stream::Reader::read<AeroJet::u1>(stream));
-                    AeroJet::Stream::Writer::write(dataStream, AeroJet::Stream::Reader::read<AeroJet::u1>(stream));
+                    AeroJet::Stream::Writer::write(dataStream, AeroJet::Stream::Reader::read<AeroJet::u1>(stream, byteOrder));
+                    AeroJet::Stream::Writer::write(dataStream, AeroJet::Stream::Reader::read<AeroJet::u1>(stream, byteOrder));
+                    AeroJet::Stream::Writer::write(dataStream, AeroJet::Stream::Reader::read<AeroJet::u1>(stream, byteOrder));
+                    AeroJet::Stream::Writer::write(dataStream, AeroJet::Stream::Reader::read<AeroJet::u1>(stream, byteOrder));
                     break;
                 }
                 default:

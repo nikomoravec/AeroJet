@@ -25,6 +25,7 @@
 #pragma once
 
 #include "Types.hpp"
+#include "Stream.hpp"
 #include <vector>
 #include <sstream>
 
@@ -33,7 +34,8 @@ namespace AeroJet::Stream
     class Utils
     {
     public:
-        static std::vector<u1> streamToBytes(std::stringstream& stream);
-        static std::stringstream bytesToStream(const std::vector<u1>& bytes);
+        static std::vector<u1> streamToBytes(Stream::MemoryStream& stream);
+        static Stream::MemoryStream bytesToStream(const std::vector<u1>& bytes);
+        static Stream::MemoryStream bytesToStream(std::vector<u1>&& bytes);
     };
 }

@@ -29,7 +29,7 @@
 namespace AeroJet::Stream::Reader
 {
     template<typename T>
-    static inline T swapEndian(const T& data)
+    static T swapEndian(const T& data)
     {
         static_assert(CHAR_BIT == 8, "CHAR_BIT != 8");
 
@@ -53,7 +53,7 @@ namespace AeroJet::Stream::Reader
     }
 
     template<typename T>
-    static inline T readInternal(std::istream& stream)
+    static inline T readInternal(std::istream& stream, ByteOrder byteOrder)
     {
         const std::size_t readSize = sizeof(T);
 
@@ -62,10 +62,20 @@ namespace AeroJet::Stream::Reader
             throw Exceptions::RuntimeException(fmt::format("stream EOF at {:#08x}! Read size was {}", stream.tellg(), readSize));
         }
 
+        const std::istream::pos_type currentPos = stream.tellg();
+        stream.seekg(0, std::ios::end);
+        const std::istream::pos_type endPos = stream.tellg();
+        stream.seekg(currentPos);
+
+        if ((static_cast<std::size_t>(currentPos) + readSize) > endPos)
+        {
+            throw Exceptions::RuntimeException(fmt::format("Attempt to read {} bytes while {} is available", readSize, endPos - currentPos));
+        }
+
         T read {};
         stream.read((char*)&read, readSize);
 
-        if (readSize > 1)
+        if (byteOrder == ByteOrder::INVERSE && readSize > 1)
         {
             read = swapEndian(read);
         }
@@ -74,50 +84,50 @@ namespace AeroJet::Stream::Reader
     }
 
     template<>
-    i1 read(std::istream& stream)
+    i1 read(std::istream& stream, ByteOrder byteOrder)
     {
-        return readInternal<i1>(stream);
+        return readInternal<i1>(stream, byteOrder);
     }
 
     template<>
-    i2 read(std::istream& stream)
+    i2 read(std::istream& stream, ByteOrder byteOrder)
     {
-        return readInternal<i2>(stream);
+        return readInternal<i2>(stream, byteOrder);
     }
 
     template<>
-    i4 read(std::istream& stream)
+    i4 read(std::istream& stream, ByteOrder byteOrder)
     {
-        return readInternal<i4>(stream);
+        return readInternal<i4>(stream, byteOrder);
     }
 
     template<>
-    i8 read(std::istream& stream)
+    i8 read(std::istream& stream, ByteOrder byteOrder)
     {
-        return readInternal<i8>(stream);
+        return readInternal<i8>(stream, byteOrder);
     }
 
     template<>
-    u1 read(std::istream& stream)
+    u1 read(std::istream& stream, ByteOrder byteOrder)
     {
-        return readInternal<u1>(stream);
+        return readInternal<u1>(stream, byteOrder);
     }
 
     template<>
-    u2 read(std::istream& stream)
+    u2 read(std::istream& stream, ByteOrder byteOrder)
     {
-        return readInternal<u2>(stream);
+        return readInternal<u2>(stream, byteOrder);
     }
 
     template<>
-    u4 read(std::istream& stream)
+    u4 read(std::istream& stream, ByteOrder byteOrder)
     {
-        return readInternal<u4>(stream);
+        return readInternal<u4>(stream, byteOrder);
     }
 
     template<>
-    u8 read(std::istream& stream)
+    u8 read(std::istream& stream, ByteOrder byteOrder)
     {
-        return readInternal<u8>(stream);
+        return readInternal<u8>(stream, byteOrder);
     }
 }

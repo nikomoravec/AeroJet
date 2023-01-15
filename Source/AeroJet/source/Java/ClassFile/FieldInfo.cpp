@@ -70,18 +70,18 @@ namespace AeroJet::Java::ClassFile
 }
 
 template<>
-AeroJet::Java::ClassFile::FieldInfo AeroJet::Stream::Reader::read(std::istream& stream)
+AeroJet::Java::ClassFile::FieldInfo AeroJet::Stream::Reader::read(std::istream& stream, ByteOrder byteOrder)
 {
-    const AeroJet::u2 accessFlags = AeroJet::Stream::Reader::read<AeroJet::u2>(stream);
-    const AeroJet::u2 nameIndex = AeroJet::Stream::Reader::read<AeroJet::u2>(stream);
-    const AeroJet::u2 descriptorIndex = AeroJet::Stream::Reader::read<AeroJet::u2>(stream);
-    const AeroJet::u2 attributesCount = AeroJet::Stream::Reader::read<AeroJet::u2>(stream);
+    const AeroJet::u2 accessFlags = AeroJet::Stream::Reader::read<AeroJet::u2>(stream, byteOrder);
+    const AeroJet::u2 nameIndex = AeroJet::Stream::Reader::read<AeroJet::u2>(stream, byteOrder);
+    const AeroJet::u2 descriptorIndex = AeroJet::Stream::Reader::read<AeroJet::u2>(stream, byteOrder);
+    const AeroJet::u2 attributesCount = AeroJet::Stream::Reader::read<AeroJet::u2>(stream, byteOrder);
 
     std::vector<AeroJet::Java::ClassFile::AttributeInfo> attributes;
     attributes.reserve(attributesCount);
     for (AeroJet::u4 attributeIndex = 0; attributeIndex < attributesCount; attributeIndex++)
     {
-        attributes.emplace_back(AeroJet::Stream::Reader::read<AeroJet::Java::ClassFile::AttributeInfo>(stream));
+        attributes.emplace_back(AeroJet::Stream::Reader::read<AeroJet::Java::ClassFile::AttributeInfo>(stream, byteOrder));
     }
 
     return {accessFlags, nameIndex, descriptorIndex, attributes};

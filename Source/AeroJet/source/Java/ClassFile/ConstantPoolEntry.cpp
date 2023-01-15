@@ -257,19 +257,21 @@ namespace AeroJet::Java::ClassFile
 
 
 template<>
-AeroJet::Java::ClassFile::ConstantPoolEntry AeroJet::Stream::Reader::read(std::istream& stream)
+AeroJet::Java::ClassFile::ConstantPoolEntry AeroJet::Stream::Reader::read(std::istream& stream, ByteOrder byteOrder)
 {
-    std::stringstream dataStream;
+    Stream::MemoryStream dataStream;
 
-    const AeroJet::Java::ClassFile::ConstantPoolInfoTag tag = static_cast<AeroJet::Java::ClassFile::ConstantPoolInfoTag>(AeroJet::Stream::Reader::read<u1>(stream));
+    const AeroJet::Java::ClassFile::ConstantPoolInfoTag tag = static_cast<AeroJet::Java::ClassFile::ConstantPoolInfoTag>(
+            AeroJet::Stream::Reader::read<u1>(stream, byteOrder)
+    );
     switch (tag)
     {
         case Java::ClassFile::ConstantPoolInfoTag::UTF_8:
         {
-            const AeroJet::u2 dataSize = AeroJet::Stream::Reader::read<AeroJet::u2>(stream);
+            const AeroJet::u2 dataSize = AeroJet::Stream::Reader::read<AeroJet::u2>(stream, byteOrder);
             for (AeroJet::u2 byteIndex = 0; byteIndex < dataSize; byteIndex++)
             {
-                AeroJet::u1 byte = AeroJet::Stream::Reader::read<AeroJet::u1>(stream);
+                AeroJet::u1 byte = AeroJet::Stream::Reader::read<AeroJet::u1>(stream, byteOrder);
                 AeroJet::Stream::Writer::write(dataStream, byte);
             }
 
@@ -278,7 +280,7 @@ AeroJet::Java::ClassFile::ConstantPoolEntry AeroJet::Stream::Reader::read(std::i
         case Java::ClassFile::ConstantPoolInfoTag::INTEGER:
         case Java::ClassFile::ConstantPoolInfoTag::FLOAT:
         {
-            const AeroJet::u4 value = AeroJet::Stream::Reader::read<AeroJet::u4>(stream);
+            const AeroJet::u4 value = AeroJet::Stream::Reader::read<AeroJet::u4>(stream, byteOrder);
             AeroJet::Stream::Writer::write(dataStream, value);
 
             break;
@@ -286,8 +288,8 @@ AeroJet::Java::ClassFile::ConstantPoolEntry AeroJet::Stream::Reader::read(std::i
         case Java::ClassFile::ConstantPoolInfoTag::LONG:
         case Java::ClassFile::ConstantPoolInfoTag::DOUBLE:
         {
-            const AeroJet::u4 highBytes = AeroJet::Stream::Reader::read<AeroJet::u4>(stream);
-            const AeroJet::u4 lowBytes = AeroJet::Stream::Reader::read<AeroJet::u4>(stream);
+            const AeroJet::u4 highBytes = AeroJet::Stream::Reader::read<AeroJet::u4>(stream, byteOrder);
+            const AeroJet::u4 lowBytes = AeroJet::Stream::Reader::read<AeroJet::u4>(stream, byteOrder);
 
             AeroJet::Stream::Writer::write(dataStream, highBytes);
             AeroJet::Stream::Writer::write(dataStream, lowBytes);
@@ -298,7 +300,7 @@ AeroJet::Java::ClassFile::ConstantPoolEntry AeroJet::Stream::Reader::read(std::i
         case Java::ClassFile::ConstantPoolInfoTag::STRING:
         case Java::ClassFile::ConstantPoolInfoTag::METHOD_TYPE:
         {
-            const AeroJet::u2 index = AeroJet::Stream::Reader::read<AeroJet::u2>(stream);
+            const AeroJet::u2 index = AeroJet::Stream::Reader::read<AeroJet::u2>(stream, byteOrder);
             AeroJet::Stream::Writer::write(dataStream, index);
 
             break;
@@ -309,8 +311,8 @@ AeroJet::Java::ClassFile::ConstantPoolEntry AeroJet::Stream::Reader::read(std::i
         case Java::ClassFile::ConstantPoolInfoTag::NAME_AND_TYPE:
         case Java::ClassFile::ConstantPoolInfoTag::INVOKE_DYNAMIC:
         {
-            const AeroJet::u2 index1 = AeroJet::Stream::Reader::read<AeroJet::u2>(stream);
-            const AeroJet::u2 index2 = AeroJet::Stream::Reader::read<AeroJet::u2>(stream);
+            const AeroJet::u2 index1 = AeroJet::Stream::Reader::read<AeroJet::u2>(stream, byteOrder);
+            const AeroJet::u2 index2 = AeroJet::Stream::Reader::read<AeroJet::u2>(stream, byteOrder);
 
             AeroJet::Stream::Writer::write(dataStream, index1);
             AeroJet::Stream::Writer::write(dataStream, index2);
@@ -319,8 +321,8 @@ AeroJet::Java::ClassFile::ConstantPoolEntry AeroJet::Stream::Reader::read(std::i
         }
         case Java::ClassFile::ConstantPoolInfoTag::METHOD_HANDLE:
         {
-            const AeroJet::u1 referenceKind = AeroJet::Stream::Reader::read<AeroJet::u1>(stream);
-            const AeroJet::u2 referenceIndex = AeroJet::Stream::Reader::read<AeroJet::u2>(stream);
+            const AeroJet::u1 referenceKind = AeroJet::Stream::Reader::read<AeroJet::u1>(stream, byteOrder);
+            const AeroJet::u2 referenceIndex = AeroJet::Stream::Reader::read<AeroJet::u2>(stream, byteOrder);
 
             AeroJet::Stream::Writer::write(dataStream, referenceKind);
             AeroJet::Stream::Writer::write(dataStream, referenceIndex);

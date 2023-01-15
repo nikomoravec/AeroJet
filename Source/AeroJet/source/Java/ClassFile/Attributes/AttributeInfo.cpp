@@ -52,16 +52,16 @@ namespace AeroJet::Java::ClassFile
 
 
 template<>
-AeroJet::Java::ClassFile::AttributeInfo AeroJet::Stream::Reader::read(std::istream& stream)
+AeroJet::Java::ClassFile::AttributeInfo AeroJet::Stream::Reader::read(std::istream& stream, ByteOrder byteOrder)
 {
-    const AeroJet::u2 attributeNameIndex = AeroJet::Stream::Reader::read<AeroJet::u2>(stream);
-    const AeroJet::u4 attributeInfoSize = AeroJet::Stream::Reader::read<AeroJet::u4>(stream);
+    const AeroJet::u2 attributeNameIndex = AeroJet::Stream::Reader::read<AeroJet::u2>(stream, byteOrder);
+    const AeroJet::u4 attributeInfoSize = AeroJet::Stream::Reader::read<AeroJet::u4>(stream, byteOrder);
 
     std::vector<AeroJet::u1> attributeInfo;
     attributeInfo.reserve(attributeInfoSize);
     for (i4 attributeInfoIndex = 0; attributeInfoIndex < attributeInfoSize; attributeInfoIndex++)
     {
-        const AeroJet::u1 byte = AeroJet::Stream::Reader::read<AeroJet::u1>(stream);
+        const AeroJet::u1 byte = AeroJet::Stream::Reader::read<AeroJet::u1>(stream, byteOrder);
         attributeInfo.emplace_back(byte);
     }
 

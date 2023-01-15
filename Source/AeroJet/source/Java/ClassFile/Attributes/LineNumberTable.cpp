@@ -45,11 +45,13 @@ namespace AeroJet::Java::ClassFile
 
     LineNumberTable::LineNumberTable(const ConstantPool& constantPool, const AttributeInfo& attributeInfo) : Attribute(constantPool, attributeInfo, LINE_NUMBER_TABLE_ATTRIBUTE_NAME)
     {
-        const u2 lineNumberTableLength = Stream::Reader::read<u2>(m_infoDataStream);
+        const u2 lineNumberTableLength = Stream::Reader::read<u2>(m_infoDataStream, Stream::ByteOrder::INVERSE);
         m_lineNumberTable.reserve(lineNumberTableLength);
         for (i4 lineNumberTableEntryIndex = 0; lineNumberTableEntryIndex < lineNumberTableLength; lineNumberTableEntryIndex++)
         {
-            m_lineNumberTable.emplace_back(Stream::Reader::read<u2>(m_infoDataStream), Stream::Reader::read<u2>(m_infoDataStream));
+            m_lineNumberTable.emplace_back(
+                    Stream::Reader::read<u2>(m_infoDataStream, Stream::ByteOrder::INVERSE),
+                    Stream::Reader::read<u2>(m_infoDataStream, Stream::ByteOrder::INVERSE));
         }
     }
 

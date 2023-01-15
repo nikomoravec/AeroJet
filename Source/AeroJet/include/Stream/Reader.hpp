@@ -26,10 +26,11 @@
 
 #include "Types.hpp"
 #include "Java/ByteCode/Instruction.hpp"
+#include "Stream.hpp"
 #include <istream>
 
 namespace AeroJet::Stream::Reader
 {
     template<typename T>
-    T read(std::istream& stream);
+    T read(std::istream& stream, ByteOrder byteOrder);
 }
