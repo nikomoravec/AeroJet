@@ -41,7 +41,7 @@ to read the following Java Class Structures:
     - [x] [ConstantValue](https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.7.2)
     - [x] [Code](https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.7.3)
     - [ ] [StackMapTable](https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.7.4)
-    - [ ] [Exceptions](https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.7.5)
+    - [x] [Exceptions](https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.7.5)
     - [ ] [InnerClasses](https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.7.6)
     - [ ] [EnclosingMethod](https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.7.7)
     - [ ] [Synthetic](https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.7.8)
