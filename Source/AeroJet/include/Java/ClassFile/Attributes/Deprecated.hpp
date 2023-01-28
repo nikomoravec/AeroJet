@@ -1,5 +1,5 @@
 /*
- * AeroJet.hpp
+ * Deprecated.hpp
  *
  * Copyright © 2023 AeroJet Developers. All Rights Reserved.
  *
@@ -24,33 +24,18 @@
 
 #pragma once
 
-#include "Exceptions/IncorrectAttributeTypeException.hpp"
-#include "Exceptions/FileNotFoundException.hpp"
-#include "Exceptions/OperationNotSupportedException.hpp"
-#include "Exceptions/RuntimeException.hpp"
-#include "Java/Archive/Jar.hpp"
-#include "Java/ByteCode/Instruction.hpp"
-#include "Java/ByteCode/OpCodes.hpp"
 #include "Java/ClassFile/Attributes/Attribute.hpp"
 #include "Java/ClassFile/Attributes/AttributeInfo.hpp"
-#include "Java/ClassFile/Attributes/Code.hpp"
-#include "Java/ClassFile/Attributes/ConstantValue.hpp"
-#include "Java/ClassFile/Attributes/Deprecated.hpp"
-#include "Java/ClassFile/Attributes/Exceptions.hpp"
-#include "Java/ClassFile/Attributes/LineNumberTable.hpp"
-#include "Java/ClassFile/Attributes/LocalVariableTable.hpp"
-#include "Java/ClassFile/Attributes/SourceFile.hpp"
-#include "Java/ClassFile/ClassInfo.hpp"
 #include "Java/ClassFile/ConstantPool.hpp"
-#include "Java/ClassFile/ConstantPoolEntry.hpp"
-#include "Java/ClassFile/FieldDescriptor.hpp"
-#include "Java/ClassFile/FieldInfo.hpp"
-#include "Java/ClassFile/MethodDescriptor.hpp"
-#include "Java/ClassFile/MethodInfo.hpp"
-#include "Java/ClassFile/Utils/AttributeInfoUtils.hpp"
-#include "Java/ClassFile/Utils/ClassInfoUtils.hpp"
-#include "Stream/Reader.hpp"
-#include "Stream/Stream.hpp"
-#include "Stream/StreamUtils.hpp"
-#include "Stream/Writer.hpp"
 #include "Types.hpp"
+
+namespace AeroJet::Java::ClassFile
+{
+    class Deprecated : public Attribute
+    {
+    public:
+        static constexpr auto DEPRECATED_ATTRIBUTE_NAME = "Deprecated";
+
+        Deprecated(const ConstantPool& constantPool, const AttributeInfo& attributeInfo);
+    };
+}

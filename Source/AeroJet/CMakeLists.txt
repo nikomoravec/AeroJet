@@ -62,6 +62,8 @@ add_library(AeroJet ${AEROJET_LIB_TYPE}
         source/Java/ClassFile/Attributes/Exceptions.cpp
         include/Java/ClassFile/Attributes/ConstantValue.hpp
         source/Java/ClassFile/Attributes/ConstantValue.cpp
+        include/Java/ClassFile/Attributes/Deprecated.hpp
+        source/Java/ClassFile/Attributes/Deprecated.cpp
         include/Java/ClassFile/Attributes/LineNumberTable.hpp
         source/Java/ClassFile/Attributes/LineNumberTable.cpp
         include/Java/ClassFile/Attributes/LocalVariableTable.hpp
