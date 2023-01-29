@@ -29,62 +29,54 @@
 #include "Java/ClassFile/Attributes/AttributeInfo.hpp"
 #include "Java/ClassFile/ConstantPool.hpp"
 #include "Types.hpp"
+
 #include <vector>
 
 namespace AeroJet::Java::ClassFile
 {
     class Code : public Attribute
     {
-    public:
+      public:
         static constexpr auto CODE_ATTRIBUTE_NAME = "Code";
 
         class ExceptionTableEntry
         {
-        public:
+          public:
             ExceptionTableEntry(u2 startPc, u2 endPc, u2 handlePc, u2 catchType);
 
-            [[nodiscard]]
-            u2 startPc() const;
+            [[nodiscard]] u2 startPc() const;
 
-            [[nodiscard]]
-            u2 endPc() const;
+            [[nodiscard]] u2 endPc() const;
 
-            [[nodiscard]]
-            u2 handlerPc() const;
+            [[nodiscard]] u2 handlerPc() const;
 
-            [[nodiscard]]
-            u2 catchType() const;
+            [[nodiscard]] u2 catchType() const;
 
-        protected:
+          protected:
             u2 m_startPc;
             u2 m_endPc;
             u2 m_handlerPc;
             u2 m_catchType;
         };
 
-    public:
+      public:
         Code(const ConstantPool& constantPool, const AttributeInfo& attributeInfo);
 
-        [[nodiscard]]
-        u2 maxStack() const;
+        [[nodiscard]] u2 maxStack() const;
 
-        [[nodiscard]]
-        u2 maxLocals() const;
+        [[nodiscard]] u2 maxLocals() const;
 
-        [[nodiscard]]
-        const std::vector<ByteCode::Instruction>& code() const;
+        [[nodiscard]] const std::vector<ByteCode::Instruction>& code() const;
 
-        [[nodiscard]]
-        const std::vector<Code::ExceptionTableEntry>& exceptionTable() const;
+        [[nodiscard]] const std::vector<Code::ExceptionTableEntry>& exceptionTable() const;
 
-        [[nodiscard]]
-        const std::vector<AttributeInfo>& attributes() const;
+        [[nodiscard]] const std::vector<AttributeInfo>& attributes() const;
 
-    protected:
-        u2 m_maxStack;
-        u2 m_maxLocals;
+      protected:
+        u2                                 m_maxStack;
+        u2                                 m_maxLocals;
         std::vector<ByteCode::Instruction> m_code;
-        std::vector<ExceptionTableEntry> m_exceptionTable;
-        std::vector<AttributeInfo> m_attributes;
+        std::vector<ExceptionTableEntry>   m_exceptionTable;
+        std::vector<AttributeInfo>         m_attributes;
     };
-}
+} // namespace AeroJet::Java::ClassFile

@@ -36,7 +36,7 @@ namespace AeroJet::Java::ClassFile::Utils
         const ConstantPool& constantPool = classInfo.constantPool();
 
         const u2 thisClassIndex = classInfo.thisClass();
-        const u2 nameIndex = constantPool[thisClassIndex].as<ConstantPoolInfoClass>().nameIndex();
+        const u2 nameIndex      = constantPool[thisClassIndex].as<ConstantPoolInfoClass>().nameIndex();
         return constantPool[nameIndex].as<ConstantPoolInfoUtf8>().asString();
     }
 
@@ -44,13 +44,13 @@ namespace AeroJet::Java::ClassFile::Utils
     {
         std::string className = ClassInfoUtils::name(classInfo);
 
-        if (ClassInfoUtils::isUnderPackage(classInfo))
+        if(ClassInfoUtils::isUnderPackage(classInfo))
         {
             std::vector<std::string> split;
             {
                 size_t start;
                 size_t end = 0;
-                while ((start = className.find_first_not_of(CLASS_PACKAGE_DELIMITER, end)) != std::string::npos)
+                while((start = className.find_first_not_of(CLASS_PACKAGE_DELIMITER, end)) != std::string::npos)
                 {
                     end = className.find(CLASS_PACKAGE_DELIMITER, start);
                     split.push_back(className.substr(start, end - start));
@@ -62,4 +62,4 @@ namespace AeroJet::Java::ClassFile::Utils
 
         return className;
     }
-}
+} // namespace AeroJet::Java::ClassFile::Utils

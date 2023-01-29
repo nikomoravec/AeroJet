@@ -25,6 +25,7 @@
 #pragma once
 
 #include "RuntimeException.hpp"
+
 #include <string>
 #include <string_view>
 
@@ -32,7 +33,7 @@ namespace AeroJet::Exceptions
 {
     class IncorrectAttributeTypeException : public RuntimeException
     {
-    public:
+      public:
         IncorrectAttributeTypeException(std::string_view expectedType, std::string_view givenType);
     };
-}
+} // namespace AeroJet::Exceptions

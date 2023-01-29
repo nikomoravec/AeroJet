@@ -25,6 +25,7 @@
 #pragma once
 
 #include "Types.hpp"
+
 #include <vector>
 
 namespace AeroJet::Java::ClassFile
@@ -43,23 +44,20 @@ namespace AeroJet::Java::ClassFile
      *
      * @see https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.7
      */
-    
+
     class AttributeInfo
     {
-    public:
+      public:
         AttributeInfo(u2 attributeIndex, std::vector<u1> info);
 
-        [[nodiscard]]
-        u2 attributeNameIndex() const;
+        [[nodiscard]] u2 attributeNameIndex() const;
 
-        [[nodiscard]]
-        u2 size() const;
+        [[nodiscard]] u2 size() const;
 
-        [[nodiscard]]
-        const std::vector<u1>& info() const;
+        [[nodiscard]] const std::vector<u1>& info() const;
 
-    protected:
-        u2 m_attributeNameIndex;
+      protected:
+        u2              m_attributeNameIndex;
         std::vector<u1> m_info;
     };
-}
+} // namespace AeroJet::Java::ClassFile

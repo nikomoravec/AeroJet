@@ -25,6 +25,7 @@
 #pragma once
 
 #include "Java/ClassFile/ClassInfo.hpp"
+
 #include <string>
 
 namespace AeroJet::Java::ClassFile::Utils
@@ -33,28 +34,25 @@ namespace AeroJet::Java::ClassFile::Utils
 
     class ClassInfoUtils
     {
-    public:
+      public:
         /**
          * @brief Checks if class under given ClassInfo is under java package
          * @return true if class is under package and false if it's not
          */
-        [[nodiscard]]
-        static bool isUnderPackage(const ClassInfo& classInfo);
+        [[nodiscard]] static bool isUnderPackage(const ClassInfo& classInfo);
 
         /**
          * @brief Extracts short name of class from ClassInfo
          * @param classInfo
          * @return short name of given ClassInfo without a package
          */
-        [[nodiscard]]
-        static std::string name(const ClassInfo& classInfo);
+        [[nodiscard]] static std::string name(const ClassInfo& classInfo);
 
         /**
          * @brief Extracts full name of class from ClassInfo
          * @param classInfo
          * @return full name of given ClassInfo including package
          */
-        [[nodiscard]]
-        static std::string className(const ClassInfo& classInfo);
+        [[nodiscard]] static std::string className(const ClassInfo& classInfo);
     };
-}
+} // namespace AeroJet::Java::ClassFile::Utils

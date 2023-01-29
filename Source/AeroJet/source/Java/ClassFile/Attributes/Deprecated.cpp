@@ -23,15 +23,17 @@
  */
 
 #include "Java/ClassFile/Attributes/Deprecated.hpp"
+
 #include "Exceptions/RuntimeException.hpp"
 
 namespace AeroJet::Java::ClassFile
 {
-    Deprecated::Deprecated(const ConstantPool& constantPool, const AttributeInfo& attributeInfo) : Attribute(constantPool, attributeInfo, DEPRECATED_ATTRIBUTE_NAME)
+    Deprecated::Deprecated(const ConstantPool& constantPool, const AttributeInfo& attributeInfo) :
+        Attribute(constantPool, attributeInfo, DEPRECATED_ATTRIBUTE_NAME)
     {
-        if (m_attributeLength != 0)
+        if(m_attributeLength != 0)
         {
             throw Exceptions::RuntimeException("Value of the attributeLength must be zero!");
         }
     }
-}
+} // namespace AeroJet::Java::ClassFile

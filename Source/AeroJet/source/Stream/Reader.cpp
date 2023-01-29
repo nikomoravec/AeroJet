@@ -23,6 +23,7 @@
  */
 
 #include "Stream/Reader.hpp"
+
 #include "Exceptions/RuntimeException.hpp"
 #include "fmt/format.h"
 
@@ -35,7 +36,7 @@ namespace AeroJet::Stream::Reader
 
         union ByteObjectRepresentation
         {
-            T object;
+            T             object;
             unsigned char bytes[sizeof(T)];
         };
 
@@ -44,7 +45,7 @@ namespace AeroJet::Stream::Reader
 
         source.object = data;
 
-        for (size_t k = 0; k < sizeof(T); k++)
+        for(size_t k = 0; k < sizeof(T); k++)
         {
             dst.bytes[k] = source.bytes[sizeof(T) - k - 1];
         }
@@ -57,9 +58,10 @@ namespace AeroJet::Stream::Reader
     {
         const std::size_t readSize = sizeof(T);
 
-        if (stream.eof())
+        if(stream.eof())
         {
-            throw Exceptions::RuntimeException(fmt::format("stream EOF at {:#08x}! Read size was {}", stream.tellg(), readSize));
+            throw Exceptions::RuntimeException(
+                fmt::format("stream EOF at {:#08x}! Read size was {}", stream.tellg(), readSize));
         }
 
         const std::istream::pos_type currentPos = stream.tellg();
@@ -67,15 +69,16 @@ namespace AeroJet::Stream::Reader
         const std::istream::pos_type endPos = stream.tellg();
         stream.seekg(currentPos);
 
-        if ((static_cast<std::size_t>(currentPos) + readSize) > endPos)
+        if((static_cast<std::size_t>(currentPos) + readSize) > endPos)
         {
-            throw Exceptions::RuntimeException(fmt::format("Attempt to read {} bytes while {} is available", readSize, endPos - currentPos));
+            throw Exceptions::RuntimeException(
+                fmt::format("Attempt to read {} bytes while {} is available", readSize, endPos - currentPos));
         }
 
-        T read {};
+        T read{};
         stream.read((char*)&read, readSize);
 
-        if (byteOrder == ByteOrder::INVERSE && readSize > 1)
+        if(byteOrder == ByteOrder::INVERSE && readSize > 1)
         {
             read = swapEndian(read);
         }
@@ -130,4 +133,4 @@ namespace AeroJet::Stream::Reader
     {
         return readInternal<u8>(stream, byteOrder);
     }
-}
+} // namespace AeroJet::Stream::Reader

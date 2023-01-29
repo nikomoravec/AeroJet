@@ -23,13 +23,13 @@
  */
 
 #include "Java/ClassFile/Attributes/LineNumberTable.hpp"
+
 #include "Stream/Reader.hpp"
 
 namespace AeroJet::Java::ClassFile
 {
     LineNumberTable::LineNumberTableEntry::LineNumberTableEntry(u2 startPc, u2 lineNumber) :
-        m_startPc(startPc),
-        m_lineNumber(lineNumber)
+        m_startPc(startPc), m_lineNumber(lineNumber)
     {
     }
 
@@ -43,13 +43,15 @@ namespace AeroJet::Java::ClassFile
         return m_lineNumber;
     }
 
-    LineNumberTable::LineNumberTable(const ConstantPool& constantPool, const AttributeInfo& attributeInfo) : Attribute(constantPool, attributeInfo, LINE_NUMBER_TABLE_ATTRIBUTE_NAME)
+    LineNumberTable::LineNumberTable(const ConstantPool& constantPool, const AttributeInfo& attributeInfo) :
+        Attribute(constantPool, attributeInfo, LINE_NUMBER_TABLE_ATTRIBUTE_NAME)
     {
         const u2 lineNumberTableLength = Stream::Reader::read<u2>(m_infoDataStream, Stream::ByteOrder::INVERSE);
         m_lineNumberTable.reserve(lineNumberTableLength);
-        for (i4 lineNumberTableEntryIndex = 0; lineNumberTableEntryIndex < lineNumberTableLength; lineNumberTableEntryIndex++)
+        for(i4 lineNumberTableEntryIndex = 0; lineNumberTableEntryIndex < lineNumberTableLength;
+            lineNumberTableEntryIndex++)
         {
-            const u2 startPc = Stream::Reader::read<u2>(m_infoDataStream, Stream::ByteOrder::INVERSE);
+            const u2 startPc    = Stream::Reader::read<u2>(m_infoDataStream, Stream::ByteOrder::INVERSE);
             const u2 lineNumber = Stream::Reader::read<u2>(m_infoDataStream, Stream::ByteOrder::INVERSE);
             m_lineNumberTable.emplace_back(startPc, lineNumber);
         }
@@ -59,4 +61,4 @@ namespace AeroJet::Java::ClassFile
     {
         return m_lineNumberTable;
     }
-}
+} // namespace AeroJet::Java::ClassFile

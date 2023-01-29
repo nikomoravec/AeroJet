@@ -24,9 +24,10 @@
 
 #pragma once
 
-#include "Types.hpp"
 #include "Java/ByteCode/Instruction.hpp"
 #include "Stream.hpp"
+#include "Types.hpp"
+
 #include <istream>
 
 namespace AeroJet::Stream::Reader

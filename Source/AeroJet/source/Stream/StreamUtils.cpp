@@ -23,6 +23,7 @@
  */
 
 #include "Stream/StreamUtils.hpp"
+
 #include <iterator>
 
 namespace AeroJet::Stream
@@ -55,4 +56,4 @@ namespace AeroJet::Stream
 
         return stream;
     }
-}
+} // namespace AeroJet::Stream

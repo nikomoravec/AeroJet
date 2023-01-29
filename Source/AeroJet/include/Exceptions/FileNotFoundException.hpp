@@ -25,13 +25,14 @@
 #pragma once
 
 #include "RuntimeException.hpp"
+
 #include <filesystem>
 
 namespace AeroJet::Exceptions
 {
     class FileNotFoundException : public RuntimeException
     {
-    public:
+      public:
         explicit FileNotFoundException(const std::filesystem::path& path);
     };
-}
+} // namespace AeroJet::Exceptions

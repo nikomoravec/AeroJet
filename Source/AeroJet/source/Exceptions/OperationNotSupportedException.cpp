@@ -23,6 +23,7 @@
  */
 
 #include "Exceptions/OperationNotSupportedException.hpp"
+
 #include "fmt/format.h"
 #include "Types.hpp"
 
@@ -32,4 +33,4 @@ namespace AeroJet::Exceptions
         RuntimeException(fmt::format("Operation {:#04x} not supported!", static_cast<u1>(opCode)))
     {
     }
-}
+} // namespace AeroJet::Exceptions

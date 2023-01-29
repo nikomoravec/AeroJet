@@ -33,9 +33,9 @@ namespace AeroJet::Java::ClassFile
 {
     class Deprecated : public Attribute
     {
-    public:
+      public:
         static constexpr auto DEPRECATED_ATTRIBUTE_NAME = "Deprecated";
 
         Deprecated(const ConstantPool& constantPool, const AttributeInfo& attributeInfo);
     };
-}
+} // namespace AeroJet::Java::ClassFile

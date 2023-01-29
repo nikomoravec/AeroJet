@@ -23,13 +23,15 @@
  */
 
 #include "Java/ClassFile/Attributes/SourceFile.hpp"
+
 #include "Java/ClassFile/Attributes/AttributeInfo.hpp"
 #include "Java/ClassFile/ConstantPool.hpp"
 #include "Stream/Reader.hpp"
 
 namespace AeroJet::Java::ClassFile
 {
-    SourceFile::SourceFile(const ConstantPool& constantPool, const AttributeInfo& attributeInfo) : Attribute(constantPool, attributeInfo, SOURCE_FILE_ATTRIBUTE_NAME)
+    SourceFile::SourceFile(const ConstantPool& constantPool, const AttributeInfo& attributeInfo) :
+        Attribute(constantPool, attributeInfo, SOURCE_FILE_ATTRIBUTE_NAME)
     {
         m_sourceFileIndex = Stream::Reader::read<u2>(m_infoDataStream, Stream::ByteOrder::INVERSE);
     }
@@ -38,4 +40,4 @@ namespace AeroJet::Java::ClassFile
     {
         return m_sourceFileIndex;
     }
-}
+} // namespace AeroJet::Java::ClassFile

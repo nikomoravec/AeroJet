@@ -33,32 +33,29 @@ namespace AeroJet::Java::ClassFile
 {
     class LineNumberTable : Attribute
     {
-    public:
+      public:
         static constexpr auto LINE_NUMBER_TABLE_ATTRIBUTE_NAME = "LineNumberTable";
 
         class LineNumberTableEntry
         {
-        public:
+          public:
             LineNumberTableEntry(u2 startPc, u2 lineNumber);
 
-            [[nodiscard]]
-            u2 startPc() const;
+            [[nodiscard]] u2 startPc() const;
 
-            [[nodiscard]]
-            u2 lineNumber() const;
+            [[nodiscard]] u2 lineNumber() const;
 
-        protected:
+          protected:
             u2 m_startPc;
             u2 m_lineNumber;
         };
 
-    public:
+      public:
         LineNumberTable(const ConstantPool& constantPool, const AttributeInfo& attributeInfo);
 
-        [[nodiscard]]
-        const std::vector<LineNumberTableEntry>& lineNumberTable() const;
+        [[nodiscard]] const std::vector<LineNumberTableEntry>& lineNumberTable() const;
 
-    protected:
+      protected:
         std::vector<LineNumberTableEntry> m_lineNumberTable;
     };
-}
+} // namespace AeroJet::Java::ClassFile

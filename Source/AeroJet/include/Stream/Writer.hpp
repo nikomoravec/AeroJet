@@ -25,6 +25,7 @@
 #pragma once
 
 #include "Stream.hpp"
+
 #include <ostream>
 
 namespace AeroJet::Stream::Writer
@@ -34,7 +35,7 @@ namespace AeroJet::Stream::Writer
     {
         constexpr size_t size = sizeof(object);
 
-        if (size > 1 && byteOrder == ByteOrder::INVERSE)
+        if(size > 1 && byteOrder == ByteOrder::INVERSE)
         {
             T obj = swapEndian(object);
             stream.write((char*)&obj, sizeof(object));
@@ -44,4 +45,4 @@ namespace AeroJet::Stream::Writer
             stream.write((char*)&object, sizeof(object));
         }
     }
-}
+} // namespace AeroJet::Stream::Writer

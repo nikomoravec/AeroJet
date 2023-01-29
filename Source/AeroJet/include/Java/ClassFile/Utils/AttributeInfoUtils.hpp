@@ -26,13 +26,14 @@
 
 #include "Java/ClassFile/Attributes/AttributeInfo.hpp"
 #include "Java/ClassFile/ConstantPool.hpp"
+
 #include <string>
 
 namespace AeroJet::Java::ClassFile::Utils
 {
     class AttributeInfoUtils
     {
-    public:
+      public:
         /**
          * @brief Extracts the name of the Attribute from given AttributeInfo
          * @param attributeInfo
@@ -40,7 +41,7 @@ namespace AeroJet::Java::ClassFile::Utils
          * @return name of Java Class File attribute
          * @see https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.7
          */
-        [[nodiscard]]
-        static std::string extractName(const ConstantPool& constantPool, const AttributeInfo& attributeInfo);
+        [[nodiscard]] static std::string extractName(const ConstantPool&  constantPool,
+                                                     const AttributeInfo& attributeInfo);
     };
-}
+} // namespace AeroJet::Java::ClassFile::Utils

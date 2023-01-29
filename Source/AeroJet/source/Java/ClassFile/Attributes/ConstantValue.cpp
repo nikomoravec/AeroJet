@@ -23,11 +23,13 @@
  */
 
 #include "Java/ClassFile/Attributes/ConstantValue.hpp"
+
 #include "Stream/Reader.hpp"
 
 namespace AeroJet::Java::ClassFile
 {
-    ConstantValue::ConstantValue(const ConstantPool& constantPool, const AttributeInfo& attributeInfo) : Attribute(constantPool, attributeInfo, CONSTANT_VALUE_ATTRIBUTE_NAME)
+    ConstantValue::ConstantValue(const ConstantPool& constantPool, const AttributeInfo& attributeInfo) :
+        Attribute(constantPool, attributeInfo, CONSTANT_VALUE_ATTRIBUTE_NAME)
     {
         m_constantValueIndex = Stream::Reader::read<u2>(m_infoDataStream, Stream::ByteOrder::INVERSE);
     }
@@ -36,4 +38,4 @@ namespace AeroJet::Java::ClassFile
     {
         return m_constantValueIndex;
     }
-}
+} // namespace AeroJet::Java::ClassFile

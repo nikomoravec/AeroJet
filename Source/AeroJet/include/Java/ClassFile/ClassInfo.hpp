@@ -29,6 +29,7 @@
 #include "Java/ClassFile/FieldInfo.hpp"
 #include "Java/ClassFile/MethodInfo.hpp"
 #include "Types.hpp"
+
 #include <optional>
 #include <vector>
 
@@ -36,8 +37,8 @@ namespace AeroJet::Java::ClassFile
 {
     class ClassInfo
     {
-    public:
-        static constexpr u4 JAVA_CLASS_MAGIC  = 0xCAFEBABE;
+      public:
+        static constexpr u4 JAVA_CLASS_MAGIC = 0xCAFEBABE;
 
         enum class AccessFlags : u2
         {
@@ -51,59 +52,49 @@ namespace AeroJet::Java::ClassFile
             ACC_ENUM       = 0x4000
         };
 
-        ClassInfo(u2 minorVersion,
-                  u2 majorVersion,
-                  ConstantPool& constantPool,
-                  u2 accessFlags, u2 thisClass,
-                  std::optional<u2> superClass,
-                  const std::vector<u2>& interfaces,
-                  const std::vector<FieldInfo>& fields,
-                  const std::vector<MethodInfo>& methods,
+        ClassInfo(u2                                minorVersion,
+                  u2                                majorVersion,
+                  ConstantPool&                     constantPool,
+                  u2                                accessFlags,
+                  u2                                thisClass,
+                  std::optional<u2>                 superClass,
+                  const std::vector<u2>&            interfaces,
+                  const std::vector<FieldInfo>&     fields,
+                  const std::vector<MethodInfo>&    methods,
                   const std::vector<AttributeInfo>& attributes);
 
-        [[nodiscard]]
-        u2 minorVersion() const;
+        [[nodiscard]] u2 minorVersion() const;
 
-        [[nodiscard]]
-        u2 majorVersion() const;
+        [[nodiscard]] u2 majorVersion() const;
 
-        [[nodiscard]]
-        const ConstantPool& constantPool() const;
+        [[nodiscard]] const ConstantPool& constantPool() const;
 
-        [[nodiscard]]
-        AccessFlags accessFlags() const;
+        [[nodiscard]] AccessFlags accessFlags() const;
 
-        [[nodiscard]]
-        u2 thisClass() const;
+        [[nodiscard]] u2 thisClass() const;
 
-        [[nodiscard]]
-        bool isSuperClassPresented() const;
+        [[nodiscard]] bool isSuperClassPresented() const;
 
-        [[nodiscard]]
-        u2 superClass() const;
+        [[nodiscard]] u2 superClass() const;
 
-        [[nodiscard]]
-        const std::vector<u2>& interfaces() const;
+        [[nodiscard]] const std::vector<u2>& interfaces() const;
 
-        [[nodiscard]]
-        const std::vector<FieldInfo>& fields() const;
+        [[nodiscard]] const std::vector<FieldInfo>& fields() const;
 
-        [[nodiscard]]
-        const std::vector<MethodInfo>& methods() const;
+        [[nodiscard]] const std::vector<MethodInfo>& methods() const;
 
-        [[nodiscard]]
-        const std::vector<AttributeInfo>& attributes() const;
+        [[nodiscard]] const std::vector<AttributeInfo>& attributes() const;
 
-    protected:
-        u2 m_minorVersion;
-        u2 m_majorVersion;
-        ConstantPool m_constantPool;
-        u2 m_accessFlags;
-        u2 m_thisClass;
-        std::optional<u2> m_superClass;
-        std::vector<u2> m_interfaces;
-        std::vector<FieldInfo> m_fields;
-        std::vector<MethodInfo> m_methods;
+      protected:
+        u2                         m_minorVersion;
+        u2                         m_majorVersion;
+        ConstantPool               m_constantPool;
+        u2                         m_accessFlags;
+        u2                         m_thisClass;
+        std::optional<u2>          m_superClass;
+        std::vector<u2>            m_interfaces;
+        std::vector<FieldInfo>     m_fields;
+        std::vector<MethodInfo>    m_methods;
         std::vector<AttributeInfo> m_attributes;
     };
-}
+} // namespace AeroJet::Java::ClassFile

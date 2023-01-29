@@ -24,8 +24,9 @@
 
 #pragma once
 
-#include "zip.h"
 #include "Stream/Stream.hpp"
+#include "zip.h"
+
 #include <filesystem>
 #include <string_view>
 
@@ -33,54 +34,46 @@ namespace AeroJet::Java::Archive
 {
     class Jar
     {
-    public:
+      public:
         class Entry
         {
-        public:
+          public:
             Entry(zip_t* zip, const std::filesystem::path& path);
             Entry(zip_t* zip, ssize_t index);
             ~Entry();
 
-            [[nodiscard]]
-            Stream::MemoryStream read() const;
+            [[nodiscard]] Stream::MemoryStream read() const;
 
-            [[nodiscard]]
-            std::string_view name() const;
+            [[nodiscard]] std::string_view name() const;
 
-            [[nodiscard]]
-            ssize_t index() const;
+            [[nodiscard]] ssize_t index() const;
 
-            [[nodiscard]]
-            bool isDirectory() const;
+            [[nodiscard]] bool isDirectory() const;
 
-        protected:
+          protected:
             explicit Entry(zip_t* inZip);
 
-        protected:
-            zip_t* m_zip;
+          protected:
+            zip_t*      m_zip;
             std::string m_name;
-            ssize_t m_index;
+            ssize_t     m_index;
         };
 
-    public:
+      public:
         explicit Jar(const std::filesystem::path& path);
         Jar(const Jar& other);
         ~Jar();
 
-        [[nodiscard]]
-        Jar::Entry open(const std::filesystem::path& path) const;
+        [[nodiscard]] Jar::Entry open(const std::filesystem::path& path) const;
 
-        [[nodiscard]]
-        Jar::Entry open(ssize_t index) const;
+        [[nodiscard]] Jar::Entry open(ssize_t index) const;
 
-        [[nodiscard]]
-        const std::filesystem::path& location() const;
+        [[nodiscard]] const std::filesystem::path& location() const;
 
-        [[nodiscard]]
-        ssize_t count() const;
+        [[nodiscard]] ssize_t count() const;
 
-    protected:
+      protected:
         std::filesystem::path m_location;
-        zip_t* m_zip;
+        zip_t*                m_zip;
     };
-}
+} // namespace AeroJet::Java::Archive

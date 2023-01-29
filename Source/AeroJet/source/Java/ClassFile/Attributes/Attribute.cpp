@@ -23,23 +23,26 @@
  */
 
 #include "Java/ClassFile/Attributes/Attribute.hpp"
+
 #include "Exceptions/IncorrectAttributeTypeException.hpp"
 #include "Stream/StreamUtils.hpp"
 
 namespace AeroJet::Java::ClassFile
 {
-    Attribute::Attribute(const ConstantPool& constantPool, const AttributeInfo& attributeInfo, std::string_view requiredAttributeName)
+    Attribute::Attribute(const ConstantPool&  constantPool,
+                         const AttributeInfo& attributeInfo,
+                         std::string_view     requiredAttributeName)
     {
-        const u2 nameIndex = attributeInfo.attributeNameIndex();
+        const u2          nameIndex     = attributeInfo.attributeNameIndex();
         const std::string attributeName = constantPool[nameIndex].as<ConstantPoolInfoUtf8>().asString();
 
-        if (attributeName != requiredAttributeName)
+        if(attributeName != requiredAttributeName)
         {
             throw Exceptions::IncorrectAttributeTypeException(requiredAttributeName, attributeName);
         }
 
         m_attributeNameIndex = nameIndex;
-        m_attributeLength = attributeInfo.size();
+        m_attributeLength    = attributeInfo.size();
 
         m_infoDataStream = Stream::Utils::bytesToStream(attributeInfo.info());
     }
@@ -53,4 +56,4 @@ namespace AeroJet::Java::ClassFile
     {
         return m_attributeLength;
     }
-}
+} // namespace AeroJet::Java::ClassFile

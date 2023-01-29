@@ -26,41 +26,39 @@
 
 #include "Java/ClassFile/Attributes/AttributeInfo.hpp"
 #include "Types.hpp"
+
 #include <vector>
 
 namespace AeroJet::Java::ClassFile
 {
     class FieldInfo
     {
-    public:
+      public:
         enum class AccessFlags : u2
         {
-            ACC_PUBLIC = 0x0001,
-            ACC_PRIVATE = 0x0002,
+            ACC_PUBLIC    = 0x0001,
+            ACC_PRIVATE   = 0x0002,
             ACC_PROTECTED = 0x0004,
-            ACC_STATIC = 0x0008,
-            ACC_FINAL = 0x0010,
-            ACC_VOLATILE = 0x0040,
+            ACC_STATIC    = 0x0008,
+            ACC_FINAL     = 0x0010,
+            ACC_VOLATILE  = 0x0040,
             ACC_TRANSIENT = 0x0080,
             ACC_SYNTHETIC = 0x1000,
-            ACC_ENUM = 0x4000
+            ACC_ENUM      = 0x4000
         };
 
         FieldInfo(u2 accessFlags, u2 nameIndex, u2 descriptorIndex, const std::vector<AttributeInfo>& attributes);
 
-        [[nodiscard]]
-        AccessFlags accessFlags() const;
+        [[nodiscard]] AccessFlags accessFlags() const;
 
-        [[nodiscard]]
-        u2 nameIndex() const;
+        [[nodiscard]] u2 nameIndex() const;
 
-        [[nodiscard]]
-        u2 descriptorIndex() const;
+        [[nodiscard]] u2 descriptorIndex() const;
 
-    protected:
-        u2 m_accessFlags;
-        u2 m_nameIndex;
-        u2 m_descriptorIndex;
+      protected:
+        u2                         m_accessFlags;
+        u2                         m_nameIndex;
+        u2                         m_descriptorIndex;
         std::vector<AttributeInfo> m_attributes;
     };
-}
+} // namespace AeroJet::Java::ClassFile

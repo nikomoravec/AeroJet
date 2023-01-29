@@ -23,16 +23,18 @@
  */
 
 #include "Java/ClassFile/Attributes/Exceptions.hpp"
+
 #include "Stream/Reader.hpp"
 
 namespace AeroJet::Java::ClassFile
 {
-    Exceptions::Exceptions(const ConstantPool& constantPool, const AttributeInfo& attributeInfo) : Attribute(constantPool, attributeInfo, EXCEPTIONS_ATTRIBUTE_NAME)
+    Exceptions::Exceptions(const ConstantPool& constantPool, const AttributeInfo& attributeInfo) :
+        Attribute(constantPool, attributeInfo, EXCEPTIONS_ATTRIBUTE_NAME)
     {
         const u2 numberOfExceptions = Stream::Reader::read<u2>(m_infoDataStream, Stream::ByteOrder::INVERSE);
         m_exceptionIndexTable.reserve(numberOfExceptions);
 
-        for (size_t exceptionIndex = 0; exceptionIndex < numberOfExceptions; exceptionIndex++)
+        for(size_t exceptionIndex = 0; exceptionIndex < numberOfExceptions; exceptionIndex++)
         {
             m_exceptionIndexTable.emplace_back(Stream::Reader::read<u2>(m_infoDataStream, Stream::ByteOrder::INVERSE));
         }
@@ -47,4 +49,4 @@ namespace AeroJet::Java::ClassFile
     {
         return m_exceptionIndexTable;
     }
-}
+} // namespace AeroJet::Java::ClassFile

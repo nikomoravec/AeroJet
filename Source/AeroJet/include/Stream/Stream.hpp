@@ -25,6 +25,7 @@
 #pragma once
 
 #include "Types.hpp"
+
 #include <climits>
 #include <cstddef>
 #include <sstream>
@@ -46,7 +47,7 @@ namespace AeroJet::Stream
 
         union ByteObjectRepresentation
         {
-            T object;
+            T             object;
             unsigned char bytes[sizeof(T)];
         };
 
@@ -55,11 +56,11 @@ namespace AeroJet::Stream
 
         source.object = data;
 
-        for (size_t k = 0; k < sizeof(T); k++)
+        for(size_t k = 0; k < sizeof(T); k++)
         {
             dst.bytes[k] = source.bytes[sizeof(T) - k - 1];
         }
 
         return dst.object;
     }
-}
+} // namespace AeroJet::Stream

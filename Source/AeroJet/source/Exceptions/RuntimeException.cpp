@@ -1,4 +1,5 @@
 #include "Exceptions/RuntimeException.hpp"
+
 #include "backward.hpp"
 
 namespace AeroJet::Exceptions
@@ -10,4 +11,4 @@ namespace AeroJet::Exceptions
         ::backward::Printer stackTracePrinter;
         stackTracePrinter.print(stackTrace);
     }
-}
+} // namespace AeroJet::Exceptions

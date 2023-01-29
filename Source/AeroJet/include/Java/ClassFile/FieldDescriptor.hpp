@@ -31,49 +31,43 @@ namespace AeroJet::Java::ClassFile
 {
     class FieldDescriptor
     {
-    public:
+      public:
         enum class FieldType : char
         {
-            BYTE = 'B',
-            CHAR = 'C',
-            DOUBLE = 'D',
-            FLOAT = 'F',
+            BYTE    = 'B',
+            CHAR    = 'C',
+            DOUBLE  = 'D',
+            FLOAT   = 'F',
             INTEGER = 'I',
-            LONG = 'J',
-            CLASS = 'L',
-            SHORT = 'S',
+            LONG    = 'J',
+            CLASS   = 'L',
+            SHORT   = 'S',
             BOOLEAN = 'Z',
-            ARRAY = '['
+            ARRAY   = '['
         };
 
         static constexpr char FIELD_TYPE_CLASS_END_TOKEN = ';';
 
-    public:
+      public:
         explicit FieldDescriptor(std::string descriptor);
 
-        [[nodiscard]]
-        std::optional<FieldDescriptor> underlyingType() const;
+        [[nodiscard]] std::optional<FieldDescriptor> underlyingType() const;
 
-        [[nodiscard]]
-        std::optional<std::string> getClassName() const;
+        [[nodiscard]] std::optional<std::string> getClassName() const;
 
-        [[nodiscard]]
-        FieldType fieldType() const;
+        [[nodiscard]] FieldType fieldType() const;
 
-        [[nodiscard]]
-        bool isPrimitive() const;
+        [[nodiscard]] bool isPrimitive() const;
 
-        [[nodiscard]]
-        bool isClass() const;
+        [[nodiscard]] bool isClass() const;
 
-        [[nodiscard]]
-        bool isArray() const;
+        [[nodiscard]] bool isArray() const;
 
-    protected:
+      protected:
         FieldType resolve();
 
-    protected:
+      protected:
         std::string m_rawLiteral;
-        FieldType m_type;
+        FieldType   m_type;
     };
-}
+} // namespace AeroJet::Java::ClassFile

@@ -26,30 +26,27 @@
 
 #include "ConstantPoolEntry.hpp"
 #include "Types.hpp"
+
 #include <map>
 
 namespace AeroJet::Java::ClassFile
 {
     class ConstantPool final
     {
-    public:
-        [[nodiscard]]
-        u2 size() const;
+      public:
+        [[nodiscard]] u2 size() const;
 
-        [[nodiscard]]
-        const ConstantPoolEntry& getEntry(u2 index) const;
+        [[nodiscard]] const ConstantPoolEntry& getEntry(u2 index) const;
 
         const ConstantPoolEntry& operator[](u2 index) const;
 
         void addEntry(u2 index, ConstantPoolEntry&& entry);
 
-        [[nodiscard]]
-        std::map<u2, ConstantPoolEntry>::const_iterator begin() const;
+        [[nodiscard]] std::map<u2, ConstantPoolEntry>::const_iterator begin() const;
 
-        [[nodiscard]]
-        std::map<u2, ConstantPoolEntry>::const_iterator end() const;
+        [[nodiscard]] std::map<u2, ConstantPoolEntry>::const_iterator end() const;
 
-    private:
+      private:
         std::map<u2, ConstantPoolEntry> m_entries;
     };
-}
+} // namespace AeroJet::Java::ClassFile

@@ -23,18 +23,17 @@
  */
 
 #include "Java/ClassFile/FieldDescriptor.hpp"
+
 #include "Exceptions/RuntimeException.hpp"
 #include "fmt/format.h"
 
 namespace AeroJet::Java::ClassFile
 {
-    FieldDescriptor::FieldDescriptor(std::string descriptor) : m_rawLiteral(std::move(descriptor)), m_type(resolve())
-    {
-    }
+    FieldDescriptor::FieldDescriptor(std::string descriptor) : m_rawLiteral(std::move(descriptor)), m_type(resolve()) {}
 
     std::optional<FieldDescriptor> FieldDescriptor::underlyingType() const
     {
-        if (m_type == FieldType::ARRAY)
+        if(m_type == FieldType::ARRAY)
         {
             return FieldDescriptor(std::string(++m_rawLiteral.begin(), m_rawLiteral.end()));
         }
@@ -44,7 +43,7 @@ namespace AeroJet::Java::ClassFile
 
     std::optional<std::string> FieldDescriptor::getClassName() const
     {
-        if (m_type == FieldType::CLASS)
+        if(m_type == FieldType::CLASS)
         {
             return std::string(++m_rawLiteral.begin(), --m_rawLiteral.end());
         }
@@ -74,29 +73,29 @@ namespace AeroJet::Java::ClassFile
 
     FieldDescriptor::FieldType FieldDescriptor::resolve()
     {
-        if (m_rawLiteral.empty())
+        if(m_rawLiteral.empty())
         {
             throw Exceptions::RuntimeException("Field descriptor can not be empty!");
         }
 
         const char first = *m_rawLiteral.begin();
-        if (m_rawLiteral.size() > 1)
+        if(m_rawLiteral.size() > 1)
         {
-            if (first == static_cast<char>(FieldType::CLASS))
+            if(first == static_cast<char>(FieldType::CLASS))
             {
-                if (m_rawLiteral[m_rawLiteral.size() - 1] == FIELD_TYPE_CLASS_END_TOKEN)
+                if(m_rawLiteral[m_rawLiteral.size() - 1] == FIELD_TYPE_CLASS_END_TOKEN)
                 {
                     return FieldType::CLASS;
                 }
             }
 
-            if (first == static_cast<char>(FieldType::ARRAY))
+            if(first == static_cast<char>(FieldType::ARRAY))
             {
                 return FieldType::ARRAY;
             }
         }
 
-        if (m_rawLiteral.size() != 1)
+        if(m_rawLiteral.size() != 1)
         {
             throw Exceptions::RuntimeException(fmt::format("Incorrect Field Descriptor literal: \"{}\"", m_rawLiteral));
         }
@@ -120,7 +119,8 @@ namespace AeroJet::Java::ClassFile
             case static_cast<char>(FieldType::BOOLEAN):
                 return FieldType::BOOLEAN;
             default:
-                throw Exceptions::RuntimeException(fmt::format("Can not resolve type of field descriptor: \"{}\"", m_rawLiteral));
+                throw Exceptions::RuntimeException(
+                    fmt::format("Can not resolve type of field descriptor: \"{}\"", m_rawLiteral));
         }
     }
-}
+} // namespace AeroJet::Java::ClassFile

@@ -23,6 +23,7 @@
  */
 
 #include "Exceptions/FileNotFoundException.hpp"
+
 #include "fmt/format.h"
 
 namespace AeroJet::Exceptions
@@ -31,4 +32,4 @@ namespace AeroJet::Exceptions
         RuntimeException(fmt::format("File \"{}\" not found!", path.string()))
     {
     }
-}
+} // namespace AeroJet::Exceptions

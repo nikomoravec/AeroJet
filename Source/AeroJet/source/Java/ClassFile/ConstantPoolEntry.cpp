@@ -23,6 +23,7 @@
  */
 
 #include "Java/ClassFile/ConstantPoolEntry.hpp"
+
 #include "Exceptions/RuntimeException.hpp"
 #include "fmt/format.h"
 #include "Stream/Reader.hpp"
@@ -31,7 +32,8 @@
 
 namespace AeroJet::Java::ClassFile
 {
-    ConstantPoolEntry::ConstantPoolEntry(const ConstantPoolInfoTag tag, const std::vector<u1>& data) : m_tag(tag), m_data(data)
+    ConstantPoolEntry::ConstantPoolEntry(const ConstantPoolInfoTag tag, const std::vector<u1>& data) :
+        m_tag(tag), m_data(data)
     {
     }
 
@@ -45,9 +47,7 @@ namespace AeroJet::Java::ClassFile
         return m_data;
     }
 
-    ConstantPoolInfoUtf8::ConstantPoolInfoUtf8(const std::vector<u1>& bytes) : m_string(bytes.begin(), bytes.end())
-    {
-    }
+    ConstantPoolInfoUtf8::ConstantPoolInfoUtf8(const std::vector<u1>& bytes) : m_string(bytes.begin(), bytes.end()) {}
 
     u2 ConstantPoolInfoUtf8::length()
     {
@@ -61,12 +61,10 @@ namespace AeroJet::Java::ClassFile
 
     std::vector<u1> ConstantPoolInfoUtf8::bytes() const
     {
-        return  std::vector<u1>{m_string.begin(), m_string.end()};
+        return std::vector<u1>{ m_string.begin(), m_string.end() };
     }
 
-    ConstantPoolInfoInteger::ConstantPoolInfoInteger(u4 bytes) : m_bytes(bytes)
-    {
-    }
+    ConstantPoolInfoInteger::ConstantPoolInfoInteger(u4 bytes) : m_bytes(bytes) {}
 
     u4 ConstantPoolInfoInteger::bytes()
     {
@@ -87,25 +85,22 @@ namespace AeroJet::Java::ClassFile
         return m_lowBytes;
     }
 
-    ConstantPoolInfoClass::ConstantPoolInfoClass(u2 nameIndex) : m_nameIndex(nameIndex)
-    {
-    }
+    ConstantPoolInfoClass::ConstantPoolInfoClass(u2 nameIndex) : m_nameIndex(nameIndex) {}
 
     u2 ConstantPoolInfoClass::nameIndex()
     {
         return m_nameIndex;
     }
 
-    ConstantPoolInfoString::ConstantPoolInfoString(u2 stringIndex) : m_stringIndex(stringIndex)
-    {
-    }
+    ConstantPoolInfoString::ConstantPoolInfoString(u2 stringIndex) : m_stringIndex(stringIndex) {}
 
     u2 ConstantPoolInfoString::stringIndex()
     {
         return m_stringIndex;
     }
 
-    ConstantPoolInfoFieldRef::ConstantPoolInfoFieldRef(u2 classIndex, u2 nameAndTypeIndex) : m_classIndex(classIndex), m_nameAndTypeIndex(nameAndTypeIndex)
+    ConstantPoolInfoFieldRef::ConstantPoolInfoFieldRef(u2 classIndex, u2 nameAndTypeIndex) :
+        m_classIndex(classIndex), m_nameAndTypeIndex(nameAndTypeIndex)
     {
     }
 
@@ -119,7 +114,8 @@ namespace AeroJet::Java::ClassFile
         return m_nameAndTypeIndex;
     }
 
-    ConstantPoolInfoNameAndType::ConstantPoolInfoNameAndType(u2 nameIndex, u2 descriptorIndex) : m_nameIndex(nameIndex), m_descriptorIndex(descriptorIndex)
+    ConstantPoolInfoNameAndType::ConstantPoolInfoNameAndType(u2 nameIndex, u2 descriptorIndex) :
+        m_nameIndex(nameIndex), m_descriptorIndex(descriptorIndex)
     {
     }
 
@@ -133,7 +129,9 @@ namespace AeroJet::Java::ClassFile
         return m_descriptorIndex;
     }
 
-    ConstantPoolInfoMethodHandle::ConstantPoolInfoMethodHandle(ConstantPoolInfoMethodHandle::ReferenceKind referenceKind, u2 referenceIndex) :
+    ConstantPoolInfoMethodHandle::ConstantPoolInfoMethodHandle(
+        ConstantPoolInfoMethodHandle::ReferenceKind referenceKind,
+        u2                                          referenceIndex) :
         m_referenceKind(referenceKind),
         m_referenceIndex(referenceIndex)
     {
@@ -149,16 +147,15 @@ namespace AeroJet::Java::ClassFile
         return m_referenceIndex;
     }
 
-    ConstantPoolInfoMethodType::ConstantPoolInfoMethodType(u2 descriptorIndex) : m_descriptorIndex(descriptorIndex)
-    {
-    }
+    ConstantPoolInfoMethodType::ConstantPoolInfoMethodType(u2 descriptorIndex) : m_descriptorIndex(descriptorIndex) {}
 
     u2 ConstantPoolInfoMethodType::descriptorIndex()
     {
         return m_descriptorIndex;
     }
 
-    ConstantPoolInfoInvokeDynamic::ConstantPoolInfoInvokeDynamic(u2 bootstrapMethodAttributeIndex, u2 nameAndTypeIndex) :
+    ConstantPoolInfoInvokeDynamic::ConstantPoolInfoInvokeDynamic(u2 bootstrapMethodAttributeIndex,
+                                                                 u2 nameAndTypeIndex) :
         m_bootstrapMethodAttributeIndex(bootstrapMethodAttributeIndex),
         m_nameAndTypeIndex(nameAndTypeIndex)
     {
@@ -177,99 +174,102 @@ namespace AeroJet::Java::ClassFile
     template<>
     ConstantPoolInfoUtf8 ConstantPoolEntry::as() const
     {
-        return ConstantPoolInfoUtf8{data()};
+        return ConstantPoolInfoUtf8{ data() };
     }
 
     template<>
     ConstantPoolInfoInteger ConstantPoolEntry::as() const
     {
         constexpr u2 BYTES_OFFSET = 0;
-        return ConstantPoolInfoInteger{*(u4*)(&m_data[BYTES_OFFSET])};
+        return ConstantPoolInfoInteger{ *(u4*)(&m_data[BYTES_OFFSET]) };
     }
 
     template<>
     ConstantPoolInfoLong ConstantPoolEntry::as() const
     {
         constexpr u2 HIGH_BYTES_OFFSET = 0;
-        constexpr u2 LOW_BYTES_OFFSET = 4;
+        constexpr u2 LOW_BYTES_OFFSET  = 4;
 
-        return ConstantPoolInfoLong{*(u4*)(&m_data[HIGH_BYTES_OFFSET]), *(u4*)(&m_data[LOW_BYTES_OFFSET])};
+        return ConstantPoolInfoLong{ *(u4*)(&m_data[HIGH_BYTES_OFFSET]), *(u4*)(&m_data[LOW_BYTES_OFFSET]) };
     }
 
     template<>
     ConstantPoolInfoClass ConstantPoolEntry::as() const
     {
         constexpr u2 NAME_INDEX_OFFSET = 0;
-        return ConstantPoolInfoClass{*(u2*)(&m_data[NAME_INDEX_OFFSET])};
+        return ConstantPoolInfoClass{ *(u2*)(&m_data[NAME_INDEX_OFFSET]) };
     }
 
     template<>
     ConstantPoolInfoString ConstantPoolEntry::as() const
     {
         constexpr u2 STRING_INDEX_OFFSET = 0;
-        return ConstantPoolInfoString{*(u2*)(&m_data[STRING_INDEX_OFFSET])};
+        return ConstantPoolInfoString{ *(u2*)(&m_data[STRING_INDEX_OFFSET]) };
     }
 
     template<>
     ConstantPoolInfoFieldRef ConstantPoolEntry::as() const
     {
-        constexpr u2 CLASS_INDEX_OFFSET = 0;
+        constexpr u2 CLASS_INDEX_OFFSET         = 0;
         constexpr u2 NAME_AND_TYPE_INDEX_OFFSET = 2;
 
-        return ConstantPoolInfoFieldRef{*(u2*)(&m_data[CLASS_INDEX_OFFSET]), *(u2*)(&m_data[NAME_AND_TYPE_INDEX_OFFSET])};
+        return ConstantPoolInfoFieldRef{ *(u2*)(&m_data[CLASS_INDEX_OFFSET]),
+                                         *(u2*)(&m_data[NAME_AND_TYPE_INDEX_OFFSET]) };
     }
 
     template<>
     ConstantPoolInfoNameAndType ConstantPoolEntry::as() const
     {
-        constexpr u2 NAME_INDEX_OFFSET = 0;
+        constexpr u2 NAME_INDEX_OFFSET       = 0;
         constexpr u2 DESCRIPTOR_INDEX_OFFSET = 2;
 
-        return ConstantPoolInfoNameAndType{*(u2*)(&m_data[NAME_INDEX_OFFSET]), *(u2*)(&m_data[DESCRIPTOR_INDEX_OFFSET])};
+        return ConstantPoolInfoNameAndType{ *(u2*)(&m_data[NAME_INDEX_OFFSET]),
+                                            *(u2*)(&m_data[DESCRIPTOR_INDEX_OFFSET]) };
     }
 
     template<>
     ConstantPoolInfoMethodHandle ConstantPoolEntry::as() const
     {
-        constexpr u2 REFERENCE_KIND_OFFSET = 0;
+        constexpr u2 REFERENCE_KIND_OFFSET  = 0;
         constexpr u2 REFERENCE_INDEX_OFFSET = 1;
 
-        return ConstantPoolInfoMethodHandle{static_cast<ConstantPoolInfoMethodHandle::ReferenceKind>(*(u2*)(&m_data[REFERENCE_KIND_OFFSET])),
-                                            *(u2*)(&m_data[REFERENCE_INDEX_OFFSET])};
+        return ConstantPoolInfoMethodHandle{ static_cast<ConstantPoolInfoMethodHandle::ReferenceKind>(
+                                                 *(u2*)(&m_data[REFERENCE_KIND_OFFSET])),
+                                             *(u2*)(&m_data[REFERENCE_INDEX_OFFSET]) };
     }
 
     template<>
     ConstantPoolInfoMethodType ConstantPoolEntry::as() const
     {
         constexpr u2 DESCRIPTOR_INDEX_OFFSET = 0;
-        return ConstantPoolInfoMethodType{*(u2*)(&m_data[DESCRIPTOR_INDEX_OFFSET])};
+        return ConstantPoolInfoMethodType{ *(u2*)(&m_data[DESCRIPTOR_INDEX_OFFSET]) };
     }
 
     template<>
     ConstantPoolInfoInvokeDynamic ConstantPoolEntry::as() const
     {
         constexpr u2 BOOTSTRAP_METHOD_ATTRIBUTE_INDEX_OFFSET = 0;
-        constexpr u2 NAME_AND_TYPE_INDEX_OFFSET = 2;
+        constexpr u2 NAME_AND_TYPE_INDEX_OFFSET              = 2;
 
-        return ConstantPoolInfoInvokeDynamic{*(u2*)(&m_data[BOOTSTRAP_METHOD_ATTRIBUTE_INDEX_OFFSET]), *(u2*)(&m_data[NAME_AND_TYPE_INDEX_OFFSET])};
+        return ConstantPoolInfoInvokeDynamic{ *(u2*)(&m_data[BOOTSTRAP_METHOD_ATTRIBUTE_INDEX_OFFSET]),
+                                              *(u2*)(&m_data[NAME_AND_TYPE_INDEX_OFFSET]) };
     }
-}
-
+} // namespace AeroJet::Java::ClassFile
 
 template<>
 AeroJet::Java::ClassFile::ConstantPoolEntry AeroJet::Stream::Reader::read(std::istream& stream, ByteOrder byteOrder)
 {
     Stream::MemoryStream dataStream;
 
-    const AeroJet::Java::ClassFile::ConstantPoolInfoTag tag = static_cast<AeroJet::Java::ClassFile::ConstantPoolInfoTag>(
-            AeroJet::Stream::Reader::read<u1>(stream, byteOrder)
-    );
-    switch (tag)
+    const AeroJet::Java::ClassFile::ConstantPoolInfoTag tag =
+        static_cast<AeroJet::Java::ClassFile::ConstantPoolInfoTag>(
+            AeroJet::Stream::Reader::read<u1>(stream, byteOrder));
+    switch(tag)
     {
         case Java::ClassFile::ConstantPoolInfoTag::UTF_8:
         {
             const AeroJet::u2 dataSize = AeroJet::Stream::Reader::read<AeroJet::u2>(stream, byteOrder);
-            for (AeroJet::u2 byteIndex = 0; byteIndex < dataSize; byteIndex++)
+            for(AeroJet::u2 byteIndex = 0; byteIndex < dataSize; byteIndex++)
             {
                 AeroJet::u1 byte = AeroJet::Stream::Reader::read<AeroJet::u1>(stream, byteOrder);
                 AeroJet::Stream::Writer::write(dataStream, byte);
@@ -289,7 +289,7 @@ AeroJet::Java::ClassFile::ConstantPoolEntry AeroJet::Stream::Reader::read(std::i
         case Java::ClassFile::ConstantPoolInfoTag::DOUBLE:
         {
             const AeroJet::u4 highBytes = AeroJet::Stream::Reader::read<AeroJet::u4>(stream, byteOrder);
-            const AeroJet::u4 lowBytes = AeroJet::Stream::Reader::read<AeroJet::u4>(stream, byteOrder);
+            const AeroJet::u4 lowBytes  = AeroJet::Stream::Reader::read<AeroJet::u4>(stream, byteOrder);
 
             AeroJet::Stream::Writer::write(dataStream, highBytes);
             AeroJet::Stream::Writer::write(dataStream, lowBytes);
@@ -321,7 +321,7 @@ AeroJet::Java::ClassFile::ConstantPoolEntry AeroJet::Stream::Reader::read(std::i
         }
         case Java::ClassFile::ConstantPoolInfoTag::METHOD_HANDLE:
         {
-            const AeroJet::u1 referenceKind = AeroJet::Stream::Reader::read<AeroJet::u1>(stream, byteOrder);
+            const AeroJet::u1 referenceKind  = AeroJet::Stream::Reader::read<AeroJet::u1>(stream, byteOrder);
             const AeroJet::u2 referenceIndex = AeroJet::Stream::Reader::read<AeroJet::u2>(stream, byteOrder);
 
             AeroJet::Stream::Writer::write(dataStream, referenceKind);
@@ -331,13 +331,11 @@ AeroJet::Java::ClassFile::ConstantPoolEntry AeroJet::Stream::Reader::read(std::i
         }
         default:
             throw AeroJet::Exceptions::RuntimeException(
-                    fmt::format(
-                            "Unexpected Constant Pool Entry Tag {:#04x} at position {:#08x}!",
+                fmt::format("Unexpected Constant Pool Entry Tag {:#04x} at position {:#08x}!",
                             static_cast<u2>(tag),
-                            stream.tellg()
-                    ));
+                            stream.tellg()));
     }
 
     std::vector<AeroJet::u1> dataBytes = AeroJet::Stream::Utils::streamToBytes(dataStream);
-    return {tag, dataBytes};
+    return { tag, dataBytes };
 }

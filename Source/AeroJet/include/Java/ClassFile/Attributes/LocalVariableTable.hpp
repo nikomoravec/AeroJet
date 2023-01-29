@@ -28,36 +28,32 @@
 #include "Java/ClassFile/Attributes/AttributeInfo.hpp"
 #include "Java/ClassFile/ConstantPool.hpp"
 #include "Types.hpp"
+
 #include <vector>
 
 namespace AeroJet::Java::ClassFile
 {
     class LocalVariableTable : public Attribute
     {
-    public:
+      public:
         static constexpr auto LOCAL_VARIABLE_TABLE_ATTRIBUTE_NAME = "LocalVariableTable";
 
         class LocalVariableTableEntry
         {
-        public:
+          public:
             LocalVariableTableEntry(u2 startPc, u2 length, u2 nameIndex, u2 descriptorIndex, u2 index);
 
-            [[nodiscard]]
-            u2 startPc() const;
+            [[nodiscard]] u2 startPc() const;
 
-            [[nodiscard]]
-            u2 length() const;
+            [[nodiscard]] u2 length() const;
 
-            [[nodiscard]]
-            u2 nameIndex() const;
+            [[nodiscard]] u2 nameIndex() const;
 
-            [[nodiscard]]
-            u2 descriptorIndex() const;
+            [[nodiscard]] u2 descriptorIndex() const;
 
-            [[nodiscard]]
-            u2 index() const;
+            [[nodiscard]] u2 index() const;
 
-        protected:
+          protected:
             u2 m_startPc;
             u2 m_length;
             u2 m_nameIndex;
@@ -67,10 +63,9 @@ namespace AeroJet::Java::ClassFile
 
         LocalVariableTable(const ConstantPool& constantPool, const AttributeInfo& attributeInfo);
 
-        [[nodiscard]]
-        const std::vector<LocalVariableTableEntry>& localVariableTable() const;
+        [[nodiscard]] const std::vector<LocalVariableTableEntry>& localVariableTable() const;
 
-    protected:
+      protected:
         std::vector<LocalVariableTableEntry> m_localVariableTable;
     };
-}
+} // namespace AeroJet::Java::ClassFile

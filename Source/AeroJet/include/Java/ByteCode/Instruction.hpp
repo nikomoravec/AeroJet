@@ -26,28 +26,24 @@
 
 #include "OpCodes.hpp"
 #include "Types.hpp"
+
 #include <vector>
 
 namespace AeroJet::Java::ByteCode
 {
     class Instruction
     {
-    public:
+      public:
         explicit Instruction(OperationCode opCode);
 
         Instruction(OperationCode opCode, std::vector<u1>&& data);
 
-        [[nodiscard]]
-        OperationCode opCode() const;
+        [[nodiscard]] OperationCode opCode() const;
 
-        [[nodiscard]]
-        const std::vector<u1>& data() const;
+        [[nodiscard]] const std::vector<u1>& data() const;
 
-    private:
-
-
-    protected:
-        OperationCode m_opCode;
+      protected:
+        OperationCode   m_opCode;
         std::vector<u1> m_data;
     };
-}
+} // namespace AeroJet::Java::ByteCode

@@ -31,7 +31,7 @@ namespace AeroJet::Exceptions
 {
     class RuntimeException : public std::runtime_error
     {
-    public:
+      public:
         explicit RuntimeException(std::string_view message);
     };
-}
+} // namespace AeroJet::Exceptions

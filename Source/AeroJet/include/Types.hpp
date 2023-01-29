@@ -45,4 +45,4 @@ namespace AeroJet
     static_assert(sizeof(i2) == 2);
     static_assert(sizeof(i4) == 4);
     static_assert(sizeof(i8) == 8);
-}
+} // namespace AeroJet

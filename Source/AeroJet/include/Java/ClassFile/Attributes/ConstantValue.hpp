@@ -33,15 +33,14 @@ namespace AeroJet::Java::ClassFile
 {
     class ConstantValue : public Attribute
     {
-    public:
+      public:
         static constexpr auto CONSTANT_VALUE_ATTRIBUTE_NAME = "ConstantValue";
 
         ConstantValue(const ConstantPool& constantPool, const AttributeInfo& attributeInfo);
 
-        [[nodiscard]]
-        u2 constantValueIndex() const;
+        [[nodiscard]] u2 constantValueIndex() const;
 
-    protected:
+      protected:
         u2 m_constantValueIndex;
     };
-}
+} // namespace AeroJet::Java::ClassFile

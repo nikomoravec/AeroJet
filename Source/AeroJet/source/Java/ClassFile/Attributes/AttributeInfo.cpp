@@ -23,14 +23,14 @@
  */
 
 #include "Java/ClassFile/Attributes/AttributeInfo.hpp"
+
 #include "Stream/Reader.hpp"
 #include "Types.hpp"
 
 namespace AeroJet::Java::ClassFile
 {
     AttributeInfo::AttributeInfo(u2 attributeIndex, std::vector<u1> info) :
-        m_attributeNameIndex(attributeIndex),
-        m_info(std::move(info))
+        m_attributeNameIndex(attributeIndex), m_info(std::move(info))
     {
     }
 
@@ -48,22 +48,21 @@ namespace AeroJet::Java::ClassFile
     {
         return m_info;
     }
-}
-
+} // namespace AeroJet::Java::ClassFile
 
 template<>
 AeroJet::Java::ClassFile::AttributeInfo AeroJet::Stream::Reader::read(std::istream& stream, ByteOrder byteOrder)
 {
     const AeroJet::u2 attributeNameIndex = AeroJet::Stream::Reader::read<AeroJet::u2>(stream, byteOrder);
-    const AeroJet::u4 attributeInfoSize = AeroJet::Stream::Reader::read<AeroJet::u4>(stream, byteOrder);
+    const AeroJet::u4 attributeInfoSize  = AeroJet::Stream::Reader::read<AeroJet::u4>(stream, byteOrder);
 
     std::vector<AeroJet::u1> attributeInfo;
     attributeInfo.reserve(attributeInfoSize);
-    for (i4 attributeInfoIndex = 0; attributeInfoIndex < attributeInfoSize; attributeInfoIndex++)
+    for(i4 attributeInfoIndex = 0; attributeInfoIndex < attributeInfoSize; attributeInfoIndex++)
     {
         const AeroJet::u1 byte = AeroJet::Stream::Reader::read<AeroJet::u1>(stream, byteOrder);
         attributeInfo.emplace_back(byte);
     }
 
-    return {attributeNameIndex, attributeInfo};
+    return { attributeNameIndex, attributeInfo };
 }

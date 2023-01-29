@@ -33,7 +33,7 @@ namespace AeroJet::Java::ClassFile
 
     void ConstantPool::addEntry(u2 index, ConstantPoolEntry&& entry)
     {
-        m_entries.insert({index, entry});
+        m_entries.insert({ index, entry });
     }
 
     const ConstantPoolEntry& ConstantPool::getEntry(u2 index) const
@@ -55,4 +55,4 @@ namespace AeroJet::Java::ClassFile
     {
         return m_entries.end();
     }
-}
+} // namespace AeroJet::Java::ClassFile

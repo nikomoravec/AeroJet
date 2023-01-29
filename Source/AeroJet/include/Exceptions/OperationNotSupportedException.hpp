@@ -24,14 +24,14 @@
 
 #pragma once
 
-#include "RuntimeException.hpp"
 #include "Java/ByteCode/OpCodes.hpp"
+#include "RuntimeException.hpp"
 
 namespace AeroJet::Exceptions
 {
     class OperationNotSupportedException : public RuntimeException
     {
-    public:
+      public:
         OperationNotSupportedException(Java::ByteCode::OperationCode opCode);
     };
-}
+} // namespace AeroJet::Exceptions

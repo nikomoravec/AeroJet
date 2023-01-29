@@ -22,16 +22,17 @@
  * SOFTWARE.
  */
 
-#include "Java/ClassFile/FieldDescriptor.hpp"
 #include "Java/ClassFile/MethodDescriptor.hpp"
+
 #include "Exceptions/RuntimeException.hpp"
 #include "fmt/format.h"
+#include "Java/ClassFile/FieldDescriptor.hpp"
 
 namespace
 {
     inline bool isPrimitive(char fieldType)
     {
-        switch (fieldType)
+        switch(fieldType)
         {
             case static_cast<char>(AeroJet::Java::ClassFile::FieldDescriptor::FieldType::BYTE):
             case static_cast<char>(AeroJet::Java::ClassFile::FieldDescriptor::FieldType::CHAR):
@@ -50,35 +51,48 @@ namespace
         }
     }
 
-    inline size_t resolveArray(const std::string& literal, std::vector<AeroJet::Java::ClassFile::FieldDescriptor>& arguments, size_t position)
+    inline size_t resolveArray(const std::string&                                      literal,
+                               std::vector<AeroJet::Java::ClassFile::FieldDescriptor>& arguments,
+                               size_t                                                  position)
     {
-        const size_t underlyingTypeIndex = literal.find_first_not_of(static_cast<char>(AeroJet::Java::ClassFile::FieldDescriptor::FieldType::ARRAY), position);
-        if (isPrimitive(literal[underlyingTypeIndex]))
+        const size_t underlyingTypeIndex =
+            literal.find_first_not_of(static_cast<char>(AeroJet::Java::ClassFile::FieldDescriptor::FieldType::ARRAY),
+                                      position);
+        if(isPrimitive(literal[underlyingTypeIndex]))
         {
             arguments.emplace_back(literal.substr(position, underlyingTypeIndex - position + 1));
             return underlyingTypeIndex;
         }
 
-        if (literal[underlyingTypeIndex] == static_cast<char>(AeroJet::Java::ClassFile::FieldDescriptor::FieldType::CLASS))
+        if(literal[underlyingTypeIndex] ==
+           static_cast<char>(AeroJet::Java::ClassFile::FieldDescriptor::FieldType::CLASS))
         {
-            const size_t classNameEndPos = literal.find(AeroJet::Java::ClassFile::FieldDescriptor::FIELD_TYPE_CLASS_END_TOKEN, underlyingTypeIndex);
+            const size_t classNameEndPos =
+                literal.find(AeroJet::Java::ClassFile::FieldDescriptor::FIELD_TYPE_CLASS_END_TOKEN,
+                             underlyingTypeIndex);
             arguments.emplace_back(literal.substr(position, classNameEndPos - (position - 1)));
             return classNameEndPos;
         }
 
-        throw AeroJet::Exceptions::RuntimeException(fmt::format("Unexpected token at position {} in \"{}\"", underlyingTypeIndex, literal));
+        throw AeroJet::Exceptions::RuntimeException(
+            fmt::format("Unexpected token at position {} in \"{}\"", underlyingTypeIndex, literal));
     }
 
-    inline size_t resolvePrimitive(const std::string& literal, std::vector<AeroJet::Java::ClassFile::FieldDescriptor>& arguments, size_t position)
+    inline size_t resolvePrimitive(const std::string&                                      literal,
+                                   std::vector<AeroJet::Java::ClassFile::FieldDescriptor>& arguments,
+                                   size_t                                                  position)
     {
-        arguments.emplace_back(AeroJet::Java::ClassFile::FieldDescriptor({literal[position]}));
+        arguments.emplace_back(AeroJet::Java::ClassFile::FieldDescriptor({ literal[position] }));
         return position;
     }
 
-    inline size_t resolveClass(const std::string& literal, std::vector<AeroJet::Java::ClassFile::FieldDescriptor>& arguments, size_t position)
+    inline size_t resolveClass(const std::string&                                      literal,
+                               std::vector<AeroJet::Java::ClassFile::FieldDescriptor>& arguments,
+                               size_t                                                  position)
     {
-        const size_t classNameEndPos = literal.find(AeroJet::Java::ClassFile::FieldDescriptor::FIELD_TYPE_CLASS_END_TOKEN, position);
-        if (classNameEndPos != std::string::npos)
+        const size_t classNameEndPos =
+            literal.find(AeroJet::Java::ClassFile::FieldDescriptor::FIELD_TYPE_CLASS_END_TOKEN, position);
+        if(classNameEndPos != std::string::npos)
         {
             arguments.emplace_back(literal.substr(position, classNameEndPos - (position - 1)));
             return static_cast<int32_t>(classNameEndPos);
@@ -86,51 +100,51 @@ namespace
 
         throw AeroJet::Exceptions::RuntimeException(fmt::format("Can not resolve method descriptor: \"{}\"", literal));
     }
-}
+} // namespace
 
 namespace AeroJet::Java::ClassFile
 {
     MethodDescriptor::MethodDescriptor(std::string inDescriptor) : m_rawLiteral(std::move(inDescriptor))
     {
-        if (*m_rawLiteral.begin() == METHOD_DESCRIPTOR_ARGS_BEGIN_TOKEN)
+        if(*m_rawLiteral.begin() == METHOD_DESCRIPTOR_ARGS_BEGIN_TOKEN)
         {
             size_t argsEndTokenPosition = m_rawLiteral.find(METHOD_DESCRIPTOR_ARGS_END_TOKEN);
-            if (argsEndTokenPosition != std::string::npos)
+            if(argsEndTokenPosition != std::string::npos)
             {
-                const std::string returnTypeLiteral = m_rawLiteral.substr(argsEndTokenPosition + 1, m_rawLiteral.size() - argsEndTokenPosition);
-                if (returnTypeLiteral.size() == 1)
+                const std::string returnTypeLiteral =
+                    m_rawLiteral.substr(argsEndTokenPosition + 1, m_rawLiteral.size() - argsEndTokenPosition);
+                if(returnTypeLiteral.size() == 1)
                 {
                     static constexpr char RETURN_DESCRIPTOR_VOID_TYPE_TOKEN = 'V';
 
-                    if (returnTypeLiteral[0] == RETURN_DESCRIPTOR_VOID_TYPE_TOKEN)
+                    if(returnTypeLiteral[0] == RETURN_DESCRIPTOR_VOID_TYPE_TOKEN)
                     {
                         m_returnType = std::nullopt;
                     }
                 }
                 else
                 {
-                    m_returnType = FieldDescriptor({returnTypeLiteral});
+                    m_returnType = FieldDescriptor({ returnTypeLiteral });
                 }
-
 
                 std::string argsLiteral = m_rawLiteral.substr(1, argsEndTokenPosition - 1);
 
-                for (size_t charIndex = 0; charIndex < argsLiteral.size(); charIndex++)
+                for(size_t charIndex = 0; charIndex < argsLiteral.size(); charIndex++)
                 {
                     const char c = argsLiteral[charIndex];
-                    if (isPrimitive(c))
+                    if(isPrimitive(c))
                     {
                         charIndex = resolvePrimitive(argsLiteral, m_arguments, charIndex);
                     }
                     else
                     {
-                        if (c == static_cast<char>(FieldDescriptor::FieldType::CLASS))
+                        if(c == static_cast<char>(FieldDescriptor::FieldType::CLASS))
                         {
                             charIndex = resolveClass(argsLiteral, m_arguments, charIndex);
                             continue;
                         }
 
-                        if (c == static_cast<char>(FieldDescriptor::FieldType::ARRAY))
+                        if(c == static_cast<char>(FieldDescriptor::FieldType::ARRAY))
                         {
                             charIndex = resolveArray(argsLiteral, m_arguments, charIndex);
                             continue;
@@ -140,12 +154,14 @@ namespace AeroJet::Java::ClassFile
             }
             else
             {
-                throw AeroJet::Exceptions::RuntimeException(fmt::format("Can not resolve method descriptor: \"{}\"", m_rawLiteral));
+                throw AeroJet::Exceptions::RuntimeException(
+                    fmt::format("Can not resolve method descriptor: \"{}\"", m_rawLiteral));
             }
         }
         else
         {
-            throw AeroJet::Exceptions::RuntimeException(fmt::format("Can not resolve method descriptor: \"{}\"", m_rawLiteral));
+            throw AeroJet::Exceptions::RuntimeException(
+                fmt::format("Can not resolve method descriptor: \"{}\"", m_rawLiteral));
         }
     }
 
@@ -163,4 +179,4 @@ namespace AeroJet::Java::ClassFile
     {
         return m_rawLiteral;
     }
-}
+} // namespace AeroJet::Java::ClassFile

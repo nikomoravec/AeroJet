@@ -23,18 +23,20 @@
  */
 
 #include "Java/Archive/Jar.hpp"
+
 #include "Exceptions/FileNotFoundException.hpp"
 #include "Exceptions/RuntimeException.hpp"
 #include "fmt/format.h"
-#include "Types.hpp"
 #include "Stream/Stream.hpp"
+#include "Types.hpp"
+
 #include <sstream>
 
 namespace AeroJet::Java::Archive
 {
     Jar::Entry::Entry(zip_t* zip) : m_zip(zip), m_index(0)
     {
-        if (m_zip == nullptr)
+        if(m_zip == nullptr)
         {
             throw Exceptions::RuntimeException("zip can not be null!");
         }
@@ -43,12 +45,13 @@ namespace AeroJet::Java::Archive
     Jar::Entry::Entry(zip_t* zip, const std::filesystem::path& path) : Entry(zip)
     {
         i4 open = zip_entry_open(m_zip, path.string().c_str());
-        if (open != 0)
+        if(open != 0)
         {
-            throw Exceptions::RuntimeException(fmt::format("Failed to read entry \"{}\"! Error: {}", path.string(), open));
+            throw Exceptions::RuntimeException(
+                fmt::format("Failed to read entry \"{}\"! Error: {}", path.string(), open));
         }
 
-        m_name = zip_entry_name(m_zip);
+        m_name  = zip_entry_name(m_zip);
         m_index = zip_entry_index(m_zip);
     }
 
@@ -57,9 +60,10 @@ namespace AeroJet::Java::Archive
         m_index = index;
 
         i4 open = zip_entry_openbyindex(zip, m_index);
-        if (open != 0)
+        if(open != 0)
         {
-            throw Exceptions::RuntimeException(fmt::format("Failed to read entry at index \"{}\"! Error: {}", m_index, open));
+            throw Exceptions::RuntimeException(
+                fmt::format("Failed to read entry at index \"{}\"! Error: {}", m_index, open));
         }
 
         m_name = zip_entry_name(zip);
@@ -72,8 +76,8 @@ namespace AeroJet::Java::Archive
 
     Stream::MemoryStream Jar::Entry::read() const
     {
-        const u8 bufferSize = zip_entry_size(m_zip);
-        auto* const buffer = static_cast<u1*>(calloc(sizeof(u1), bufferSize));
+        const u8    bufferSize = zip_entry_size(m_zip);
+        auto* const buffer     = static_cast<u1*>(calloc(sizeof(u1), bufferSize));
         zip_entry_noallocread(m_zip, buffer, bufferSize);
 
         Stream::MemoryStream ss;
@@ -99,13 +103,13 @@ namespace AeroJet::Java::Archive
 
     Jar::Jar(const std::filesystem::path& path) : m_zip(nullptr), m_location(path)
     {
-        if (!std::filesystem::exists(path))
+        if(!std::filesystem::exists(path))
         {
             throw Exceptions::FileNotFoundException(path);
         }
 
         m_zip = zip_open(path.string().c_str(), 0, 'r');
-        if (m_zip == nullptr)
+        if(m_zip == nullptr)
         {
             throw Exceptions::RuntimeException(fmt::format("Failed to open JAR archive \"{}\"", path.string()));
         }
@@ -114,9 +118,9 @@ namespace AeroJet::Java::Archive
     Jar::Jar(const Jar& other)
     {
         this->m_location = other.m_location;
-        this->m_zip = zip_open(m_location.string().c_str(), 0, 'r');
+        this->m_zip      = zip_open(m_location.string().c_str(), 0, 'r');
 
-        if (m_zip == nullptr)
+        if(m_zip == nullptr)
         {
             throw Exceptions::RuntimeException(fmt::format("Failed to re-open (copy) Jar \"{}\"", m_location.string()));
         }
@@ -139,11 +143,11 @@ namespace AeroJet::Java::Archive
 
     Jar::Entry Jar::open(const std::filesystem::path& path) const
     {
-        return {m_zip, path};
+        return { m_zip, path };
     }
 
     Jar::Entry Jar::open(ssize_t index) const
     {
-        return {m_zip, index};
+        return { m_zip, index };
     }
-}
+} // namespace AeroJet::Java::Archive

@@ -31,4 +31,4 @@ namespace AeroJet::Java::ClassFile::Utils
         const u2 nameIndex = attributeInfo.attributeNameIndex();
         return constantPool[nameIndex].as<ConstantPoolInfoUtf8>().asString();
     }
-}
+} // namespace AeroJet::Java::ClassFile::Utils

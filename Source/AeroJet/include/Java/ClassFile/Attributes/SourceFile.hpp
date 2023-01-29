@@ -33,16 +33,15 @@ namespace AeroJet::Java::ClassFile
 {
     class SourceFile : public Attribute
     {
-    public:
+      public:
         static constexpr auto SOURCE_FILE_ATTRIBUTE_NAME = "SourceFile";
 
-    public:
+      public:
         SourceFile(const ConstantPool& constantPool, const AttributeInfo& attributeInfo);
 
-        [[nodiscard]]
-        u2 sourceFileIndex() const;
+        [[nodiscard]] u2 sourceFileIndex() const;
 
-    protected:
+      protected:
         u2 m_sourceFileIndex;
     };
-}
+} // namespace AeroJet::Java::ClassFile

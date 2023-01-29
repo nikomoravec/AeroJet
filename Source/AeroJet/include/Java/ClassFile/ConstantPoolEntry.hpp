@@ -26,6 +26,7 @@
 
 #include "Stream/StreamUtils.hpp"
 #include "Types.hpp"
+
 #include <string>
 #include <utility>
 #include <vector>
@@ -34,49 +35,45 @@ namespace AeroJet::Java::ClassFile
 {
     enum class ConstantPoolInfoTag : u1
     {
-        UTF_8 = 1,
-        INTEGER = 3,
-        FLOAT = 4,
-        LONG = 5,
-        DOUBLE = 6,
-        CLASS = 7,
-        STRING = 8,
-        FIELD_REF = 9,
-        METHOD_REF = 10,
+        UTF_8                = 1,
+        INTEGER              = 3,
+        FLOAT                = 4,
+        LONG                 = 5,
+        DOUBLE               = 6,
+        CLASS                = 7,
+        STRING               = 8,
+        FIELD_REF            = 9,
+        METHOD_REF           = 10,
         INTERFACE_METHOD_REF = 11,
-        NAME_AND_TYPE = 12,
-        METHOD_HANDLE = 15,
-        METHOD_TYPE = 16,
-        INVOKE_DYNAMIC = 18
+        NAME_AND_TYPE        = 12,
+        METHOD_HANDLE        = 15,
+        METHOD_TYPE          = 16,
+        INVOKE_DYNAMIC       = 18
     };
 
     class ConstantPoolInfoUtf8
     {
-    public:
+      public:
         explicit ConstantPoolInfoUtf8(const std::vector<u1>& bytes);
 
-        [[nodiscard]]
-        u2 length();
+        [[nodiscard]] u2 length();
 
-        [[nodiscard]]
-        std::vector<u1> bytes() const;
+        [[nodiscard]] std::vector<u1> bytes() const;
 
-        [[nodiscard]]
-        std::string asString() const;
+        [[nodiscard]] std::string asString() const;
 
-    private:
+      private:
         std::string m_string;
     };
 
     class ConstantPoolInfoInteger
     {
-    public:
+      public:
         explicit ConstantPoolInfoInteger(u4 bytes);
 
-        [[nodiscard]]
-        u4 bytes();
+        [[nodiscard]] u4 bytes();
 
-    private:
+      private:
         u4 m_bytes;
     };
 
@@ -84,16 +81,14 @@ namespace AeroJet::Java::ClassFile
 
     class ConstantPoolInfoLong
     {
-    public:
+      public:
         ConstantPoolInfoLong(u4 highBytes, u4 lowBytes);
 
-        [[nodiscard]]
-        u4 highBytes();
+        [[nodiscard]] u4 highBytes();
 
-        [[nodiscard]]
-        u4 lowBytes();
+        [[nodiscard]] u4 lowBytes();
 
-    private:
+      private:
         u4 m_highBytes;
         u4 m_lowBytes;
     };
@@ -102,130 +97,117 @@ namespace AeroJet::Java::ClassFile
 
     class ConstantPoolInfoClass
     {
-    public:
+      public:
         explicit ConstantPoolInfoClass(u2 nameIndex);
 
-        [[nodiscard]]
-        u2 nameIndex();
+        [[nodiscard]] u2 nameIndex();
 
-    private:
+      private:
         u2 m_nameIndex;
     };
 
     class ConstantPoolInfoString
     {
-    public:
+      public:
         explicit ConstantPoolInfoString(u2 stringIndex);
 
-        [[nodiscard]]
-        u2 stringIndex();
+        [[nodiscard]] u2 stringIndex();
 
-    private:
+      private:
         u2 m_stringIndex;
     };
 
     class ConstantPoolInfoFieldRef
     {
-    public:
+      public:
         ConstantPoolInfoFieldRef(u2 classIndex, u2 nameAndTypeIndex);
 
-        [[nodiscard]]
-        u2 classIndex();
+        [[nodiscard]] u2 classIndex();
 
-        [[nodiscard]]
-        u2 nameAndTypeIndex();
+        [[nodiscard]] u2 nameAndTypeIndex();
 
-    private:
+      private:
         u2 m_classIndex;
         u2 m_nameAndTypeIndex;
     };
 
-    using ConstantPoolInfoMethodRef = ConstantPoolInfoFieldRef;
+    using ConstantPoolInfoMethodRef          = ConstantPoolInfoFieldRef;
     using ConstantPoolInfoInterfaceMethodRef = ConstantPoolInfoFieldRef;
 
     class ConstantPoolInfoNameAndType
     {
-    public:
+      public:
         ConstantPoolInfoNameAndType(u2 nameIndex, u2 descriptorIndex);
 
-        [[nodiscard]]
-        u2 nameIndex();
+        [[nodiscard]] u2 nameIndex();
 
-        [[nodiscard]]
-        u2 descriptorIndex();
+        [[nodiscard]] u2 descriptorIndex();
 
-    private:
+      private:
         u2 m_nameIndex;
         u2 m_descriptorIndex;
     };
 
     class ConstantPoolInfoMethodHandle
     {
-    public:
+      public:
         enum class ReferenceKind : u1
         {
-            REF_getField = 1,
-            REF_getStatic = 2,
-            REF_putField = 3,
-            REF_putStatic = 4,
-            REF_invokeVirtual = 5,
-            REF_invokeStatic = 6,
-            REF_invokeSpecial = 7,
+            REF_getField         = 1,
+            REF_getStatic        = 2,
+            REF_putField         = 3,
+            REF_putStatic        = 4,
+            REF_invokeVirtual    = 5,
+            REF_invokeStatic     = 6,
+            REF_invokeSpecial    = 7,
             REF_newInvokeSpecial = 8,
-            REF_invokeInterface = 9
+            REF_invokeInterface  = 9
         };
 
         ConstantPoolInfoMethodHandle(ReferenceKind referenceKind, u2 referenceIndex);
 
-        [[nodiscard]]
-        ReferenceKind referenceKind();
+        [[nodiscard]] ReferenceKind referenceKind();
 
-        [[nodiscard]]
-        u2 referenceIndex();
+        [[nodiscard]] u2 referenceIndex();
 
-    private:
+      private:
         ReferenceKind m_referenceKind;
-        u2 m_referenceIndex;
+        u2            m_referenceIndex;
     };
 
     class ConstantPoolInfoMethodType
     {
-    public:
+      public:
         explicit ConstantPoolInfoMethodType(u2 descriptorIndex);
 
-        [[nodiscard]]
-        u2 descriptorIndex();
+        [[nodiscard]] u2 descriptorIndex();
 
-    private:
+      private:
         u2 m_descriptorIndex;
     };
 
     class ConstantPoolInfoInvokeDynamic
     {
-    public:
+      public:
         ConstantPoolInfoInvokeDynamic(u2 bootstrapMethodAttributeIndex, u2 nameAndTypeIndex);
 
-        [[nodiscard]]
-        u2 bootstrapMethodAttributeIndex();
+        [[nodiscard]] u2 bootstrapMethodAttributeIndex();
 
-        [[nodiscard]]
-        u2 nameAndTypeIndex();
+        [[nodiscard]] u2 nameAndTypeIndex();
 
-    private:
+      private:
         u2 m_bootstrapMethodAttributeIndex;
         u2 m_nameAndTypeIndex;
     };
 
     class ConstantPoolEntry
     {
-    public:
+      public:
         ConstantPoolEntry(ConstantPoolInfoTag tag, const std::vector<u1>& data);
 
-        [[nodiscard]]
-        ConstantPoolInfoTag tag() const;
+        [[nodiscard]] ConstantPoolInfoTag tag() const;
 
-        [[nodiscard]]
-        const std::vector<u1>& data() const;
+        [[nodiscard]] const std::vector<u1>& data() const;
 
         /*
          * FIXME: this is kinda unsafe because of no m_tag validation inside specialized realizations
@@ -234,8 +216,8 @@ namespace AeroJet::Java::ClassFile
         template<typename T>
         T as() const;
 
-    protected:
+      protected:
         ConstantPoolInfoTag m_tag;
-        std::vector<u1> m_data;
+        std::vector<u1>     m_data;
     };
-}
+} // namespace AeroJet::Java::ClassFile
