@@ -45,7 +45,7 @@ to read the following Java Class Structures:
     - [ ] [InnerClasses](https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.7.6)
     - [ ] [EnclosingMethod](https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.7.7)
     - [ ] [Synthetic](https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.7.8)
-    - [ ] [Signature](https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.7.9)
+    - [x] [Signature](https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.7.9)
     - [x] [SourceFile](https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.7.10)
     - [ ] [SourceDebugExtension](https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.7.11)
     - [x] [LineNumberTable](https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.7.12)
