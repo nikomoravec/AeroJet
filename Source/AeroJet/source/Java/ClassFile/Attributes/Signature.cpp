@@ -44,4 +44,9 @@ namespace AeroJet::Java::ClassFile
 
         m_signatureIndex = Stream::Reader::read<u2>(m_infoDataStream, Stream::ByteOrder::INVERSE);
     }
+
+    u2 Signature::signatureIndex() const
+    {
+        return m_signatureIndex;
+    }
 } // namespace AeroJet::Java::ClassFile

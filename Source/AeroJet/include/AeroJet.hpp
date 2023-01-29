@@ -39,6 +39,7 @@
 #include "Java/ClassFile/Attributes/Exceptions.hpp"
 #include "Java/ClassFile/Attributes/LineNumberTable.hpp"
 #include "Java/ClassFile/Attributes/LocalVariableTable.hpp"
+#include "Java/ClassFile/Attributes/Signature.hpp"
 #include "Java/ClassFile/Attributes/SourceFile.hpp"
 #include "Java/ClassFile/ClassInfo.hpp"
 #include "Java/ClassFile/ConstantPool.hpp"

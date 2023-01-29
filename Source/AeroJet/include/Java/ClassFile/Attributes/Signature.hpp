@@ -44,6 +44,8 @@ namespace AeroJet::Java::ClassFile
 
         Signature(const ConstantPool& constantPool, const AttributeInfo& attributeInfo);
 
+        [[nodiscard]] u2 signatureIndex() const;
+
       protected:
         /**
          * The value of the signature_index item must be a valid index into the constant_pool table.
