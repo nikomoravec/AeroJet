@@ -50,7 +50,7 @@ to read the following Java Class Structures:
     - [ ] [SourceDebugExtension](https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.7.11)
     - [x] [LineNumberTable](https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.7.12)
     - [x] [LocalVariableTable](https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.7.13)
-    - [ ] [LocalVariableTypeTable](https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.7.14)
+    - [x] [LocalVariableTypeTable](https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.7.14)
     - [x] [Deprecated](https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.7.15)
     - [ ] [RuntimeVisibleAnnotations](https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.7.16)
     - [ ] [RuntimeInvisibleAnnotations](https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.7.17)
