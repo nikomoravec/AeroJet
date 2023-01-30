@@ -73,7 +73,9 @@ add_library(AeroJet ${AEROJET_LIB_TYPE}
         include/Java/ClassFile/Attributes/Signature.hpp
         source/Java/ClassFile/Attributes/Signature.cpp
         include/Java/ClassFile/Attributes/SourceFile.hpp
-        source/Java/ClassFile/Attributes/SourceFile.cpp
+        include/Java/ClassFile/Attributes/SourceFile.hpp
+        include/Java/ClassFile/Attributes/Synthetic.hpp
+        source/Java/ClassFile/Attributes/Synthetic.cpp
         include/Java/ClassFile/Utils/AttributeInfoUtils.hpp
         source/Java/ClassFile/Utils/AttributeInfoUtils.cpp
         include/Java/ClassFile/Utils/ClassInfoUtils.hpp
