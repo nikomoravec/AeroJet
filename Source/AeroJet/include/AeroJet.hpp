@@ -36,6 +36,7 @@
 #include "Java/ClassFile/Attributes/Code.hpp"
 #include "Java/ClassFile/Attributes/ConstantValue.hpp"
 #include "Java/ClassFile/Attributes/Deprecated.hpp"
+#include "Java/ClassFile/Attributes/EnclosingMethod.hpp"
 #include "Java/ClassFile/Attributes/Exceptions.hpp"
 #include "Java/ClassFile/Attributes/InnerClasses.hpp"
 #include "Java/ClassFile/Attributes/LineNumberTable.hpp"

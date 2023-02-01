@@ -58,6 +58,8 @@ add_library(AeroJet ${AEROJET_LIB_TYPE}
         source/Java/ClassFile/Attributes/AttributeInfo.cpp
         include/Java/ClassFile/Attributes/Code.hpp
         source/Java/ClassFile/Attributes/Code.cpp
+        include/Java/ClassFile/Attributes/EnclosingMethod.hpp
+        source/Java/ClassFile/Attributes/EnclosingMethod.cpp
         include/Java/ClassFile/Attributes/Exceptions.hpp
         source/Java/ClassFile/Attributes/Exceptions.cpp
         include/Java/ClassFile/Attributes/ConstantValue.hpp

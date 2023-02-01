@@ -43,7 +43,7 @@ to read the following Java Class Structures:
     - [ ] [StackMapTable](https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.7.4)
     - [x] [Exceptions](https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.7.5)
     - [x] [InnerClasses](https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.7.6)
-    - [ ] [EnclosingMethod](https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.7.7)
+    - [x] [EnclosingMethod](https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.7.7)
     - [x] [Synthetic](https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.7.8)
     - [x] [Signature](https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.7.9)
     - [x] [SourceFile](https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.7.10)
