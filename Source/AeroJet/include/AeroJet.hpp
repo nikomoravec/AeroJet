@@ -37,6 +37,7 @@
 #include "Java/ClassFile/Attributes/ConstantValue.hpp"
 #include "Java/ClassFile/Attributes/Deprecated.hpp"
 #include "Java/ClassFile/Attributes/Exceptions.hpp"
+#include "Java/ClassFile/Attributes/InnerClasses.hpp"
 #include "Java/ClassFile/Attributes/LineNumberTable.hpp"
 #include "Java/ClassFile/Attributes/LocalVariableTable.hpp"
 #include "Java/ClassFile/Attributes/LocalVariableTypeTable.hpp"

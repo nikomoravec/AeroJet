@@ -42,7 +42,7 @@ to read the following Java Class Structures:
     - [x] [Code](https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.7.3)
     - [ ] [StackMapTable](https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.7.4)
     - [x] [Exceptions](https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.7.5)
-    - [ ] [InnerClasses](https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.7.6)
+    - [x] [InnerClasses](https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.7.6)
     - [ ] [EnclosingMethod](https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.7.7)
     - [x] [Synthetic](https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.7.8)
     - [x] [Signature](https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.7.9)
@@ -66,7 +66,7 @@ libAeroJet is also able to read Java classes from JAR archives.
 
 ### Build Instructions
 1. Clone AeroJet project with dependencies via `git clone --recurse-submodules https://github.com/nikitamiroshnichenko/AeroJet.git`
-2. Navigate to the AeroJet folder you just clone `cd AeroJet `
+2. Navigate to the AeroJet folder you just clone `cd AeroJet`
 3. Create build folder `mkdir .build`
 4. Navigate to the `.build` directory with `cd .build` command
 5. Run `cmake ..`
