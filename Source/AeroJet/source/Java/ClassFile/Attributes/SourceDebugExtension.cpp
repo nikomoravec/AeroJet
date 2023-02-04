@@ -38,4 +38,9 @@ namespace AeroJet::Java::ClassFile
             m_debugExtension.emplace_back(byte);
         }
     }
+
+    const std::vector<u1>& SourceDebugExtension::debugExtension() const
+    {
+        return m_debugExtension;
+    }
 } // namespace AeroJet::Java::ClassFile
