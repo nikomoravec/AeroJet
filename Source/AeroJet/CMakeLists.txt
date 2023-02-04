@@ -56,6 +56,8 @@ add_library(AeroJet ${AEROJET_LIB_TYPE}
         source/Java/ClassFile/Attributes/Attribute.cpp
         include/Java/ClassFile/Attributes/AttributeInfo.hpp
         source/Java/ClassFile/Attributes/AttributeInfo.cpp
+        include/Java/ClassFile/Attributes/BootstrapMethods.hpp
+        source/Java/ClassFile/Attributes/BootstrapMethods.cpp
         include/Java/ClassFile/Attributes/Code.hpp
         source/Java/ClassFile/Attributes/Code.cpp
         include/Java/ClassFile/Attributes/EnclosingMethod.hpp

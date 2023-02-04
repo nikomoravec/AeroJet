@@ -59,7 +59,7 @@ to read the following Java Class Structures:
     - [ ] [RuntimeVisibleTypeAnnotations](https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.7.20)
     - [ ] [RuntimeInvisibleTypeAnnotations](https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.7.21)
     - [ ] [AnnotationDefault](https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.7.22)
-    - [ ] [BootstrapMethods](https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.7.23)
+    - [x] [BootstrapMethods](https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.7.23)
     - [x] [MethodParameters](https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.7.24)
 
 libAeroJet is also able to read Java classes from JAR archives.

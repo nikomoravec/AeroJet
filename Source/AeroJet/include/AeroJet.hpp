@@ -33,6 +33,7 @@
 #include "Java/ByteCode/OpCodes.hpp"
 #include "Java/ClassFile/Attributes/Attribute.hpp"
 #include "Java/ClassFile/Attributes/AttributeInfo.hpp"
+#include "Java/ClassFile/Attributes/BootstrapMethods.hpp"
 #include "Java/ClassFile/Attributes/Code.hpp"
 #include "Java/ClassFile/Attributes/ConstantValue.hpp"
 #include "Java/ClassFile/Attributes/Deprecated.hpp"
