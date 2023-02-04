@@ -47,7 +47,7 @@ to read the following Java Class Structures:
     - [x] [Synthetic](https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.7.8)
     - [x] [Signature](https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.7.9)
     - [x] [SourceFile](https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.7.10)
-    - [ ] [SourceDebugExtension](https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.7.11)
+    - [x] [SourceDebugExtension](https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.7.11)
     - [x] [LineNumberTable](https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.7.12)
     - [x] [LocalVariableTable](https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.7.13)
     - [x] [LocalVariableTypeTable](https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.7.14)
