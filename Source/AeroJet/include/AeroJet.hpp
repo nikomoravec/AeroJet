@@ -39,6 +39,7 @@
 #include "Java/ClassFile/Attributes/EnclosingMethod.hpp"
 #include "Java/ClassFile/Attributes/Exceptions.hpp"
 #include "Java/ClassFile/Attributes/InnerClasses.hpp"
+#include "Java/ClassFile/Attributes/MethodParameters.hpp"
 #include "Java/ClassFile/Attributes/LineNumberTable.hpp"
 #include "Java/ClassFile/Attributes/LocalVariableTable.hpp"
 #include "Java/ClassFile/Attributes/LocalVariableTypeTable.hpp"
