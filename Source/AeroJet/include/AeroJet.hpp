@@ -43,6 +43,7 @@
 #include "Java/ClassFile/Attributes/LocalVariableTable.hpp"
 #include "Java/ClassFile/Attributes/LocalVariableTypeTable.hpp"
 #include "Java/ClassFile/Attributes/Signature.hpp"
+#include "Java/ClassFile/Attributes/SourceDebugExtension.hpp"
 #include "Java/ClassFile/Attributes/SourceFile.hpp"
 #include "Java/ClassFile/Attributes/Synthetic.hpp"
 #include "Java/ClassFile/ClassInfo.hpp"

@@ -76,6 +76,8 @@ add_library(AeroJet ${AEROJET_LIB_TYPE}
         source/Java/ClassFile/Attributes/LocalVariableTypeTable.cpp
         include/Java/ClassFile/Attributes/Signature.hpp
         source/Java/ClassFile/Attributes/Signature.cpp
+        include/Java/ClassFile/Attributes/SourceDebugExtension.hpp
+        source/Java/ClassFile/Attributes/SourceDebugExtension.cpp
         include/Java/ClassFile/Attributes/SourceFile.hpp
         source/Java/ClassFile/Attributes/SourceFile.cpp
         include/Java/ClassFile/Attributes/Synthetic.hpp
