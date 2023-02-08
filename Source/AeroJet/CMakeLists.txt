@@ -52,6 +52,10 @@ add_library(AeroJet ${AEROJET_LIB_TYPE}
         source/Java/ClassFile/MethodDescriptor.cpp
         include/Java/ClassFile/MethodInfo.hpp
         source/Java/ClassFile/MethodInfo.cpp
+        include/Java/ClassFile/Attributes/Annotation/Annotation.hpp
+        source/Java/ClassFile/Attributes/Annotation/Annotation.cpp
+        include/Java/ClassFile/Attributes/Annotation/ElementValue.hpp
+        source/Java/ClassFile/Attributes/Annotation/ElementValue.cpp
         include/Java/ClassFile/Attributes/Attribute.hpp
         source/Java/ClassFile/Attributes/Attribute.cpp
         include/Java/ClassFile/Attributes/AttributeInfo.hpp
