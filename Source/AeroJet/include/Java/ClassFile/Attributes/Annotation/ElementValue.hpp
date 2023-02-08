@@ -28,6 +28,7 @@
 
 #include <memory>
 #include <vector>
+#include <variant>
 
 namespace AeroJet::Java::ClassFile
 {
