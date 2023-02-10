@@ -69,6 +69,11 @@ namespace AeroJet::Java::ClassFile
     {
         return m_descriptorIndex;
     }
+
+    const std::vector<AttributeInfo>& FieldInfo::attributes() const
+    {
+        return m_attributes;
+    }
 } // namespace AeroJet::Java::ClassFile
 
 template<>

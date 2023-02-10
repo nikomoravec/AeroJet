@@ -24,6 +24,8 @@
 add_executable(test_AeroJet_ClassInfo ClassInfo.cpp)
 add_executable(test_AeroJet_ExceptionsAttribute ExceptionsAttribute.cpp)
 add_executable(test_AeroJet_InnerClassesAttribute InnerClassesAttributeTest.cpp)
+add_executable(test_AeroJet_RuntimeVisibleAnnotations RuntimeVisibleAnnotationsTest.cpp)
+
 add_custom_command(
         TARGET test_AeroJet_ClassInfo POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy
@@ -31,19 +33,24 @@ add_custom_command(
         ${CMAKE_CURRENT_BINARY_DIR}/Resources/TestJavaBytecodeTableSwitch.class)
 
 add_custom_command(
-        TARGET test_AeroJet_ClassInfo POST_BUILD
+        TARGET test_AeroJet_ExceptionsAttribute POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy
         ${CMAKE_CURRENT_SOURCE_DIR}/Resources/TestExceptionsAttribute.class
         ${CMAKE_CURRENT_BINARY_DIR}/Resources/TestExceptionsAttribute.class)
-message(STATUS ${CMAKE_CURRENT_SOURCE_DIR}/Resources/TestInnerClassesAttribute.class)
-message(STATUS ${CMAKE_CURRENT_BINARY_DIR}/Resources/TestInnerClassesAttribute.class)
 
 add_custom_command(
-        TARGET test_AeroJet_ClassInfo POST_BUILD
+        TARGET test_AeroJet_InnerClassesAttribute POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy
         ${CMAKE_CURRENT_SOURCE_DIR}/Resources/TestInnerClassesAttribute.class
         ${CMAKE_CURRENT_BINARY_DIR}/Resources/TestInnerClassesAttribute.class)
 
+add_custom_command(
+        TARGET test_AeroJet_RuntimeVisibleAnnotations POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy
+        ${CMAKE_CURRENT_SOURCE_DIR}/Resources/RuntimeVisibleAnnotationsTest.class
+        ${CMAKE_CURRENT_BINARY_DIR}/Resources/RuntimeVisibleAnnotationsTest.class)
+
 add_test(NAME test_AeroJet_ClassInfo COMMAND test_AeroJet_ClassInfo)
 add_test(NAME test_AeroJet_ExceptionsAttribute COMMAND test_AeroJet_ExceptionsAttribute)
 add_test(NAME test_AeroJet_InnerClassesAttribute COMMAND test_AeroJet_InnerClassesAttribute)
+add_test(NAME test_AeroJet_RuntimeVisibleAnnotations COMMAND test_AeroJet_RuntimeVisibleAnnotations)

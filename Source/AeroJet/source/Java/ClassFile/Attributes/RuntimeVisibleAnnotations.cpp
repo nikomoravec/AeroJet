@@ -1,5 +1,5 @@
 /*
- * FieldInfo.hpp
+ * RuntimeVisibleAnnotations.cpp
  *
  * Copyright © 2023 AeroJet Developers. All Rights Reserved.
  *
@@ -22,45 +22,35 @@
  * SOFTWARE.
  */
 
-#pragma once
+#include "Java/ClassFile/Attributes/RuntimeVisibleAnnotations.hpp"
 
-#include "Java/ClassFile/Attributes/AttributeInfo.hpp"
-#include "Types.hpp"
-
-#include <vector>
+#include "Stream/Reader.hpp"
 
 namespace AeroJet::Java::ClassFile
 {
-    class FieldInfo
+
+    RuntimeVisibleAnnotations::RuntimeVisibleAnnotations(const ConstantPool&  constantPool,
+                                                         const AttributeInfo& attributeInfo) :
+        Attribute(constantPool, attributeInfo, RUNTIME_VISIBLE_ANNOTATIONS_ATTRIBUTE_NAME)
     {
-      public:
-        enum class AccessFlags : u2
+        const u2 numAnnotations = Stream::Reader::read<u2>(m_infoDataStream, Stream::ByteOrder::INVERSE);
+
+        m_annotations.reserve(numAnnotations);
+        for(u2 annotationIndex = 0; annotationIndex < numAnnotations; annotationIndex++)
         {
-            ACC_PUBLIC    = 0x0001,
-            ACC_PRIVATE   = 0x0002,
-            ACC_PROTECTED = 0x0004,
-            ACC_STATIC    = 0x0008,
-            ACC_FINAL     = 0x0010,
-            ACC_VOLATILE  = 0x0040,
-            ACC_TRANSIENT = 0x0080,
-            ACC_SYNTHETIC = 0x1000,
-            ACC_ENUM      = 0x4000
-        };
+            const Annotation annotation =
+                Stream::Reader::read<Annotation>(m_infoDataStream, Stream::ByteOrder::INVERSE);
+            m_annotations.emplace_back(annotation);
+        }
+    }
 
-        FieldInfo(u2 accessFlags, u2 nameIndex, u2 descriptorIndex, const std::vector<AttributeInfo>& attributes);
+    u2 RuntimeVisibleAnnotations::numAnnotation() const
+    {
+        return m_annotations.size();
+    }
 
-        [[nodiscard]] AccessFlags accessFlags() const;
-
-        [[nodiscard]] u2 nameIndex() const;
-
-        [[nodiscard]] u2 descriptorIndex() const;
-
-        [[nodiscard]] const std::vector<AttributeInfo>& attributes() const;
-
-      protected:
-        u2                         m_accessFlags;
-        u2                         m_nameIndex;
-        u2                         m_descriptorIndex;
-        std::vector<AttributeInfo> m_attributes;
-    };
+    const std::vector<Annotation>& RuntimeVisibleAnnotations::annotations() const
+    {
+        return m_annotations;
+    }
 } // namespace AeroJet::Java::ClassFile
