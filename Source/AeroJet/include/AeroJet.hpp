@@ -33,6 +33,7 @@
 #include "Java/ByteCode/OpCodes.hpp"
 #include "Java/ClassFile/Attributes/Annotation/Annotation.hpp"
 #include "Java/ClassFile/Attributes/Annotation/ElementValue.hpp"
+#include "Java/ClassFile/Attributes/AnnotationDefault.hpp"
 #include "Java/ClassFile/Attributes/Attribute.hpp"
 #include "Java/ClassFile/Attributes/AttributeInfo.hpp"
 #include "Java/ClassFile/Attributes/BootstrapMethods.hpp"
