@@ -53,7 +53,7 @@ to read the following Java Class Structures:
     - [x] [LocalVariableTypeTable](https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.7.14)
     - [x] [Deprecated](https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.7.15)
     - [x] [RuntimeVisibleAnnotations](https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.7.16)
-    - [ ] [RuntimeInvisibleAnnotations](https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.7.17)
+    - [x] [RuntimeInvisibleAnnotations](https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.7.17)
     - [ ] [RuntimeVisibleParameterAnnotations](https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.7.18)
     - [ ] [RuntimeInvisibleParameterAnnotations](https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.7.19)
     - [ ] [RuntimeVisibleTypeAnnotations](https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.7.20)

@@ -46,6 +46,7 @@
 #include "Java/ClassFile/Attributes/LocalVariableTable.hpp"
 #include "Java/ClassFile/Attributes/LocalVariableTypeTable.hpp"
 #include "Java/ClassFile/Attributes/MethodParameters.hpp"
+#include "Java/ClassFile/Attributes/RuntimeInvisibleAnnotations.hpp"
 #include "Java/ClassFile/Attributes/RuntimeVisibleAnnotations.hpp"
 #include "Java/ClassFile/Attributes/Signature.hpp"
 #include "Java/ClassFile/Attributes/SourceDebugExtension.hpp"
