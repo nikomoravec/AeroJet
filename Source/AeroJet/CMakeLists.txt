@@ -88,6 +88,8 @@ add_library(AeroJet ${AEROJET_LIB_TYPE}
         source/Java/ClassFile/Attributes/MethodParameters.cpp
         include/Java/ClassFile/Attributes/RuntimeInvisibleAnnotations.hpp
         source/Java/ClassFile/Attributes/RuntimeInvisibleAnnotations.cpp
+        include/Java/ClassFile/Attributes/RuntimeVisibleParameterAnnotations.hpp
+        source/Java/ClassFile/Attributes/RuntimeInvisibleParameterAnnotations.cpp
         include/Java/ClassFile/Attributes/RuntimeVisibleAnnotations.hpp
         source/Java/ClassFile/Attributes/RuntimeVisibleAnnotations.cpp
         include/Java/ClassFile/Attributes/RuntimeVisibleParameterAnnotations.hpp
