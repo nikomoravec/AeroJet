@@ -1,5 +1,3 @@
-#pragma once
-
 /*
  * ElementValue.hpp
  *
@@ -24,11 +22,13 @@
  * SOFTWARE.
  */
 
+#pragma once
+
 #include "Types.hpp"
 
 #include <memory>
-#include <vector>
 #include <variant>
+#include <vector>
 
 namespace AeroJet::Java::ClassFile
 {

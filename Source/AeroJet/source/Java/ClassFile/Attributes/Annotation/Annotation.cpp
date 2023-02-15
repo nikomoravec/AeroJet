@@ -28,22 +28,6 @@
 
 namespace AeroJet::Java::ClassFile
 {
-
-    Annotation::ElementValuePair::ElementValuePair(u2 elementNameIndex, const ElementValue& value) :
-        m_elementNameIndex(elementNameIndex), m_value(value)
-    {
-    }
-
-    u2 Annotation::ElementValuePair::elementNameIndex() const
-    {
-        return m_elementNameIndex;
-    }
-
-    const ElementValue& Annotation::ElementValuePair::value() const
-    {
-        return m_value;
-    }
-
     Annotation::Annotation(u2 typeIndex, const std::vector<ElementValuePair>& elementValuePairs) :
         m_typeIndex(typeIndex), m_elementValuePairs(elementValuePairs)
     {
@@ -59,7 +43,7 @@ namespace AeroJet::Java::ClassFile
         return m_elementValuePairs.size();
     }
 
-    const std::vector<Annotation::ElementValuePair>& Annotation::elementValuePairs() const
+    const std::vector<ElementValuePair>& Annotation::elementValuePairs() const
     {
         return m_elementValuePairs;
     }
@@ -71,7 +55,7 @@ AeroJet::Java::ClassFile::Annotation AeroJet::Stream::Reader::read(std::istream&
     const u2 typeIndex = AeroJet::Stream::Reader::read<u2>(stream, byteOrder);
 
     const u2 numElementValuePairs = AeroJet::Stream::Reader::read<u2>(stream, byteOrder);
-    std::vector<AeroJet::Java::ClassFile::Annotation::ElementValuePair> elementValues;
+    std::vector<AeroJet::Java::ClassFile::ElementValuePair> elementValues;
     elementValues.reserve(numElementValuePairs);
     for(u2 elementValueIndex = 0; elementValueIndex < numElementValuePairs; elementValueIndex++)
     {
@@ -79,7 +63,7 @@ AeroJet::Java::ClassFile::Annotation AeroJet::Stream::Reader::read(std::istream&
         const Java::ClassFile::ElementValue elementValue =
             AeroJet::Stream::Reader::read<Java::ClassFile::ElementValue>(stream, byteOrder);
 
-        AeroJet::Java::ClassFile::Annotation::ElementValuePair elementValuePair{ elementNameIndex, elementValue };
+        AeroJet::Java::ClassFile::ElementValuePair elementValuePair{ elementNameIndex, elementValue };
         elementValues.emplace_back(elementValuePair);
     }
 
