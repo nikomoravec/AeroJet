@@ -193,6 +193,8 @@ namespace AeroJet::Java::ClassFile
             u2 m_index;
         };
 
+        LocalVarTarget(std::vector<TableEntry> table);
+
         [[nodiscard]] u2 tableLength() const;
 
         [[nodiscard]] const std::vector<TableEntry>& table() const;
@@ -252,6 +254,7 @@ namespace AeroJet::Java::ClassFile
      */
     class TypeArgumentTarget
     {
+      public:
         TypeArgumentTarget(u2 offset, u1 typeArgumentIndex);
 
         /**
@@ -279,16 +282,16 @@ namespace AeroJet::Java::ClassFile
         u1 m_typeArgumentIndex;
     };
 
-    using TargetInfoType = std::variant<TypeParameterTarget,
-                                        SuperTypeTarget,
-                                        TypeParameterBoundTarget,
-                                        EmptyTarget,
-                                        FormalParameterTarget,
-                                        ThrowsTarget,
-                                        LocalVarTarget,
-                                        CatchTarget,
-                                        OffsetTarget,
-                                        TypeArgumentTarget>;
+    using TargetInfo = std::variant<TypeParameterTarget,
+                                    SuperTypeTarget,
+                                    TypeParameterBoundTarget,
+                                    EmptyTarget,
+                                    FormalParameterTarget,
+                                    ThrowsTarget,
+                                    LocalVarTarget,
+                                    CatchTarget,
+                                    OffsetTarget,
+                                    TypeArgumentTarget>;
 
     /**
      * Wherever a type is used in a declaration or expression, the type_path structure identifies which part of the
@@ -348,6 +351,8 @@ namespace AeroJet::Java::ClassFile
             u1           m_typeArgumentIndex;
         };
 
+        explicit TypePath(std::vector<Path> path);
+
         /**
          * The value of the path_length item gives the number of entries in the path array:
          *
@@ -371,7 +376,7 @@ namespace AeroJet::Java::ClassFile
     {
       public:
         TypeAnnotation(u1                                   targetType,
-                       TargetInfoType                       targetInfoType,
+                       TargetInfo                           targetInfo,
                        TypePath                             targetPath,
                        u2                                   typeIndex,
                        const std::vector<ElementValuePair>& elementValuePairs);
@@ -400,7 +405,7 @@ namespace AeroJet::Java::ClassFile
          * The value of the target_info item denotes precisely which type in a declaration or expression is annotated.
          * The items of the target_info union are specified in §4.7.20.1.
          */
-        [[nodiscard]] const TargetInfoType& targetInfo() const;
+        [[nodiscard]] const TargetInfo& targetInfo() const;
 
         /**
          * The value of the target_path item denotes precisely which part of the type indicated by target_info is
@@ -422,7 +427,7 @@ namespace AeroJet::Java::ClassFile
 
       private:
         u1                            m_targetType;
-        TargetInfoType                m_targetInfo;
+        TargetInfo                    m_targetInfo;
         TypePath                      m_targetPath;
         u2                            m_typeIndex;
         std::vector<ElementValuePair> m_elementValuePairs;

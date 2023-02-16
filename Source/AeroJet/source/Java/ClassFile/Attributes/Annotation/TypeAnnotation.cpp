@@ -1,5 +1,9 @@
 #include "Java/ClassFile/Attributes/Annotation/TypeAnnotation.hpp"
 
+#include "Exceptions/RuntimeException.hpp"
+#include "fmt/format.h"
+#include "Stream/Reader.hpp"
+
 #include <utility>
 
 namespace AeroJet::Java::ClassFile
@@ -69,6 +73,8 @@ namespace AeroJet::Java::ClassFile
         return m_index;
     }
 
+    LocalVarTarget::LocalVarTarget(std::vector<TableEntry> table) : m_table(std::move(table)) {}
+
     u2 LocalVarTarget::tableLength() const
     {
         return m_table.size();
@@ -123,6 +129,8 @@ namespace AeroJet::Java::ClassFile
         return m_typeArgumentIndex;
     }
 
+    TypePath::TypePath(std::vector<Path> path) : m_path(std::move(path)) {}
+
     u1 TypePath::pathLength() const
     {
         return m_path.size();
@@ -134,12 +142,12 @@ namespace AeroJet::Java::ClassFile
     }
 
     TypeAnnotation::TypeAnnotation(u1                                   targetType,
-                                   TargetInfoType                       targetInfoType,
+                                   TargetInfo                           targetInfo,
                                    TypePath                             targetPath,
                                    u2                                   typeIndex,
                                    const std::vector<ElementValuePair>& elementValuePairs) :
         m_targetType(targetType),
-        m_targetInfo(std::move(targetInfoType)), m_targetPath(std::move(targetPath)), m_typeIndex(typeIndex),
+        m_targetInfo(std::move(targetInfo)), m_targetPath(std::move(targetPath)), m_typeIndex(typeIndex),
         m_elementValuePairs(elementValuePairs)
     {
     }
@@ -148,7 +156,7 @@ namespace AeroJet::Java::ClassFile
         return m_targetType;
     }
 
-    const TargetInfoType& TypeAnnotation::targetInfo() const
+    const TargetInfo& TypeAnnotation::targetInfo() const
     {
         return m_targetInfo;
     }
@@ -173,3 +181,199 @@ namespace AeroJet::Java::ClassFile
         return m_elementValuePairs;
     }
 } // namespace AeroJet::Java::ClassFile
+
+template<>
+AeroJet::Java::ClassFile::TypeParameterTarget AeroJet::Stream::Reader::read(std::istream& stream, ByteOrder byteOrder)
+{
+    const u1 typeParameterIndex = AeroJet::Stream::Reader::read<u1>(stream, byteOrder);
+    return AeroJet::Java::ClassFile::TypeParameterTarget{ typeParameterIndex };
+}
+
+template<>
+AeroJet::Java::ClassFile::SuperTypeTarget AeroJet::Stream::Reader::read(std::istream& stream, ByteOrder byteOrder)
+{
+    const u2 superTypeIndex = AeroJet::Stream::Reader::read<u2>(stream, byteOrder);
+    return AeroJet::Java::ClassFile::SuperTypeTarget{ superTypeIndex };
+}
+
+template<>
+AeroJet::Java::ClassFile::TypeParameterBoundTarget AeroJet::Stream::Reader::read(std::istream& stream,
+                                                                                 ByteOrder     byteOrder)
+{
+    const u1 typeParameterIndex = AeroJet::Stream::Reader::read<u1>(stream, byteOrder);
+    const u1 boundIndex         = AeroJet::Stream::Reader::read<u1>(stream, byteOrder);
+
+    return AeroJet::Java::ClassFile::TypeParameterBoundTarget{ typeParameterIndex, boundIndex };
+}
+
+template<>
+AeroJet::Java::ClassFile::FormalParameterTarget AeroJet::Stream::Reader::read(std::istream& stream, ByteOrder byteOrder)
+{
+    const u1 formalParameterIndex = AeroJet::Stream::Reader::read<u1>(stream, byteOrder);
+    return AeroJet::Java::ClassFile::FormalParameterTarget{ formalParameterIndex };
+}
+
+template<>
+AeroJet::Java::ClassFile::ThrowsTarget AeroJet::Stream::Reader::read(std::istream& stream, ByteOrder byteOrder)
+{
+    const u2 throwsTypeIndex = AeroJet::Stream::Reader::read<u2>(stream, byteOrder);
+    return AeroJet::Java::ClassFile::ThrowsTarget{ throwsTypeIndex };
+}
+
+template<>
+AeroJet::Java::ClassFile::LocalVarTarget AeroJet::Stream::Reader::read(std::istream& stream, ByteOrder byteOrder)
+{
+    const u2 tableLength = AeroJet::Stream::Reader::read<u2>(stream, byteOrder);
+    std::vector<AeroJet::Java::ClassFile::LocalVarTarget::TableEntry> table;
+    table.reserve(tableLength);
+
+    for(u2 tableEntryIndex = 0; tableEntryIndex < tableLength; tableEntryIndex++)
+    {
+        const u2 startPc = AeroJet::Stream::Reader::read<u2>(stream, byteOrder);
+        const u2 length  = AeroJet::Stream::Reader::read<u2>(stream, byteOrder);
+        const u2 index   = AeroJet::Stream::Reader::read<u2>(stream, byteOrder);
+
+        table.emplace_back(startPc, length, index);
+    }
+
+    return AeroJet::Java::ClassFile::LocalVarTarget{ table };
+}
+
+template<>
+AeroJet::Java::ClassFile::CatchTarget AeroJet::Stream::Reader::read(std::istream& stream, ByteOrder byteOrder)
+{
+    const u2 exceptionTableIndex = AeroJet::Stream::Reader::read<u2>(stream, byteOrder);
+    return AeroJet::Java::ClassFile::CatchTarget{ exceptionTableIndex };
+}
+
+template<>
+AeroJet::Java::ClassFile::OffsetTarget AeroJet::Stream::Reader::read(std::istream& stream, ByteOrder byteOrder)
+{
+    const u2 offset = AeroJet::Stream::Reader::read<u2>(stream, byteOrder);
+    return AeroJet::Java::ClassFile::OffsetTarget{ offset };
+}
+
+template<>
+AeroJet::Java::ClassFile::TypeArgumentTarget AeroJet::Stream::Reader::read(std::istream& stream, ByteOrder byteOrder)
+{
+    const u2 offset            = AeroJet::Stream::Reader::read<u2>(stream, byteOrder);
+    const u1 typeArgumentIndex = AeroJet::Stream::Reader::read<u1>(stream, byteOrder);
+
+    return AeroJet::Java::ClassFile::TypeArgumentTarget{ offset, typeArgumentIndex };
+}
+
+template<>
+AeroJet::Java::ClassFile::TypePath AeroJet::Stream::Reader::read(std::istream& stream, ByteOrder byteOrder)
+{
+    const u1 pathLength = AeroJet::Stream::Reader::read<u1>(stream, byteOrder);
+
+    std::vector<AeroJet::Java::ClassFile::TypePath::Path> paths;
+    paths.reserve(pathLength);
+
+    for(u1 pathIndex = 0; pathIndex < pathLength; pathIndex++)
+    {
+        const u1 typePathKind      = AeroJet::Stream::Reader::read<u1>(stream, byteOrder);
+        const u1 typeArgumentIndex = AeroJet::Stream::Reader::read<u1>(stream, byteOrder);
+
+        paths.emplace_back(static_cast<AeroJet::Java::ClassFile::TypePath::TypePathKind>(typePathKind),
+                           typeArgumentIndex);
+    }
+
+    return AeroJet::Java::ClassFile::TypePath{ paths };
+}
+
+template<>
+AeroJet::Java::ClassFile::TypeAnnotation AeroJet::Stream::Reader::read(std::istream& stream, ByteOrder byteOrder)
+{
+    const u1 targetType = AeroJet::Stream::Reader::read<u1>(stream, byteOrder);
+
+    Java::ClassFile::TargetInfo targetInfo{ Java::ClassFile::EmptyTarget{} };
+    switch(targetType)
+    {
+        case 0x00: // type parameter declaration of generic class or interface
+        case 0x01: // type parameter declaration of generic method or constructor
+        {
+            targetInfo =
+                AeroJet::Stream::Reader::read<AeroJet::Java::ClassFile::TypeParameterTarget>(stream, byteOrder);
+            break;
+        }
+        case 0x10: // type in extends or implements clause of class declaration
+        {
+            targetInfo = AeroJet::Stream::Reader::read<AeroJet::Java::ClassFile::SuperTypeTarget>(stream, byteOrder);
+            break;
+        }
+        case 0x11: // type in bound of type parameter declaration of generic class or interface
+        case 0x12: // type in bound of type parameter declaration of generic method or constructor
+        {
+            targetInfo =
+                AeroJet::Stream::Reader::read<AeroJet::Java::ClassFile::TypeParameterBoundTarget>(stream, byteOrder);
+            break;
+        }
+        case 0x13: // type in field declaration
+        case 0x14: // return type of method, or type of newly constructed object
+        case 0x15: // receiver type of method or constructor
+        {
+            targetInfo = Java::ClassFile::EmptyTarget{};
+            break;
+        }
+        case 0x16: // type in formal parameter declaration of method, constructor, or lambda expression
+        {
+            targetInfo =
+                AeroJet::Stream::Reader::read<AeroJet::Java::ClassFile::FormalParameterTarget>(stream, byteOrder);
+            break;
+        }
+        case 0x17: // type in throws clause of method or constructor
+        {
+            targetInfo = AeroJet::Stream::Reader::read<AeroJet::Java::ClassFile::ThrowsTarget>(stream, byteOrder);
+            break;
+        }
+        case 0x40:
+        case 0x41:
+        {
+            targetInfo = AeroJet::Stream::Reader::read<AeroJet::Java::ClassFile::LocalVarTarget>(stream, byteOrder);
+            break;
+        }
+        case 0x42:
+        {
+            targetInfo = AeroJet::Stream::Reader::read<AeroJet::Java::ClassFile::CatchTarget>(stream, byteOrder);
+            break;
+        }
+        case 0x43:
+        case 0x44:
+        case 0x45:
+        case 0x46:
+        {
+            targetInfo = AeroJet::Stream::Reader::read<AeroJet::Java::ClassFile::OffsetTarget>(stream, byteOrder);
+            break;
+        }
+        case 0x47:
+        case 0x48:
+        case 0x49:
+        case 0x4A:
+        case 0x4B:
+        {
+            targetInfo = AeroJet::Stream::Reader::read<AeroJet::Java::ClassFile::TypeArgumentTarget>(stream, byteOrder);
+            break;
+        }
+        default:
+            throw AeroJet::Exceptions::RuntimeException("Unknown targetType value {:#04x}!");
+    }
+
+    const AeroJet::Java::ClassFile::TypePath targetPath =
+        AeroJet::Stream::Reader::read<AeroJet::Java::ClassFile::TypePath>(stream, byteOrder);
+
+    const u2 typeIndex = AeroJet::Stream::Reader::read<u2>(stream, byteOrder);
+
+    const u2 numElementValuePairs = AeroJet::Stream::Reader::read<u2>(stream, byteOrder);
+
+    std::vector<AeroJet::Java::ClassFile::ElementValuePair> elementValuePairs;
+    elementValuePairs.reserve(numElementValuePairs);
+    for(u2 elementValuePairIndex = 0; elementValuePairIndex < numElementValuePairs; elementValuePairIndex++)
+    {
+        const AeroJet::Java::ClassFile::ElementValuePair elementValuePair =
+            AeroJet::Stream::Reader::read<AeroJet::Java::ClassFile::ElementValuePair>(stream, byteOrder);
+        elementValuePairs.emplace_back(elementValuePair);
+    }
+
+    return Java::ClassFile::TypeAnnotation{ targetType, targetInfo, targetPath, typeIndex, elementValuePairs };
+}
