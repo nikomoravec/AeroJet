@@ -193,7 +193,7 @@ namespace AeroJet::Java::ClassFile
             u2 m_index;
         };
 
-        LocalVarTarget(std::vector<TableEntry> table);
+        explicit LocalVarTarget(std::vector<TableEntry> table);
 
         [[nodiscard]] u2 tableLength() const;
 
