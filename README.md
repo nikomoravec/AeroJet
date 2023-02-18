@@ -57,7 +57,7 @@ to read the following Java Class Structures:
     - [x] [RuntimeVisibleParameterAnnotations](https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.7.18)
     - [x] [RuntimeInvisibleParameterAnnotations](https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.7.19)
     - [x] [RuntimeVisibleTypeAnnotations](https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.7.20)
-    - [ ] [RuntimeInvisibleTypeAnnotations](https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.7.21)
+    - [x] [RuntimeInvisibleTypeAnnotations](https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.7.21)
     - [x] [AnnotationDefault](https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.7.22)
     - [x] [BootstrapMethods](https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.7.23)
     - [x] [MethodParameters](https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.7.24)

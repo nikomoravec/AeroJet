@@ -100,6 +100,8 @@ add_library(AeroJet ${AEROJET_LIB_TYPE}
         source/Java/ClassFile/Attributes/RuntimeVisibleParameterAnnotations.cpp
         include/Java/ClassFile/Attributes/RuntimeVisibleTypeAnnotations.hpp
         source/Java/ClassFile/Attributes/RuntimeVisibleTypeAnnotations.cpp
+        include/Java/ClassFile/Attributes/RuntimeInvisibleTypeAnnotations.hpp
+        source/Java/ClassFile/Attributes/RuntimeInvisibleTyperAnnotations.cpp
         include/Java/ClassFile/Attributes/Signature.hpp
         source/Java/ClassFile/Attributes/Signature.cpp
         include/Java/ClassFile/Attributes/SourceDebugExtension.hpp
