@@ -108,6 +108,8 @@ add_library(AeroJet ${AEROJET_LIB_TYPE}
         source/Java/ClassFile/Attributes/SourceDebugExtension.cpp
         include/Java/ClassFile/Attributes/SourceFile.hpp
         source/Java/ClassFile/Attributes/SourceFile.cpp
+        include/Java/ClassFile/Attributes/StackMapTable.hpp
+        source/Java/ClassFile/Attributes/StackMapTable.cpp
         include/Java/ClassFile/Attributes/Synthetic.hpp
         source/Java/ClassFile/Attributes/Synthetic.cpp
         include/Java/ClassFile/Utils/AttributeInfoUtils.hpp

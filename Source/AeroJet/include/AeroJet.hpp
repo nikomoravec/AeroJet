@@ -59,6 +59,7 @@
 #include "Java/ClassFile/Attributes/Signature.hpp"
 #include "Java/ClassFile/Attributes/SourceDebugExtension.hpp"
 #include "Java/ClassFile/Attributes/SourceFile.hpp"
+#include "Java/ClassFile/Attributes/StackMapTable.hpp"
 #include "Java/ClassFile/Attributes/Synthetic.hpp"
 #include "Java/ClassFile/ClassInfo.hpp"
 #include "Java/ClassFile/ConstantPool.hpp"
