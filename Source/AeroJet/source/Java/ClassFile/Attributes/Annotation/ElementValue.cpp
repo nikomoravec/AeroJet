@@ -24,6 +24,8 @@
 
 #include "Java/ClassFile/Attributes/Annotation/ElementValue.hpp"
 
+#include "Exceptions/RuntimeException.hpp"
+#include "fmt/format.h"
 #include "Java/ClassFile/Attributes/Annotation/Annotation.hpp"
 #include "Stream/Reader.hpp"
 
@@ -134,5 +136,7 @@ AeroJet::Java::ClassFile::ElementValue AeroJet::Stream::Reader::read(std::istrea
                                                            AeroJet::Java::ClassFile::ElementValue::ArrayValue{
                                                                values } };
         }
+        default:
+            throw Exceptions::RuntimeException(fmt::format("Unknown ElementValue tag: {}", static_cast<u1>(tag)));
     }
 }

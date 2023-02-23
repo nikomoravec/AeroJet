@@ -26,6 +26,9 @@
 
 #include "Java/ClassFile/Attributes/Attribute.hpp"
 
+#include <variant>
+#include <vector>
+
 namespace AeroJet::Java::ClassFile
 {
     enum class VerificationTypeTag : u1
@@ -248,8 +251,8 @@ namespace AeroJet::Java::ClassFile
 
         SameLocals1StackItemFrameExtended(u2 offsetDelta, VerificationTypeInfo stack);
 
-        [[nodiscard]] u1                          frameType() const;
-        [[nodiscard]] u2                          offsetDelta() const;
+        [[nodiscard]] u1                   frameType() const;
+        [[nodiscard]] u2                   offsetDelta() const;
         [[nodiscard]] VerificationTypeInfo stack() const;
 
       private:
