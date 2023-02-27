@@ -21,14 +21,24 @@
 # SOFTWARE.
 #
 
-add_executable(java main.cpp)
+add_library(AeroJetJVM STATIC
+        include/JavaVirtualMachine.hpp
+)
 
-target_link_libraries(java
-        cxxopts
+target_include_directories(AeroJetJVM PUBLIC
+        include
+)
+
+target_link_libraries(AeroJetJVM PUBLIC
         AeroJet
         fmt
 )
 
-target_include_directories(java PRIVATE
-        include
+add_executable(java
+        main.cpp
+)
+
+target_link_libraries(java
+        AeroJetJVM
+        cxxopts
 )
