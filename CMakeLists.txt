@@ -29,9 +29,11 @@ set(CMAKE_CXX_STANDARD 20)
 add_subdirectory(Source/third-party/fmtlib)
 add_subdirectory(Source/third-party/backwandcpp)
 add_subdirectory(Source/third-party/zip)
+add_subdirectory(Source/third-party/cxxopts)
 add_subdirectory(Source/Examples)
 
 add_subdirectory(Source/AeroJet)
+add_subdirectory(Source/JVM)
 
 if(NOT CMAKE_DISABLE_TESTING)
     enable_testing()
