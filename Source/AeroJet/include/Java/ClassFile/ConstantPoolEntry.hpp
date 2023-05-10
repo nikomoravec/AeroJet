@@ -56,7 +56,7 @@ namespace AeroJet::Java::ClassFile
       public:
         explicit ConstantPoolInfoUtf8(const std::vector<u1>& bytes);
 
-        [[nodiscard]] u2 length();
+        [[nodiscard]] u2 length() const;
 
         [[nodiscard]] std::vector<u1> bytes() const;
 
@@ -71,7 +71,7 @@ namespace AeroJet::Java::ClassFile
       public:
         explicit ConstantPoolInfoInteger(u4 bytes);
 
-        [[nodiscard]] u4 bytes();
+        [[nodiscard]] u4 bytes() const;
 
       private:
         u4 m_bytes;
@@ -84,9 +84,9 @@ namespace AeroJet::Java::ClassFile
       public:
         ConstantPoolInfoLong(u4 highBytes, u4 lowBytes);
 
-        [[nodiscard]] u4 highBytes();
+        [[nodiscard]] u4 highBytes() const;
 
-        [[nodiscard]] u4 lowBytes();
+        [[nodiscard]] u4 lowBytes() const;
 
       private:
         u4 m_highBytes;
@@ -100,7 +100,7 @@ namespace AeroJet::Java::ClassFile
       public:
         explicit ConstantPoolInfoClass(u2 nameIndex);
 
-        [[nodiscard]] u2 nameIndex();
+        [[nodiscard]] u2 nameIndex() const;
 
       private:
         u2 m_nameIndex;
@@ -111,7 +111,7 @@ namespace AeroJet::Java::ClassFile
       public:
         explicit ConstantPoolInfoString(u2 stringIndex);
 
-        [[nodiscard]] u2 stringIndex();
+        [[nodiscard]] u2 stringIndex() const;
 
       private:
         u2 m_stringIndex;
@@ -122,9 +122,9 @@ namespace AeroJet::Java::ClassFile
       public:
         ConstantPoolInfoFieldRef(u2 classIndex, u2 nameAndTypeIndex);
 
-        [[nodiscard]] u2 classIndex();
+        [[nodiscard]] u2 classIndex() const;
 
-        [[nodiscard]] u2 nameAndTypeIndex();
+        [[nodiscard]] u2 nameAndTypeIndex() const;
 
       private:
         u2 m_classIndex;
@@ -139,9 +139,9 @@ namespace AeroJet::Java::ClassFile
       public:
         ConstantPoolInfoNameAndType(u2 nameIndex, u2 descriptorIndex);
 
-        [[nodiscard]] u2 nameIndex();
+        [[nodiscard]] u2 nameIndex() const;
 
-        [[nodiscard]] u2 descriptorIndex();
+        [[nodiscard]] u2 descriptorIndex() const;
 
       private:
         u2 m_nameIndex;
@@ -166,9 +166,9 @@ namespace AeroJet::Java::ClassFile
 
         ConstantPoolInfoMethodHandle(ReferenceKind referenceKind, u2 referenceIndex);
 
-        [[nodiscard]] ReferenceKind referenceKind();
+        [[nodiscard]] ReferenceKind referenceKind() const;
 
-        [[nodiscard]] u2 referenceIndex();
+        [[nodiscard]] u2 referenceIndex() const;
 
       private:
         ReferenceKind m_referenceKind;
@@ -180,7 +180,7 @@ namespace AeroJet::Java::ClassFile
       public:
         explicit ConstantPoolInfoMethodType(u2 descriptorIndex);
 
-        [[nodiscard]] u2 descriptorIndex();
+        [[nodiscard]] u2 descriptorIndex() const;
 
       private:
         u2 m_descriptorIndex;
@@ -191,9 +191,9 @@ namespace AeroJet::Java::ClassFile
       public:
         ConstantPoolInfoInvokeDynamic(u2 bootstrapMethodAttributeIndex, u2 nameAndTypeIndex);
 
-        [[nodiscard]] u2 bootstrapMethodAttributeIndex();
+        [[nodiscard]] u2 bootstrapMethodAttributeIndex() const;
 
-        [[nodiscard]] u2 nameAndTypeIndex();
+        [[nodiscard]] u2 nameAndTypeIndex() const;
 
       private:
         u2 m_bootstrapMethodAttributeIndex;

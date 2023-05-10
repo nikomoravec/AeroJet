@@ -75,26 +75,26 @@ namespace AeroJet::Java::ClassFile
     {
     }
 
-    u4 ConstantPoolInfoLong::highBytes()
+    u4 ConstantPoolInfoLong::highBytes() const
     {
         return m_highBytes;
     }
 
-    u4 ConstantPoolInfoLong::lowBytes()
+    u4 ConstantPoolInfoLong::lowBytes() const
     {
         return m_lowBytes;
     }
 
     ConstantPoolInfoClass::ConstantPoolInfoClass(u2 nameIndex) : m_nameIndex(nameIndex) {}
 
-    u2 ConstantPoolInfoClass::nameIndex()
+    u2 ConstantPoolInfoClass::nameIndex() const
     {
         return m_nameIndex;
     }
 
     ConstantPoolInfoString::ConstantPoolInfoString(u2 stringIndex) : m_stringIndex(stringIndex) {}
 
-    u2 ConstantPoolInfoString::stringIndex()
+    u2 ConstantPoolInfoString::stringIndex() const
     {
         return m_stringIndex;
     }
@@ -104,12 +104,12 @@ namespace AeroJet::Java::ClassFile
     {
     }
 
-    u2 ConstantPoolInfoFieldRef::classIndex()
+    u2 ConstantPoolInfoFieldRef::classIndex() const
     {
         return m_classIndex;
     }
 
-    u2 ConstantPoolInfoFieldRef::nameAndTypeIndex()
+    u2 ConstantPoolInfoFieldRef::nameAndTypeIndex() const
     {
         return m_nameAndTypeIndex;
     }
@@ -119,12 +119,12 @@ namespace AeroJet::Java::ClassFile
     {
     }
 
-    u2 ConstantPoolInfoNameAndType::nameIndex()
+    u2 ConstantPoolInfoNameAndType::nameIndex() const
     {
         return m_nameIndex;
     }
 
-    u2 ConstantPoolInfoNameAndType::descriptorIndex()
+    u2 ConstantPoolInfoNameAndType::descriptorIndex() const
     {
         return m_descriptorIndex;
     }
@@ -137,19 +137,19 @@ namespace AeroJet::Java::ClassFile
     {
     }
 
-    ConstantPoolInfoMethodHandle::ReferenceKind ConstantPoolInfoMethodHandle::referenceKind()
+    ConstantPoolInfoMethodHandle::ReferenceKind ConstantPoolInfoMethodHandle::referenceKind() const
     {
         return m_referenceKind;
     }
 
-    u2 ConstantPoolInfoMethodHandle::referenceIndex()
+    u2 ConstantPoolInfoMethodHandle::referenceIndex() const
     {
         return m_referenceIndex;
     }
 
     ConstantPoolInfoMethodType::ConstantPoolInfoMethodType(u2 descriptorIndex) : m_descriptorIndex(descriptorIndex) {}
 
-    u2 ConstantPoolInfoMethodType::descriptorIndex()
+    u2 ConstantPoolInfoMethodType::descriptorIndex() const
     {
         return m_descriptorIndex;
     }
@@ -161,12 +161,12 @@ namespace AeroJet::Java::ClassFile
     {
     }
 
-    u2 ConstantPoolInfoInvokeDynamic::bootstrapMethodAttributeIndex()
+    u2 ConstantPoolInfoInvokeDynamic::bootstrapMethodAttributeIndex() const
     {
         return m_bootstrapMethodAttributeIndex;
     }
 
-    u2 ConstantPoolInfoInvokeDynamic::nameAndTypeIndex()
+    u2 ConstantPoolInfoInvokeDynamic::nameAndTypeIndex() const
     {
         return m_nameAndTypeIndex;
     }
