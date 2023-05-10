@@ -49,7 +49,7 @@ namespace AeroJet::Java::ClassFile
 
     ConstantPoolInfoUtf8::ConstantPoolInfoUtf8(const std::vector<u1>& bytes) : m_string(bytes.begin(), bytes.end()) {}
 
-    u2 ConstantPoolInfoUtf8::length()
+    u2 ConstantPoolInfoUtf8::length() const
     {
         return m_string.size();
     }
@@ -66,7 +66,7 @@ namespace AeroJet::Java::ClassFile
 
     ConstantPoolInfoInteger::ConstantPoolInfoInteger(u4 bytes) : m_bytes(bytes) {}
 
-    u4 ConstantPoolInfoInteger::bytes()
+    u4 ConstantPoolInfoInteger::bytes() const
     {
         return m_bytes;
     }
