@@ -19,3 +19,6 @@
 [submodule "Source/third-party/doctest"]
 	path = Source/third-party/doctest
 	url = https://github.com/doctest/doctest.git
+[submodule "Source/third-party/llvm-project"]
+	path = Source/third-party/llvm-project
+	url = https://github.com/llvm/llvm-project.git
