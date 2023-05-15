@@ -118,3 +118,8 @@ namespace AeroJet::Java::ClassFile
         std::vector<AttributeInfo> m_attributes;
     };
 } // namespace AeroJet::Java::ClassFile
+
+inline bool operator& (AeroJet::Java::ClassFile::FieldInfo::AccessFlags first, AeroJet::Java::ClassFile::FieldInfo::AccessFlags second)
+{
+    return static_cast<AeroJet::u2>(first) & static_cast<AeroJet::u2>(second);
+}

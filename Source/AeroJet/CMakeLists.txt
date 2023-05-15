@@ -33,6 +33,9 @@ endif()
 add_library(AeroJet ${AEROJET_LIB_TYPE}
         include/AeroJet.hpp
         include/Types.hpp
+        include/Formatters/Formatters.hpp
+        include/Formatters/ClassInfo/AccessFlags.hpp
+        include/Formatters/FieldInfo/AccessFlags.hpp
         include/Java/Archive/Jar.hpp
         source/Java/Archive/Jar.cpp
         include/Java/ByteCode/Instruction.hpp
