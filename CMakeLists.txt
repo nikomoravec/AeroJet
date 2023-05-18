@@ -33,7 +33,10 @@ add_subdirectory(Source/third-party/cxxopts)
 add_subdirectory(Source/Examples)
 
 add_subdirectory(Source/AeroJet)
-add_subdirectory(Source/JVM)
+find_package(LLVM CONFIG)
+if(${LLVM_FOUND})
+    add_subdirectory(Source/AeroJetCompiler)
+endif()
 
 if(NOT CMAKE_DISABLE_TESTING)
     enable_testing()

@@ -21,21 +21,15 @@
 # SOFTWARE.
 #
 
-
-set(CMAKE_PREFIX_PATH /Users/niko/install/llvm/debug/lib/cmake/llvm)
-find_package(LLVM REQUIRED CONFIG)
+#find_package(LLVM REQUIRED CONFIG)
 message(STATUS "Found LLVM ${LLVM_PACKAGE_VERSION}")
 message(STATUS "Using LLVMConfig.cmake in: ${LLVM_DIR}")
-message(STATUS "LLVM_INCLUDE_DIRS: ${LLVM_INCLUDE_DIRS}")
-
 
 add_executable(AeroJetCompiler
         include/Environment.hpp
         source/Environment.cpp
         main.cpp
 )
-
-#llvm_map_components_to_libnames(LLVM_LIBS support core irreader)
 
 target_include_directories(AeroJetCompiler PUBLIC
         include
