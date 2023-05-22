@@ -15,8 +15,20 @@ namespace AeroJet::Compiler
         return Environment{*this};
     }
 
+    Environment::Builder& Environment::Builder::mainClass(const std::string& mainClass)
+    {
+        m_mainClass = mainClass;
+        return *this;
+    }
+
     Environment::Environment(const Environment::Builder& builder)
     {
         m_classPath = builder.m_classPath;
+        m_mainClass = builder.m_mainClass;
+    }
+
+    const ClassPath& Environment::classPath() const
+    {
+        return m_classPath;
     }
 } // namespace AeroJet::Compiler

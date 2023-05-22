@@ -26,8 +26,12 @@ message(STATUS "Found LLVM ${LLVM_PACKAGE_VERSION}")
 message(STATUS "Using LLVMConfig.cmake in: ${LLVM_DIR}")
 
 add_executable(AeroJetCompiler
+        include/ClassPath.hpp
+        source/ClassPath.cpp
         include/Environment.hpp
         source/Environment.cpp
+        include/CodeGen/LLVM/IRCodeGen.hpp
+        source/CodeGen/LLVM/IRCodeGen.cpp
         main.cpp
 )
 
@@ -38,5 +42,7 @@ target_include_directories(AeroJetCompiler PUBLIC
 
 target_link_libraries(AeroJetCompiler PUBLIC
         AeroJet
+        cxxopts
+        fmt
         LLVMCore
 )
