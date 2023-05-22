@@ -133,6 +133,7 @@ add_library(AeroJet ${AEROJET_LIB_TYPE}
         include/Stream/StreamUtils.hpp
         source/Stream/StreamUtils.cpp
         include/Stream/Writer.hpp
+        include/Utils/StringUtils.hpp
 )
 
 target_include_directories(AeroJet PUBLIC

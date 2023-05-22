@@ -75,3 +75,4 @@
 #include "Stream/StreamUtils.hpp"
 #include "Stream/Writer.hpp"
 #include "Types.hpp"
+#include "Utils/StringUtils.hpp"
