@@ -30,6 +30,7 @@ add_subdirectory(Source/third-party/fmtlib)
 add_subdirectory(Source/third-party/backwandcpp)
 add_subdirectory(Source/third-party/zip)
 add_subdirectory(Source/third-party/cxxopts)
+add_subdirectory(Source/third-party/spdlog)
 add_subdirectory(Source/Examples)
 
 add_subdirectory(Source/AeroJet)
