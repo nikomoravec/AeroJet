@@ -70,6 +70,7 @@
 #include "Java/ClassFile/MethodInfo.hpp"
 #include "Java/ClassFile/Utils/AttributeInfoUtils.hpp"
 #include "Java/ClassFile/Utils/ClassInfoUtils.hpp"
+#include "Java/ClassFile/Utils/ConstantPoolEntryUtils.hpp"
 #include "Stream/Reader.hpp"
 #include "Stream/Stream.hpp"
 #include "Stream/StreamUtils.hpp"
