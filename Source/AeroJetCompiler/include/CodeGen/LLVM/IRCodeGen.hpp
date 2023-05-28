@@ -24,21 +24,27 @@
 
 #pragma once
 
+#include "AeroJet.hpp"
 #include "Environment.hpp"
+#include "TranslationUnit.hpp"
 
 #include <llvm/IR/IRBuilder.h>
 #include <memory>
 
-namespace AeroJet::Compiler
+namespace AeroJet::Compiler::LLVM
 {
     class IRCodeGen final
     {
       public:
         explicit IRCodeGen(Environment environment);
-        i4 run();
+
+        TranslationUnit translate(const Java::ClassFile::ClassInfo& classInfo);
+        i4              run();
+
+        static llvm::LLVMContext& llvmContext();
 
       private:
-        Environment                        m_environment;
-        std::unique_ptr<llvm::LLVMContext> m_llvmContext;
+        Environment              m_environment;
+        static llvm::LLVMContext s_llvmContext;
     };
-} // namespace AeroJet::Compiler
+} // namespace AeroJet::Compiler::LLVM
