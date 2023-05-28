@@ -119,6 +119,8 @@ add_library(AeroJet ${AEROJET_LIB_TYPE}
         source/Java/ClassFile/Utils/AttributeInfoUtils.cpp
         include/Java/ClassFile/Utils/ClassInfoUtils.hpp
         source/Java/ClassFile/Utils/ClassInfoUtils.cpp
+        include/Java/ClassFile/Utils/ConstantPoolEntryUtils.hpp
+        source/Java/ClassFile/Utils/ConstantPoolEntryUtils.cpp
         include/Exceptions/FileNotFoundException.hpp
         source/Exceptions/FileNotFoundException.cpp
         include/Exceptions/IncorrectAttributeTypeException.hpp
