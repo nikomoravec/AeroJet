@@ -31,6 +31,29 @@
 
 namespace AeroJet::Compiler
 {
+    class MainClassStorage
+    {
+      public:
+        enum class Kind : AeroJet::u1
+        {
+            CLASS_FILE,
+            ARCHIVE
+        };
+
+      public:
+        MainClassStorage();
+        MainClassStorage(Kind kind, std::filesystem::path path);
+
+        [[nodiscard]] Kind kind() const;
+        [[nodiscard]] const std::filesystem::path& path() const;
+
+      private:
+
+      private:
+        Kind m_kind;
+        std::filesystem::path m_path;
+    };
+
     class Environment
     {
       public:
@@ -42,20 +65,27 @@ namespace AeroJet::Compiler
             Builder();
 
             Builder&    classPath(const ClassPath& classPath);
-            Builder&    mainClass(const std::string& mainClass);
+            Builder&    mainClass(const MainClassStorage& mainClass);
+            Builder&    output(const std::string& mainClass);
             Environment build();
 
           private:
             ClassPath m_classPath;
-            std::string m_mainClass;
+            MainClassStorage m_mainClass;
+            std::string m_output;
         };
+
+      public:
+        [[nodiscard]] const ClassPath& classPath() const;
+        [[nodiscard]] const MainClassStorage& mainClass() const;
+        [[nodiscard]] const std::string& output() const;
 
       protected:
         explicit Environment(const Builder& builder);
-        [[nodiscard]] const ClassPath& classPath() const;
 
       protected:
         ClassPath m_classPath;
-        std::string m_mainClass;
+        MainClassStorage m_mainClass;
+        std::string m_output;
     };
 } // namespace AeroJet::Compiler
