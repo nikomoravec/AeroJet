@@ -75,4 +75,9 @@ namespace AeroJet::Compiler
     {
         return m_entries;
     }
+
+    void ClassPath::addEntry(const ClassPath::Entry& entry)
+    {
+        m_entries.emplace_back(entry);
+    }
 } // namespace AeroJet::Compiler

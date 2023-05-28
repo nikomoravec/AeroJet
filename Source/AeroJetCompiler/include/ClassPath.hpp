@@ -58,6 +58,7 @@ namespace AeroJet::Compiler
         explicit ClassPath(std::string classPath);
 
         [[nodiscard]] const std::vector<Entry>& entries() const;
+        void addEntry(const Entry& entry);
 
       protected:
         std::vector<Entry> m_entries;
