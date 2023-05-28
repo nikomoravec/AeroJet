@@ -71,6 +71,9 @@ int main(int argc, char** argv)
             AeroJet::Compiler::MainClassStorage::Kind::ARCHIVE,
             fmt::format("{}:{}", targetPath.string(), parseResult[MAIN_CLASS_COMMAND_LINE_OPTION].as<std::string>())
         });
+
+        AeroJet::Compiler::ClassPath::Entry cpEntry{AeroJet::Compiler::ClassPath::EntryType::ARCHIVE, targetPath};
+        cp.addEntry(cpEntry);
     }
     else
     {
