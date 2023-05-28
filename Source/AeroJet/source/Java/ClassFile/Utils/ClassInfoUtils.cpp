@@ -62,4 +62,11 @@ namespace AeroJet::Java::ClassFile::Utils
 
         return className;
     }
+    std::string ClassInfoUtils::javaName(const ClassInfo& classInfo)
+    {
+        std::string fullName = name(classInfo);
+        std::replace(fullName.begin(), fullName.end(), CLASS_PACKAGE_DELIMITER, JAVA_PACKAGE_DELIMITER);
+
+        return fullName;
+    }
 } // namespace AeroJet::Java::ClassFile::Utils

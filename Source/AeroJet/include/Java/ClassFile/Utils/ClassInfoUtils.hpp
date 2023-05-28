@@ -31,6 +31,7 @@
 namespace AeroJet::Java::ClassFile::Utils
 {
     static constexpr char CLASS_PACKAGE_DELIMITER = '/';
+    static constexpr char JAVA_PACKAGE_DELIMITER = '.';
 
     class ClassInfoUtils
     {
@@ -44,15 +45,22 @@ namespace AeroJet::Java::ClassFile::Utils
         /**
          * @brief Extracts full name of class from ClassInfo
          * @param classInfo
-         * @return short name of given ClassInfo without a package
+         * @return full name of given ClassInfo without a package
          */
         [[nodiscard]] static std::string name(const ClassInfo& classInfo);
 
         /**
          * @brief Extracts short name of class from ClassInfo
          * @param classInfo
-         * @return full name of given ClassInfo including package
+         * @return short name of given ClassInfo including package
          */
         [[nodiscard]] static std::string className(const ClassInfo& classInfo);
+
+        /**
+         * @brief Extracts short name of class from ClassInfo
+         * @param classInfo
+         * @return full name of given ClassInfo including package in Java format like org.project.ClassName
+         */
+        [[nodiscard]] static std::string javaName(const ClassInfo& classInfo);
     };
 } // namespace AeroJet::Java::ClassFile::Utils
