@@ -42,14 +42,14 @@ namespace AeroJet::Java::ClassFile::Utils
         [[nodiscard]] static bool isUnderPackage(const ClassInfo& classInfo);
 
         /**
-         * @brief Extracts short name of class from ClassInfo
+         * @brief Extracts full name of class from ClassInfo
          * @param classInfo
          * @return short name of given ClassInfo without a package
          */
         [[nodiscard]] static std::string name(const ClassInfo& classInfo);
 
         /**
-         * @brief Extracts full name of class from ClassInfo
+         * @brief Extracts short name of class from ClassInfo
          * @param classInfo
          * @return full name of given ClassInfo including package
          */
