@@ -24,7 +24,7 @@
 
 #include "Exceptions/CompilerException.hpp"
 
-namespace AeroJet::Compiler
+namespace AeroJet::Compiler::Exceptions
 {
     CompilerException::CompilerException(std::string_view message) : AeroJet::Exceptions::RuntimeException(message)
     {
