@@ -27,12 +27,12 @@
 #include "AeroJet.hpp"
 #include <string_view>
 
-namespace AeroJet::Compiler
+namespace AeroJet::Compiler::Exceptions
 {
     class CompilerException : public AeroJet::Exceptions::RuntimeException
     {
     public:
-        CompilerException(std::string_view message);
+        explicit CompilerException(std::string_view message);
         constexpr virtual u4 errorCode() = 0;
     };
 }
