@@ -30,6 +30,8 @@ add_executable(AeroJetCompiler
         include/Environment.hpp
         source/Environment.cpp
         include/ErrorCodes.hpp
+        include/Exceptions/CompilerException.hpp
+        source/Exceptions/CompilerException.cpp
         include/CodeGen/LLVM/IRCodeGen.hpp
         source/CodeGen/LLVM/IRCodeGen.cpp
         include/CodeGen/LLVM/TranslationUnit.hpp
@@ -48,5 +50,7 @@ target_link_libraries(AeroJetCompiler PUBLIC
         fmt
         spdlog
         LLVMCore
-        LLVMTransformUtils
+        LLVMX86AsmParser
+        LLVMX86CodeGen
+        LLVMX86Desc
 )
