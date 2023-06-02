@@ -26,7 +26,12 @@
 
 namespace AeroJet::Compiler::Exceptions
 {
-    CompilerException::CompilerException(std::string_view message) : AeroJet::Exceptions::RuntimeException(message)
+    CompilerException::CompilerException(std::string_view message, u4 errorCode) : AeroJet::Exceptions::RuntimeException(message), m_errorCode(errorCode)
     {
+    }
+
+    i4 CompilerException::errorCode() const
+    {
+        return m_errorCode;
     }
 }
