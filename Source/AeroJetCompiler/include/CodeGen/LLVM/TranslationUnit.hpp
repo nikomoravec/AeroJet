@@ -36,9 +36,9 @@ namespace AeroJet::Compiler::LLVM
         explicit TranslationUnit(std::string name);
         TranslationUnit(const TranslationUnit& other);
 
-        const std::string& name() const;
+        const std::string&             name() const;
         std::unique_ptr<llvm::Module>& module();
-        llvm::IRBuilder<>& builder();
+        llvm::IRBuilder<>&             builder();
 
         llvm::GlobalVariable* addGlobalVariable(const std::string& name, llvm::Type* type);
         void print(std::ostream& outputStream);
