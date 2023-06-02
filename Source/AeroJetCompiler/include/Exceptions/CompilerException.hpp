@@ -25,14 +25,18 @@
 #pragma once
 
 #include "AeroJet.hpp"
+
 #include <string_view>
 
 namespace AeroJet::Compiler::Exceptions
 {
     class CompilerException : public AeroJet::Exceptions::RuntimeException
     {
-    public:
-        explicit CompilerException(std::string_view message);
-        constexpr virtual u4 errorCode() = 0;
+      public:
+        CompilerException(std::string_view message, u4 errorCode);
+        i4 errorCode() const;
+
+      private:
+        u4 m_errorCode;
     };
-}
+} // namespace AeroJet::Compiler::Exceptions
