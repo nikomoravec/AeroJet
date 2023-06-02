@@ -32,8 +32,6 @@ add_executable(AeroJetCompiler
         include/ErrorCodes.hpp
         include/Exceptions/CompilerException.hpp
         source/Exceptions/CompilerException.cpp
-        include/Exceptions/InvalidArgumentsException.hpp
-        source/Exceptions/InvalidArgumentsException.cpp
         include/CodeGen/LLVM/IRCodeGen.hpp
         source/CodeGen/LLVM/IRCodeGen.cpp
         include/CodeGen/LLVM/TranslationUnit.hpp
