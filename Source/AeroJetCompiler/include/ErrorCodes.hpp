@@ -22,14 +22,19 @@
  * SOFTWARE.
  */
 
-#include "Types.hpp"
-
 #pragma once
+
+#include "Types.hpp"
 
 namespace AeroJet::Compiler::ErrorCodes
 {
-    static constexpr i4 EXIT_CODE_OK                        = 0;
-    static constexpr i4 EXIT_CODE_INVALID_ARGS              = 1;
-    static constexpr i4 EXIT_CODE_FAILED_TO_OPEN_MAIN_CLASS = 2;
-    static constexpr i4 EXIT_CODE_FAILED_TO_READ_MAIN_CLASS = 3;
+    static constexpr i4 EXIT_CODE_OK                             = 0;
+    static constexpr i4 EXIT_CODE_INVALID_ARGS                   = 1;
+    static constexpr i4 EXIT_CODE_FAILED_TO_OPEN_MAIN_CLASS      = 2;
+    static constexpr i4 EXIT_CODE_FAILED_TO_READ_MAIN_CLASS      = 3;
+    static constexpr i4 EXIT_CODE_LLVM_LOOKUP_TARGET_ERROR       = 4;
+    static constexpr i4 EXIT_CODE_IO_ERROR                       = 5;
+    static constexpr i4 EXIT_CODE_LLVM_OBJECT_FILE_NOT_SUPPORTED = 6;
+    static constexpr i4 EXIT_CODE_AERO_LIB_ERROR                 = 254;
+    static constexpr i4 EXIT_CODE_ERROR_UNKNOWN                  = 255;
 } // namespace AeroJet::Compiler::ErrorCodes
