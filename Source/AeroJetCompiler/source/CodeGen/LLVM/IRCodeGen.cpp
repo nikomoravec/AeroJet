@@ -260,6 +260,7 @@ namespace AeroJet::Compiler::LLVM
 
 
         tu.print(std::cout);
+        tu.toObjectFile(std::filesystem::path{m_environment.output()} / fmt::format("{}.o", javaClassFullName));
         return tu;
     }
 
