@@ -24,8 +24,17 @@
 
 #include "CodeGen/LLVM/TranslationUnit.hpp"
 
+#include "ErrorCodes.hpp"
+#include "Exceptions/CompilerException.hpp"
 #include "CodeGen/LLVM/IRCodeGen.hpp"
+#include "fmt/format.h"
 
+#include <llvm/IR/LegacyPassManager.h>
+#include <llvm/MC/TargetRegistry.h>
+#include <llvm/Support/FileSystem.h>
+#include <llvm/Support/TargetSelect.h>
+#include <llvm/Target/TargetMachine.h>
+#include <llvm/TargetParser/Host.h>
 #include <llvm/Transforms/Utils/Cloning.h>
 
 namespace AeroJet::Compiler::LLVM
@@ -52,6 +61,47 @@ namespace AeroJet::Compiler::LLVM
         return m_name;
     }
 
+    void TranslationUnit::toObjectFile(const std::filesystem::path& outputFilePath) const
+    {
+        static constexpr auto cpu = "generic";
+
+        llvm::InitializeNativeTarget();
+        llvm::InitializeNativeTargetAsmParser();
+        llvm::InitializeNativeTargetAsmPrinter();
+
+        const std::string targetTriple = llvm::sys::getDefaultTargetTriple();
+
+        std::string         errorMessage{};
+        const llvm::Target* target = llvm::TargetRegistry::lookupTarget(targetTriple, errorMessage);
+        if(!target)
+        {
+            throw Exceptions::CompilerException{errorMessage, ErrorCodes::EXIT_CODE_LLVM_LOOKUP_TARGET_ERROR};
+        }
+
+        llvm::TargetMachine* targetMachine = target->createTargetMachine(targetTriple, cpu, {}, {}, {});
+
+        m_module->setDataLayout(targetMachine->createDataLayout());
+        m_module->setTargetTriple(targetTriple);
+
+        std::error_code      errorCode;
+        llvm::raw_fd_ostream ofstream(outputFilePath.string(), errorCode, llvm::sys::fs::OF_None);
+        if(errorCode)
+        {
+            throw Exceptions::CompilerException{fmt::format("Could not open file: {}", errorCode.message()), ErrorCodes::EXIT_CODE_IO_ERROR};
+        }
+
+        llvm::legacy::PassManager              pass;
+        static constexpr llvm::CodeGenFileType fileType = llvm::CGFT_ObjectFile;
+
+        if(targetMachine->addPassesToEmitFile(pass, ofstream, nullptr, fileType))
+        {
+            throw Exceptions::CompilerException{fmt::format("TargetMachine ({}) can't emit a object file type", targetMachine->getTargetCPU()), ErrorCodes::EXIT_CODE_LLVM_OBJECT_FILE_NOT_SUPPORTED};
+        }
+
+        pass.run(*m_module);
+        ofstream.flush();
+    }
+
     std::unique_ptr<llvm::Module>& TranslationUnit::module()
     {
         return m_module;
@@ -64,10 +114,11 @@ namespace AeroJet::Compiler::LLVM
 
     void TranslationUnit::print(std::ostream& outputStream)
     {
-        std::string data;
-        llvm::raw_string_ostream llvmStream = llvm::raw_string_ostream{data};
+        std::string              data;
+        llvm::raw_string_ostream llvmStream = llvm::raw_string_ostream{ data };
         m_module->print(llvmStream, nullptr);
 
         outputStream << data;
     }
+
 } // namespace AeroJet::Compiler::LLVM

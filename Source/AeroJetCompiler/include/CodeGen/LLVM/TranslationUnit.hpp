@@ -24,6 +24,7 @@
 
 #pragma once
 
+#include <filesystem>
 #include <llvm/IR/IRBuilder.h>
 #include <memory>
 #include <ostream>
@@ -41,7 +42,9 @@ namespace AeroJet::Compiler::LLVM
         llvm::IRBuilder<>&             builder();
 
         llvm::GlobalVariable* addGlobalVariable(const std::string& name, llvm::Type* type);
+
         void print(std::ostream& outputStream);
+        void toObjectFile(const std::filesystem::path& outputFilePath) const;
 
       protected:
         std::string                   m_name;
