@@ -70,6 +70,11 @@ namespace AeroJet::Compiler::LLVM
             const Java::ClassFile::ConstantPoolEntry& entry = pair.second;
             const std::string constantPoolGlobalEntryName = fmt::format("{}_CONSTANT_POOL_ENTRY_{}", tu.name(), index);
 
+            llvm::GlobalVariable* entryTypeGlobalVar = tu.addGlobalVariable(fmt::format("{}_CONSTANT_POOL_ENTRY_TYPE_{}", tu.name(), index), tu.builder().getInt16Ty());
+            entryTypeGlobalVar->setConstant(true);
+            entryTypeGlobalVar->setInitializer(tu.builder().getInt16(static_cast<AeroJet::u2>(entry.tag())));
+            entryTypeGlobalVar->setLinkage(llvm::GlobalVariable::PrivateLinkage);
+
             switch(entry.tag())
             {
                 case Java::ClassFile::ConstantPoolInfoTag::UTF_8:
