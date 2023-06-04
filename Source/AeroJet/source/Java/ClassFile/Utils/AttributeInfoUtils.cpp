@@ -29,6 +29,6 @@ namespace AeroJet::Java::ClassFile::Utils
     std::string AttributeInfoUtils::extractName(const ConstantPool& constantPool, const AttributeInfo& attributeInfo)
     {
         const u2 nameIndex = attributeInfo.attributeNameIndex();
-        return constantPool[nameIndex].as<ConstantPoolInfoUtf8>().asString();
+        return constantPool.at(nameIndex).as<ConstantPoolInfoUtf8>().asString();
     }
 } // namespace AeroJet::Java::ClassFile::Utils

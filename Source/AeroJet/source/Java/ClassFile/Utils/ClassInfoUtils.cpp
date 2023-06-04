@@ -36,8 +36,8 @@ namespace AeroJet::Java::ClassFile::Utils
         const ConstantPool& constantPool = classInfo.constantPool();
 
         const u2 thisClassIndex = classInfo.thisClass();
-        const u2 nameIndex      = constantPool[thisClassIndex].as<ConstantPoolInfoClass>().nameIndex();
-        return constantPool[nameIndex].as<ConstantPoolInfoUtf8>().asString();
+        const u2 nameIndex      = constantPool.at(thisClassIndex).as<ConstantPoolInfoClass>().nameIndex();
+        return constantPool.at(nameIndex).as<ConstantPoolInfoUtf8>().asString();
     }
 
     std::string ClassInfoUtils::className(const ClassInfo& classInfo)

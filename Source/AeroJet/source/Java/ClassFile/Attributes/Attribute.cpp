@@ -34,7 +34,7 @@ namespace AeroJet::Java::ClassFile
                          std::string_view     requiredAttributeName)
     {
         const u2          nameIndex     = attributeInfo.attributeNameIndex();
-        const std::string attributeName = constantPool[nameIndex].as<ConstantPoolInfoUtf8>().asString();
+        const std::string attributeName = constantPool.at(nameIndex).as<ConstantPoolInfoUtf8>().asString();
 
         if(attributeName != requiredAttributeName)
         {

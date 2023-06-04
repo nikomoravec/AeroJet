@@ -44,7 +44,6 @@ add_library(AeroJet ${AEROJET_LIB_TYPE}
         include/Java/ClassFile/ClassInfo.hpp
         source/Java/ClassFile/ClassInfo.cpp
         include/Java/ClassFile/ConstantPool.hpp
-        source/Java/ClassFile/ConstantPool.cpp
         include/Java/ClassFile/ConstantPoolEntry.hpp
         source/Java/ClassFile/ConstantPoolEntry.cpp
         include/Java/ClassFile/FieldDescriptor.hpp

@@ -140,7 +140,7 @@ AeroJet::Java::ClassFile::ClassInfo AeroJet::Stream::Reader::read(std::istream& 
             AeroJet::Stream::Reader::read<AeroJet::Java::ClassFile::ConstantPoolEntry>(stream, byteOrder);
         const AeroJet::Java::ClassFile::ConstantPoolInfoTag tag = entry.tag();
 
-        constantPool.addEntry(constantPoolEntryIndex, std::move(entry));
+        constantPool.insert({constantPoolEntryIndex, std::move(entry)});
 
         if(tag == AeroJet::Java::ClassFile::ConstantPoolInfoTag::LONG ||
            tag == AeroJet::Java::ClassFile::ConstantPoolInfoTag::DOUBLE)
