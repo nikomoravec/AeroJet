@@ -47,7 +47,7 @@ TEST_CASE("AeroJet::Java::Attributes::RuntimeVisibleAnnotations")
     // #8 = Utf8               LMyAnnotation;
     REQUIRE_EQ(annotation.typeIndex(), 8);
     REQUIRE_EQ(
-        constantPool.getEntry(annotation.typeIndex()).as<AeroJet::Java::ClassFile::ConstantPoolInfoUtf8>().asString(),
+        constantPool.at(annotation.typeIndex()).as<AeroJet::Java::ClassFile::ConstantPoolInfoUtf8>().asString(),
         "LMyAnnotation;");
     REQUIRE_EQ(annotation.numElementValuePairs(), 0);
 }
