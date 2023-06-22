@@ -51,7 +51,7 @@ int main(int argc, char** argv)
     const std::vector<AeroJet::Java::ClassFile::MethodInfo>& classMethods = classInfo.methods();
     for (const auto& methodInfo : classMethods)
     {
-        const std::string methodName = constantPool[methodInfo.nameIndex()].as<AeroJet::Java::ClassFile::ConstantPoolInfoUtf8>().asString();
+        const std::string methodName = constantPool.at(methodInfo.nameIndex()).as<AeroJet::Java::ClassFile::ConstantPoolInfoUtf8>().asString();
         fmt::print("\t\t{}\n", methodName);
         const std::vector<AeroJet::Java::ClassFile::AttributeInfo>& methodAttributes = methodInfo.attributes();
         auto codeAttributeIt = std::find_if(methodAttributes.begin(), methodAttributes.end(),
