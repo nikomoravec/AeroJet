@@ -28,6 +28,8 @@ add_executable(AeroJetCompiler
         include/Assert.hpp
         include/ClassPath.hpp
         source/ClassPath.cpp
+        include/ClassRegistry.hpp
+        source/ClassRegistry.cpp
         include/Environment.hpp
         source/Environment.cpp
         include/ErrorCodes.hpp
