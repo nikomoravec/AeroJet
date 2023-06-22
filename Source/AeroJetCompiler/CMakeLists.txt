@@ -25,6 +25,7 @@ message(STATUS "Found LLVM ${LLVM_PACKAGE_VERSION}")
 message(STATUS "Using LLVMConfig.cmake in: ${LLVM_DIR}")
 
 add_executable(AeroJetCompiler
+        include/Assert.hpp
         include/ClassPath.hpp
         source/ClassPath.cpp
         include/Environment.hpp
