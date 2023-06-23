@@ -65,11 +65,12 @@ namespace AeroJet::Stream::Reader
         }
 
         const std::istream::pos_type currentPos = stream.tellg();
+
         stream.seekg(0, std::ios::end);
         const std::istream::pos_type endPos = stream.tellg();
         stream.seekg(currentPos);
 
-        if((static_cast<std::size_t>(currentPos) + readSize) > endPos)
+        if((static_cast<std::size_t>(currentPos) + readSize) > static_cast<std::size_t>(endPos))
         {
             throw Exceptions::RuntimeException(
                 fmt::format("Attempt to read {} bytes while {} is available", readSize, endPos - currentPos));
