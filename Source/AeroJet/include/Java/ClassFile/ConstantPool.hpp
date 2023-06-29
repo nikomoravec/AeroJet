@@ -36,10 +36,10 @@ namespace AeroJet::Java::ClassFile
     class ConstantPool final : ConstantPoolBaseType
     {
       public:
-        using ConstantPoolBaseType::size;
-        using ConstantPoolBaseType::insert;
         using ConstantPoolBaseType::at;
         using ConstantPoolBaseType::begin;
         using ConstantPoolBaseType::end;
+        using ConstantPoolBaseType::insert;
+        using ConstantPoolBaseType::size;
     };
 } // namespace AeroJet::Java::ClassFile

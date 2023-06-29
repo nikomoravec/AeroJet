@@ -36,7 +36,7 @@ namespace AeroJet::Java::ClassFile::Utils
         const ConstantPool& constantPool = classInfo.constantPool();
 
         const u2 thisClassIndex = classInfo.thisClass();
-        const u2 nameIndex      = constantPool.at(thisClassIndex).as<ConstantPoolInfoClass>().nameIndex();
+        const u2 nameIndex = constantPool.at(thisClassIndex).as<ConstantPoolInfoClass>().nameIndex();
         return constantPool.at(nameIndex).as<ConstantPoolInfoUtf8>().asString();
     }
 
@@ -62,6 +62,14 @@ namespace AeroJet::Java::ClassFile::Utils
 
         return className;
     }
+
+    std::string ClassInfoUtils::javaNameFromPath(const std::filesystem::path& path)
+    {
+        std::string javaName = path;
+        std::replace(javaName.begin(), javaName.end(), CLASS_PACKAGE_DELIMITER, JAVA_PACKAGE_DELIMITER);
+        return javaName;
+    }
+
     std::string ClassInfoUtils::javaName(const ClassInfo& classInfo)
     {
         std::string fullName = name(classInfo);
@@ -69,4 +77,5 @@ namespace AeroJet::Java::ClassFile::Utils
 
         return fullName;
     }
+
 } // namespace AeroJet::Java::ClassFile::Utils

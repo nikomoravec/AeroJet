@@ -34,7 +34,7 @@ namespace AeroJet::Java::ClassFile
         m_defaultValue(Stream::Reader::read<ElementValue>(m_infoDataStream, Stream::ByteOrder::INVERSE))
     {
     }
-    
+
     const ElementValue& AnnotationDefault::defaultValue() const
     {
         return m_defaultValue;

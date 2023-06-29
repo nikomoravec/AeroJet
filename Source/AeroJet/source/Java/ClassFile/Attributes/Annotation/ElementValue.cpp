@@ -48,7 +48,8 @@ namespace AeroJet::Java::ClassFile
         return m_constNameIndex;
     }
 
-    ElementValue::ArrayValue::ArrayValue(const std::vector<ElementValue>& values) : m_values(values) {}
+    ElementValue::ArrayValue::ArrayValue(const std::vector<ElementValue>& values) :
+        m_values(values) {}
 
     u2 ElementValue::ArrayValue::numValues() const
     {
@@ -60,7 +61,8 @@ namespace AeroJet::Java::ClassFile
         return m_values;
     }
 
-    ElementValue::ElementValue(ElementValue::Tag tag, ElementValue::Value value) : m_tag(tag), m_value(std::move(value))
+    ElementValue::ElementValue(ElementValue::Tag tag, ElementValue::Value value) :
+        m_tag(tag), m_value(std::move(value))
     {
     }
 
@@ -98,7 +100,7 @@ AeroJet::Java::ClassFile::ElementValue AeroJet::Stream::Reader::read(std::istrea
         }
         case Java::ClassFile::ElementValue::Tag::ENUM_TYPE:
         {
-            const u2 typeNameIndex   = AeroJet::Stream::Reader::read<u2>(stream, byteOrder);
+            const u2 typeNameIndex = AeroJet::Stream::Reader::read<u2>(stream, byteOrder);
             const u2 constValueIndex = AeroJet::Stream::Reader::read<u2>(stream, byteOrder);
 
             return AeroJet::Java::ClassFile::ElementValue{

@@ -55,4 +55,4 @@ namespace AeroJet::Java::ClassFile
          */
         u2 m_signatureIndex;
     };
-}
+} // namespace AeroJet::Java::ClassFile

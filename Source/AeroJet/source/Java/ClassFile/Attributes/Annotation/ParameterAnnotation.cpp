@@ -28,7 +28,8 @@
 
 namespace AeroJet::Java::ClassFile
 {
-    ParameterAnnotation::ParameterAnnotation(const std::vector<Annotation>& annotations) : m_annotations(annotations) {}
+    ParameterAnnotation::ParameterAnnotation(const std::vector<Annotation>& annotations) :
+        m_annotations(annotations) {}
 
     u2 ParameterAnnotation::numAnnotations() const
     {
@@ -54,5 +55,5 @@ AeroJet::Java::ClassFile::ParameterAnnotation AeroJet::Stream::Reader::read(std:
             AeroJet::Stream::Reader::read<AeroJet::Java::ClassFile::Annotation>(stream, byteOrder));
     }
 
-    return AeroJet::Java::ClassFile::ParameterAnnotation{annotations};
+    return AeroJet::Java::ClassFile::ParameterAnnotation{ annotations };
 }

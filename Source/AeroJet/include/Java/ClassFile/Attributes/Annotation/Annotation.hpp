@@ -58,7 +58,7 @@ namespace AeroJet::Java::ClassFile
         [[nodiscard]] const std::vector<ElementValuePair>& elementValuePairs() const;
 
       private:
-        u2                            m_typeIndex;
+        u2 m_typeIndex;
         std::vector<ElementValuePair> m_elementValuePairs;
     };
 } // namespace AeroJet::Java::ClassFile

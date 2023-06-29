@@ -35,7 +35,7 @@ namespace AeroJet::Stream
     class Utils
     {
       public:
-        static std::vector<u1>      streamToBytes(Stream::MemoryStream& stream);
+        static std::vector<u1> streamToBytes(Stream::MemoryStream& stream);
         static Stream::MemoryStream bytesToStream(const std::vector<u1>& bytes);
         static Stream::MemoryStream bytesToStream(std::vector<u1>&& bytes);
     };

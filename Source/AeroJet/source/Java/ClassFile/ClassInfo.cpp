@@ -31,15 +31,15 @@
 
 namespace AeroJet::Java::ClassFile
 {
-    ClassInfo::ClassInfo(u2                                minorVersion,
-                         u2                                majorVersion,
-                         ConstantPool&                     constantPool,
-                         u2                                accessFlags,
-                         u2                                thisClass,
-                         std::optional<u2>                 superClass,
-                         const std::vector<u2>&            interfaces,
-                         const std::vector<FieldInfo>&     fields,
-                         const std::vector<MethodInfo>&    methods,
+    ClassInfo::ClassInfo(u2 minorVersion,
+                         u2 majorVersion,
+                         ConstantPool& constantPool,
+                         u2 accessFlags,
+                         u2 thisClass,
+                         std::optional<u2> superClass,
+                         const std::vector<u2>& interfaces,
+                         const std::vector<FieldInfo>& fields,
+                         const std::vector<MethodInfo>& methods,
                          const std::vector<AttributeInfo>& attributes) :
         m_minorVersion(minorVersion),
         m_majorVersion(majorVersion), m_constantPool(constantPool), m_accessFlags(accessFlags), m_thisClass(thisClass),
@@ -140,7 +140,7 @@ AeroJet::Java::ClassFile::ClassInfo AeroJet::Stream::Reader::read(std::istream& 
             AeroJet::Stream::Reader::read<AeroJet::Java::ClassFile::ConstantPoolEntry>(stream, byteOrder);
         const AeroJet::Java::ClassFile::ConstantPoolInfoTag tag = entry.tag();
 
-        constantPool.insert({constantPoolEntryIndex, std::move(entry)});
+        constantPool.insert({ constantPoolEntryIndex, std::move(entry) });
 
         if(tag == AeroJet::Java::ClassFile::ConstantPoolInfoTag::LONG ||
            tag == AeroJet::Java::ClassFile::ConstantPoolInfoTag::DOUBLE)
@@ -149,9 +149,9 @@ AeroJet::Java::ClassFile::ClassInfo AeroJet::Stream::Reader::read(std::istream& 
         }
     }
 
-    const AeroJet::u2 accessFlags     = AeroJet::Stream::Reader::read<AeroJet::u2>(stream, byteOrder);
-    const AeroJet::u2 thisClass       = AeroJet::Stream::Reader::read<AeroJet::u2>(stream, byteOrder);
-    const AeroJet::u2 superClass      = AeroJet::Stream::Reader::read<AeroJet::u2>(stream, byteOrder);
+    const AeroJet::u2 accessFlags = AeroJet::Stream::Reader::read<AeroJet::u2>(stream, byteOrder);
+    const AeroJet::u2 thisClass = AeroJet::Stream::Reader::read<AeroJet::u2>(stream, byteOrder);
+    const AeroJet::u2 superClass = AeroJet::Stream::Reader::read<AeroJet::u2>(stream, byteOrder);
     const AeroJet::u2 interfacesCount = AeroJet::Stream::Reader::read<AeroJet::u2>(stream, byteOrder);
 
     std::vector<AeroJet::u2> interfaces;
@@ -186,8 +186,5 @@ AeroJet::Java::ClassFile::ClassInfo AeroJet::Stream::Reader::read(std::istream& 
             AeroJet::Stream::Reader::read<AeroJet::Java::ClassFile::AttributeInfo>(stream, byteOrder));
     }
 
-    return { minorVersion, majorVersion, constantPool,
-             accessFlags,  thisClass,    superClass == 0 ? std::nullopt : std::optional<AeroJet::u2>(superClass),
-             interfaces,   fields,       methods,
-             attributes };
+    return { minorVersion, majorVersion, constantPool, accessFlags, thisClass, superClass == 0 ? std::nullopt : std::optional<AeroJet::u2>(superClass), interfaces, fields, methods, attributes };
 }

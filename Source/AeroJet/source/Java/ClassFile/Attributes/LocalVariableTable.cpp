@@ -72,11 +72,11 @@ namespace AeroJet::Java::ClassFile
         for(int32_t localVariableTableIndex = 0; localVariableTableIndex < localVariableTableLength;
             localVariableTableIndex++)
         {
-            const u2 entryStartPc         = Stream::Reader::read<u2>(m_infoDataStream, Stream::ByteOrder::INVERSE);
-            const u2 entryLength          = Stream::Reader::read<u2>(m_infoDataStream, Stream::ByteOrder::INVERSE);
-            const u2 entryNameIndex       = Stream::Reader::read<u2>(m_infoDataStream, Stream::ByteOrder::INVERSE);
+            const u2 entryStartPc = Stream::Reader::read<u2>(m_infoDataStream, Stream::ByteOrder::INVERSE);
+            const u2 entryLength = Stream::Reader::read<u2>(m_infoDataStream, Stream::ByteOrder::INVERSE);
+            const u2 entryNameIndex = Stream::Reader::read<u2>(m_infoDataStream, Stream::ByteOrder::INVERSE);
             const u2 entryDescriptorIndex = Stream::Reader::read<u2>(m_infoDataStream, Stream::ByteOrder::INVERSE);
-            const u2 entryIndex           = Stream::Reader::read<u2>(m_infoDataStream, Stream::ByteOrder::INVERSE);
+            const u2 entryIndex = Stream::Reader::read<u2>(m_infoDataStream, Stream::ByteOrder::INVERSE);
 
             m_localVariableTable.emplace_back(entryStartPc,
                                               entryLength,

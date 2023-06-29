@@ -43,7 +43,7 @@ namespace AeroJet::Java::ByteCode
         [[nodiscard]] const std::vector<u1>& data() const;
 
       protected:
-        OperationCode   m_opCode;
+        OperationCode m_opCode;
         std::vector<u1> m_data;
     };
 } // namespace AeroJet::Java::ByteCode

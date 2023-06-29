@@ -144,11 +144,11 @@ namespace AeroJet::Java::ClassFile
         explicit ObjectVariableInfo(u2 constantPoolIndex);
 
         [[nodiscard]] VerificationTypeTag tag() const;
-        [[nodiscard]] u2                  constantPoolIndex() const;
+        [[nodiscard]] u2 constantPoolIndex() const;
 
       private:
         VerificationTypeTag m_tag;
-        u2                  m_constantPoolIndex;
+        u2 m_constantPoolIndex;
     };
 
     class UninitializedVariableInfo
@@ -157,10 +157,10 @@ namespace AeroJet::Java::ClassFile
         explicit UninitializedVariableInfo(u2 offset);
 
         [[nodiscard]] VerificationTypeTag tag() const;
-        [[nodiscard]] u2                  offset() const;
+        [[nodiscard]] u2 offset() const;
 
       private:
-        u2                  m_offset;
+        u2 m_offset;
         VerificationTypeTag m_tag;
     };
 
@@ -229,12 +229,12 @@ namespace AeroJet::Java::ClassFile
 
         explicit SameLocals1StackItemFrame(u1 frameType, VerificationTypeInfo stack);
 
-        [[nodiscard]] u1                   frameType() const;
+        [[nodiscard]] u1 frameType() const;
         [[nodiscard]] VerificationTypeInfo stack() const;
-        [[nodiscard]] u2                   offsetDelta() const;
+        [[nodiscard]] u2 offsetDelta() const;
 
       private:
-        u1                   m_frameType;
+        u1 m_frameType;
         VerificationTypeInfo m_stack;
     };
 
@@ -251,12 +251,12 @@ namespace AeroJet::Java::ClassFile
 
         SameLocals1StackItemFrameExtended(u2 offsetDelta, VerificationTypeInfo stack);
 
-        [[nodiscard]] u1                   frameType() const;
-        [[nodiscard]] u2                   offsetDelta() const;
+        [[nodiscard]] u1 frameType() const;
+        [[nodiscard]] u2 offsetDelta() const;
         [[nodiscard]] VerificationTypeInfo stack() const;
 
       private:
-        u2                   m_offsetDelta;
+        u2 m_offsetDelta;
         VerificationTypeInfo m_stack;
     };
 
@@ -329,8 +329,8 @@ namespace AeroJet::Java::ClassFile
         [[nodiscard]] const std::vector<VerificationTypeInfo>& locals() const;
 
       private:
-        u1                                m_frameType;
-        u2                                m_offsetDelta;
+        u1 m_frameType;
+        u2 m_offsetDelta;
         std::vector<VerificationTypeInfo> m_locals;
     };
 
@@ -341,15 +341,15 @@ namespace AeroJet::Java::ClassFile
 
         FullFrame(u2 offsetDelta, std::vector<VerificationTypeInfo> locals, std::vector<VerificationTypeInfo> stack);
 
-        [[nodiscard]] u1                                       frameType() const;
-        [[nodiscard]] u2                                       offsetDelta() const;
-        [[nodiscard]] u2                                       numberOfLocals() const;
+        [[nodiscard]] u1 frameType() const;
+        [[nodiscard]] u2 offsetDelta() const;
+        [[nodiscard]] u2 numberOfLocals() const;
         [[nodiscard]] const std::vector<VerificationTypeInfo>& locals() const;
-        [[nodiscard]] u2                                       numberOfStackItems() const;
+        [[nodiscard]] u2 numberOfStackItems() const;
         [[nodiscard]] const std::vector<VerificationTypeInfo>& stack() const;
 
       private:
-        u2                                m_offsetDelta;
+        u2 m_offsetDelta;
         std::vector<VerificationTypeInfo> m_locals;
         std::vector<VerificationTypeInfo> m_stack;
     };

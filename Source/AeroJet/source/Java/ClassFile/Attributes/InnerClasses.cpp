@@ -28,9 +28,9 @@
 
 namespace AeroJet::Java::ClassFile
 {
-    InnerClasses::InnerClass::InnerClass(u2                                  innerClassInfoIndex,
-                                         u2                                  outerClassInfoIndex,
-                                         u2                                  innerNameIndex,
+    InnerClasses::InnerClass::InnerClass(u2 innerClassInfoIndex,
+                                         u2 outerClassInfoIndex,
+                                         u2 innerNameIndex,
                                          InnerClasses::InnerClassAccessFlags innerClassAccessFlags) :
         m_innerClassInfoIndex(innerClassInfoIndex),
         m_outerClassInfoIndex(outerClassInfoIndex),
@@ -68,7 +68,7 @@ namespace AeroJet::Java::ClassFile
         {
             u2 innerClassInfoIndex = Stream::Reader::read<u2>(m_infoDataStream, Stream::ByteOrder::INVERSE);
             u2 outerClassInfoIndex = Stream::Reader::read<u2>(m_infoDataStream, Stream::ByteOrder::INVERSE);
-            u2 innerNameIndex      = Stream::Reader::read<u2>(m_infoDataStream, Stream::ByteOrder::INVERSE);
+            u2 innerNameIndex = Stream::Reader::read<u2>(m_infoDataStream, Stream::ByteOrder::INVERSE);
             InnerClassAccessFlags innerClassAccessFlags = static_cast<InnerClassAccessFlags>(
                 Stream::Reader::read<u2>(m_infoDataStream, Stream::ByteOrder::INVERSE));
 

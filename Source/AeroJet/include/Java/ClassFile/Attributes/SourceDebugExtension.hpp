@@ -25,6 +25,7 @@
 #pragma once
 
 #include "Java/ClassFile/Attributes/Attribute.hpp"
+
 #include <vector>
 
 namespace AeroJet::Java::ClassFile

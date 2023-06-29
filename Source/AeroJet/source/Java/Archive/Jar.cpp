@@ -34,7 +34,8 @@
 
 namespace AeroJet::Java::Archive
 {
-    Jar::Entry::Entry(zip_t* zip) : m_zip(zip), m_index(0)
+    Jar::Entry::Entry(zip_t* zip) :
+        m_zip(zip), m_index(0)
     {
         if(m_zip == nullptr)
         {
@@ -42,7 +43,8 @@ namespace AeroJet::Java::Archive
         }
     }
 
-    Jar::Entry::Entry(zip_t* zip, const std::filesystem::path& path) : Entry(zip)
+    Jar::Entry::Entry(zip_t* zip, const std::filesystem::path& path) :
+        Entry(zip)
     {
         i4 open = zip_entry_open(m_zip, path.string().c_str());
         if(open != 0)
@@ -51,11 +53,12 @@ namespace AeroJet::Java::Archive
                 fmt::format("Failed to read entry \"{}\"! Error: {}", path.string(), open));
         }
 
-        m_name  = zip_entry_name(m_zip);
+        m_name = zip_entry_name(m_zip);
         m_index = zip_entry_index(m_zip);
     }
 
-    Jar::Entry::Entry(zip_t* zip, ssize_t index) : Entry(zip)
+    Jar::Entry::Entry(zip_t* zip, ssize_t index) :
+        Entry(zip)
     {
         m_index = index;
 
@@ -76,8 +79,8 @@ namespace AeroJet::Java::Archive
 
     Stream::MemoryStream Jar::Entry::read() const
     {
-        const u8    bufferSize = zip_entry_size(m_zip);
-        auto* const buffer     = static_cast<u1*>(calloc(sizeof(u1), bufferSize));
+        const u8 bufferSize = zip_entry_size(m_zip);
+        auto* const buffer = static_cast<u1*>(calloc(sizeof(u1), bufferSize));
         zip_entry_noallocread(m_zip, buffer, bufferSize);
 
         Stream::MemoryStream ss;
@@ -101,7 +104,8 @@ namespace AeroJet::Java::Archive
         return zip_entry_isdir(m_zip);
     }
 
-    Jar::Jar(const std::filesystem::path& path) : m_zip(nullptr), m_location(path)
+    Jar::Jar(const std::filesystem::path& path) :
+        m_zip(nullptr), m_location(path)
     {
         if(!std::filesystem::exists(path))
         {
@@ -118,7 +122,7 @@ namespace AeroJet::Java::Archive
     Jar::Jar(const Jar& other)
     {
         this->m_location = other.m_location;
-        this->m_zip      = zip_open(m_location.string().c_str(), 0, 'r');
+        this->m_zip = zip_open(m_location.string().c_str(), 0, 'r');
 
         if(m_zip == nullptr)
         {

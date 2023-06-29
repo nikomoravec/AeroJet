@@ -34,9 +34,11 @@
 
 namespace AeroJet::Java::ByteCode
 {
-    Instruction::Instruction(OperationCode opCode) : m_opCode(opCode) {}
+    Instruction::Instruction(OperationCode opCode) :
+        m_opCode(opCode) {}
 
-    Instruction::Instruction(OperationCode opCode, std::vector<u1>&& data) : m_opCode(opCode), m_data(std::move(data))
+    Instruction::Instruction(OperationCode opCode, std::vector<u1>&& data) :
+        m_opCode(opCode), m_data(std::move(data))
     {
     }
 
@@ -295,8 +297,8 @@ AeroJet::Java::ByteCode::Instruction AeroJet::Stream::Reader::read(std::istream&
              * (the opcode of its first instruction).
              */
             {
-                const u4 padding      = (((localOffset + 1) + 3) & ~3) - localOffset;
-                u4       paddingIndex = padding;
+                const u4 padding = (((localOffset + 1) + 3) & ~3) - localOffset;
+                u4 paddingIndex = padding;
                 while((paddingIndex - 1) > 0)
                 {
                     AeroJet::Stream::Reader::read<u1>(stream, byteOrder);
@@ -308,7 +310,7 @@ AeroJet::Java::ByteCode::Instruction AeroJet::Stream::Reader::read(std::istream&
             {
                 const AeroJet::i4 defaultValue =
                     localOffset + AeroJet::Stream::Reader::read<AeroJet::i4>(stream, byteOrder);
-                const AeroJet::i4 lowValue  = AeroJet::Stream::Reader::read<AeroJet::i4>(stream, byteOrder);
+                const AeroJet::i4 lowValue = AeroJet::Stream::Reader::read<AeroJet::i4>(stream, byteOrder);
                 const AeroJet::i4 highValue = AeroJet::Stream::Reader::read<AeroJet::i4>(stream, byteOrder);
 
                 AeroJet::Stream::Writer::write(dataStream, defaultValue, AeroJet::Stream::ByteOrder::INVERSE);

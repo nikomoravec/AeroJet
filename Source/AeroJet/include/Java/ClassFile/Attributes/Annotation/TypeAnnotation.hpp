@@ -323,9 +323,9 @@ namespace AeroJet::Java::ClassFile
          * */
         enum class TypePathKind : u1
         {
-            DEEPER_IN_ARRAY_TYPE                       = 0,
-            DEEPER_IN_NESTED_TYPE                      = 1,
-            ON_THE_MOUND_OF_A_WILDCARD                 = 2,
+            DEEPER_IN_ARRAY_TYPE = 0,
+            DEEPER_IN_NESTED_TYPE = 1,
+            ON_THE_MOUND_OF_A_WILDCARD = 2,
             ON_A_TYPE_ARGUMENT_OF_A_PARAMETERIZED_TYPE = 3
         };
 
@@ -348,7 +348,7 @@ namespace AeroJet::Java::ClassFile
 
           private:
             TypePathKind m_typePathKind;
-            u1           m_typeArgumentIndex;
+            u1 m_typeArgumentIndex;
         };
 
         explicit TypePath(std::vector<Path> path);
@@ -375,10 +375,10 @@ namespace AeroJet::Java::ClassFile
     class TypeAnnotation
     {
       public:
-        TypeAnnotation(u1                                   targetType,
-                       TargetInfo                           targetInfo,
-                       TypePath                             targetPath,
-                       u2                                   typeIndex,
+        TypeAnnotation(u1 targetType,
+                       TargetInfo targetInfo,
+                       TypePath targetPath,
+                       u2 typeIndex,
                        const std::vector<ElementValuePair>& elementValuePairs);
 
         /**
@@ -421,15 +421,15 @@ namespace AeroJet::Java::ClassFile
          * The meaning of these items in the type_annotation structure is the same as their meaning in
          * the annotation structure (§4.7.16).
          */
-        [[nodiscard]] u2                                   typeIndex() const;
-        [[nodiscard]] u2                                   numElementValuePairs() const;
+        [[nodiscard]] u2 typeIndex() const;
+        [[nodiscard]] u2 numElementValuePairs() const;
         [[nodiscard]] const std::vector<ElementValuePair>& elementValuePairs() const;
 
       private:
-        u1                            m_targetType;
-        TargetInfo                    m_targetInfo;
-        TypePath                      m_targetPath;
-        u2                            m_typeIndex;
+        u1 m_targetType;
+        TargetInfo m_targetInfo;
+        TypePath m_targetPath;
+        u2 m_typeIndex;
         std::vector<ElementValuePair> m_elementValuePairs;
     };
 } // namespace AeroJet::Java::ClassFile

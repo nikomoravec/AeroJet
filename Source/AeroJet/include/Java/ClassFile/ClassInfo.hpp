@@ -42,25 +42,25 @@ namespace AeroJet::Java::ClassFile
 
         enum class AccessFlags : u2
         {
-            ACC_PUBLIC     = 0x0001,
-            ACC_FINAL      = 0x0010,
-            ACC_SUPER      = 0x0020,
-            ACC_INTERFACE  = 0x0200,
-            ACC_ABSTRACT   = 0x0400,
-            ACC_SYNTHETIC  = 0x1000,
+            ACC_PUBLIC = 0x0001,
+            ACC_FINAL = 0x0010,
+            ACC_SUPER = 0x0020,
+            ACC_INTERFACE = 0x0200,
+            ACC_ABSTRACT = 0x0400,
+            ACC_SYNTHETIC = 0x1000,
             ACC_ANNOTATION = 0x2000,
-            ACC_ENUM       = 0x4000
+            ACC_ENUM = 0x4000
         };
 
-        ClassInfo(u2                                minorVersion,
-                  u2                                majorVersion,
-                  ConstantPool&                     constantPool,
-                  u2                                accessFlags,
-                  u2                                thisClass,
-                  std::optional<u2>                 superClass,
-                  const std::vector<u2>&            interfaces,
-                  const std::vector<FieldInfo>&     fields,
-                  const std::vector<MethodInfo>&    methods,
+        ClassInfo(u2 minorVersion,
+                  u2 majorVersion,
+                  ConstantPool& constantPool,
+                  u2 accessFlags,
+                  u2 thisClass,
+                  std::optional<u2> superClass,
+                  const std::vector<u2>& interfaces,
+                  const std::vector<FieldInfo>& fields,
+                  const std::vector<MethodInfo>& methods,
                   const std::vector<AttributeInfo>& attributes);
 
         /**
@@ -165,7 +165,7 @@ namespace AeroJet::Java::ClassFile
          *
          * For an interface, the value of the super_class item must always be a valid index into the constant_pool table.
          * The constant_pool entry at that index must be a CONSTANT_Class_info structure representing the class Object.
-        */
+         */
         [[nodiscard]] u2 superClass() const;
 
         /**
@@ -193,7 +193,7 @@ namespace AeroJet::Java::ClassFile
          * instance methods, class methods, instance initialization methods (§2.9), and any class or interface
          * initialization method (§2.9). The methods table does not include items representing methods that are
          * inherited from superclasses or superinterfaces.
-        */
+         */
         [[nodiscard]] const std::vector<MethodInfo>& methods() const;
 
         /**
@@ -210,20 +210,20 @@ namespace AeroJet::Java::ClassFile
         [[nodiscard]] const std::vector<AttributeInfo>& attributes() const;
 
       protected:
-        u2                         m_minorVersion;
-        u2                         m_majorVersion;
-        ConstantPool               m_constantPool;
-        u2                         m_accessFlags;
-        u2                         m_thisClass;
-        std::optional<u2>          m_superClass;
-        std::vector<u2>            m_interfaces;
-        std::vector<FieldInfo>     m_fields;
-        std::vector<MethodInfo>    m_methods;
+        u2 m_minorVersion;
+        u2 m_majorVersion;
+        ConstantPool m_constantPool;
+        u2 m_accessFlags;
+        u2 m_thisClass;
+        std::optional<u2> m_superClass;
+        std::vector<u2> m_interfaces;
+        std::vector<FieldInfo> m_fields;
+        std::vector<MethodInfo> m_methods;
         std::vector<AttributeInfo> m_attributes;
     };
 } // namespace AeroJet::Java::ClassFile
 
-inline bool operator& (AeroJet::Java::ClassFile::ClassInfo::AccessFlags first, AeroJet::Java::ClassFile::ClassInfo::AccessFlags second)
+inline bool operator&(AeroJet::Java::ClassFile::ClassInfo::AccessFlags first, AeroJet::Java::ClassFile::ClassInfo::AccessFlags second)
 {
     return static_cast<AeroJet::u2>(first) & static_cast<AeroJet::u2>(second);
 }

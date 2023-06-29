@@ -73,10 +73,10 @@ namespace AeroJet::Java::ClassFile
         [[nodiscard]] const std::vector<AttributeInfo>& attributes() const;
 
       protected:
-        u2                                 m_maxStack;
-        u2                                 m_maxLocals;
+        u2 m_maxStack;
+        u2 m_maxLocals;
         std::vector<ByteCode::Instruction> m_code;
-        std::vector<ExceptionTableEntry>   m_exceptionTable;
-        std::vector<AttributeInfo>         m_attributes;
+        std::vector<ExceptionTableEntry> m_exceptionTable;
+        std::vector<AttributeInfo> m_attributes;
     };
 } // namespace AeroJet::Java::ClassFile

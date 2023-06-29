@@ -69,18 +69,18 @@ namespace AeroJet::Java::ClassFile
          */
         enum class AccessFlags : u2
         {
-            ACC_PUBLIC       = 0x0001,
-            ACC_PRIVATE      = 0x0002,
-            ACC_PROTECTED    = 0x0004,
-            ACC_STATIC       = 0x0008,
-            ACC_FINAL        = 0x0010,
+            ACC_PUBLIC = 0x0001,
+            ACC_PRIVATE = 0x0002,
+            ACC_PROTECTED = 0x0004,
+            ACC_STATIC = 0x0008,
+            ACC_FINAL = 0x0010,
             ACC_SYNCHRONIZED = 0x0020,
-            ACC_BRIDGE       = 0x0040,
-            ACC_VARARGS      = 0x0080,
-            ACC_NATIVE       = 0x0100,
-            ACC_ABSTRACT     = 0x0400,
-            ACC_STRICT       = 0x0800,
-            ACC_SYNTHETIC    = 0x1000
+            ACC_BRIDGE = 0x0040,
+            ACC_VARARGS = 0x0080,
+            ACC_NATIVE = 0x0100,
+            ACC_ABSTRACT = 0x0400,
+            ACC_STRICT = 0x0800,
+            ACC_SYNTHETIC = 0x1000
         };
 
         MethodInfo(u2 accessFlags, u2 nameIndex, u2 descriptorIndex, const std::vector<AttributeInfo>& attributes);
@@ -94,9 +94,9 @@ namespace AeroJet::Java::ClassFile
         [[nodiscard]] const std::vector<AttributeInfo>& attributes() const;
 
       protected:
-        u2                         m_accessFlags;
-        u2                         m_nameIndex;
-        u2                         m_descriptorIndex;
+        u2 m_accessFlags;
+        u2 m_nameIndex;
+        u2 m_descriptorIndex;
         std::vector<AttributeInfo> m_attributes;
     };
 } // namespace AeroJet::Java::ClassFile

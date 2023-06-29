@@ -1,26 +1,26 @@
 /*
-* TypeAnnotations.cpp
-*
-* Copyright © 2023 AeroJet Developers. All Rights Reserved.
-*
-* Permission is hereby granted, free of charge, to any person obtaining a copy
-* of this software and associated documentation files (the “Software”), to deal
-* in the Software without restriction, including without limitation the rights
-* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-* copies of the Software, and to permit persons to whom the Software is
-* furnished to do so, subject to the following conditions:
-*
-* The above copyright notice and this permission notice shall be included in
-* all copies or substantial portions of the Software.
-*
-* THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.IN NO EVENT SHALL THE
-* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES
-* OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-* SOFTWARE.
-*/
+ * TypeAnnotations.cpp
+ *
+ * Copyright © 2023 AeroJet Developers. All Rights Reserved.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the “Software”), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES
+ * OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
 
 #include "Java/ClassFile/Attributes/Annotation/TypeAnnotation.hpp"
 
@@ -32,14 +32,16 @@
 
 namespace AeroJet::Java::ClassFile
 {
-    TypeParameterTarget::TypeParameterTarget(u1 typeParameterIndex) : m_typeParameterIndex(typeParameterIndex) {}
+    TypeParameterTarget::TypeParameterTarget(u1 typeParameterIndex) :
+        m_typeParameterIndex(typeParameterIndex) {}
 
     u1 TypeParameterTarget::typeParameterIndex() const
     {
         return m_typeParameterIndex;
     }
 
-    SuperTypeTarget::SuperTypeTarget(u2 superTypeIndex) : m_superTypeIndex(superTypeIndex) {}
+    SuperTypeTarget::SuperTypeTarget(u2 superTypeIndex) :
+        m_superTypeIndex(superTypeIndex) {}
 
     u2 SuperTypeTarget::superTypeIndex() const
     {
@@ -61,7 +63,8 @@ namespace AeroJet::Java::ClassFile
         return m_boundIndex;
     }
 
-    FormalParameterTarget::FormalParameterTarget(u1 formalParameterIndex) : m_formalParameterIndex(formalParameterIndex)
+    FormalParameterTarget::FormalParameterTarget(u1 formalParameterIndex) :
+        m_formalParameterIndex(formalParameterIndex)
     {
     }
 
@@ -70,7 +73,8 @@ namespace AeroJet::Java::ClassFile
         return m_formalParameterIndex;
     }
 
-    ThrowsTarget::ThrowsTarget(u2 throwsTypeIndex) : m_throwsTypeIndex(throwsTypeIndex) {}
+    ThrowsTarget::ThrowsTarget(u2 throwsTypeIndex) :
+        m_throwsTypeIndex(throwsTypeIndex) {}
 
     u2 ThrowsTarget::throwsTypeIndex() const
     {
@@ -97,7 +101,8 @@ namespace AeroJet::Java::ClassFile
         return m_index;
     }
 
-    LocalVarTarget::LocalVarTarget(std::vector<TableEntry> table) : m_table(std::move(table)) {}
+    LocalVarTarget::LocalVarTarget(std::vector<TableEntry> table) :
+        m_table(std::move(table)) {}
 
     u2 LocalVarTarget::tableLength() const
     {
@@ -109,14 +114,16 @@ namespace AeroJet::Java::ClassFile
         return m_table;
     }
 
-    CatchTarget::CatchTarget(u2 exceptionTableIndex) : m_exceptionTableIndex(exceptionTableIndex) {}
+    CatchTarget::CatchTarget(u2 exceptionTableIndex) :
+        m_exceptionTableIndex(exceptionTableIndex) {}
 
     u2 CatchTarget::exceptionTableIndex() const
     {
         return m_exceptionTableIndex;
     }
 
-    OffsetTarget::OffsetTarget(u2 offset) : m_offset(offset) {}
+    OffsetTarget::OffsetTarget(u2 offset) :
+        m_offset(offset) {}
 
     u2 OffsetTarget::offset() const
     {
@@ -153,7 +160,8 @@ namespace AeroJet::Java::ClassFile
         return m_typeArgumentIndex;
     }
 
-    TypePath::TypePath(std::vector<Path> path) : m_path(std::move(path)) {}
+    TypePath::TypePath(std::vector<Path> path) :
+        m_path(std::move(path)) {}
 
     u1 TypePath::pathLength() const
     {
@@ -165,10 +173,10 @@ namespace AeroJet::Java::ClassFile
         return m_path;
     }
 
-    TypeAnnotation::TypeAnnotation(u1                                   targetType,
-                                   TargetInfo                           targetInfo,
-                                   TypePath                             targetPath,
-                                   u2                                   typeIndex,
+    TypeAnnotation::TypeAnnotation(u1 targetType,
+                                   TargetInfo targetInfo,
+                                   TypePath targetPath,
+                                   u2 typeIndex,
                                    const std::vector<ElementValuePair>& elementValuePairs) :
         m_targetType(targetType),
         m_targetInfo(std::move(targetInfo)), m_targetPath(std::move(targetPath)), m_typeIndex(typeIndex),
@@ -222,10 +230,10 @@ AeroJet::Java::ClassFile::SuperTypeTarget AeroJet::Stream::Reader::read(std::ist
 
 template<>
 AeroJet::Java::ClassFile::TypeParameterBoundTarget AeroJet::Stream::Reader::read(std::istream& stream,
-                                                                                 ByteOrder     byteOrder)
+                                                                                 ByteOrder byteOrder)
 {
     const u1 typeParameterIndex = AeroJet::Stream::Reader::read<u1>(stream, byteOrder);
-    const u1 boundIndex         = AeroJet::Stream::Reader::read<u1>(stream, byteOrder);
+    const u1 boundIndex = AeroJet::Stream::Reader::read<u1>(stream, byteOrder);
 
     return AeroJet::Java::ClassFile::TypeParameterBoundTarget{ typeParameterIndex, boundIndex };
 }
@@ -254,8 +262,8 @@ AeroJet::Java::ClassFile::LocalVarTarget AeroJet::Stream::Reader::read(std::istr
     for(u2 tableEntryIndex = 0; tableEntryIndex < tableLength; tableEntryIndex++)
     {
         const u2 startPc = AeroJet::Stream::Reader::read<u2>(stream, byteOrder);
-        const u2 length  = AeroJet::Stream::Reader::read<u2>(stream, byteOrder);
-        const u2 index   = AeroJet::Stream::Reader::read<u2>(stream, byteOrder);
+        const u2 length = AeroJet::Stream::Reader::read<u2>(stream, byteOrder);
+        const u2 index = AeroJet::Stream::Reader::read<u2>(stream, byteOrder);
 
         table.emplace_back(startPc, length, index);
     }
@@ -280,7 +288,7 @@ AeroJet::Java::ClassFile::OffsetTarget AeroJet::Stream::Reader::read(std::istrea
 template<>
 AeroJet::Java::ClassFile::TypeArgumentTarget AeroJet::Stream::Reader::read(std::istream& stream, ByteOrder byteOrder)
 {
-    const u2 offset            = AeroJet::Stream::Reader::read<u2>(stream, byteOrder);
+    const u2 offset = AeroJet::Stream::Reader::read<u2>(stream, byteOrder);
     const u1 typeArgumentIndex = AeroJet::Stream::Reader::read<u1>(stream, byteOrder);
 
     return AeroJet::Java::ClassFile::TypeArgumentTarget{ offset, typeArgumentIndex };
@@ -296,7 +304,7 @@ AeroJet::Java::ClassFile::TypePath AeroJet::Stream::Reader::read(std::istream& s
 
     for(u1 pathIndex = 0; pathIndex < pathLength; pathIndex++)
     {
-        const u1 typePathKind      = AeroJet::Stream::Reader::read<u1>(stream, byteOrder);
+        const u1 typePathKind = AeroJet::Stream::Reader::read<u1>(stream, byteOrder);
         const u1 typeArgumentIndex = AeroJet::Stream::Reader::read<u1>(stream, byteOrder);
 
         paths.emplace_back(static_cast<AeroJet::Java::ClassFile::TypePath::TypePathKind>(typePathKind),

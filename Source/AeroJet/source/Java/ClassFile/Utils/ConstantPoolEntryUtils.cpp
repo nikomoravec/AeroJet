@@ -53,13 +53,13 @@ namespace AeroJet::Java::ClassFile::Utils
 
     i8 ConstantPoolEntryUtils::toLong(const AeroJet::Java::ClassFile::ConstantPoolInfoLong& constantPoolInfoLong)
     {
-        BigNumber bigNumber{constantPoolInfoLong.highBytes(), constantPoolInfoLong.lowBytes()};
+        BigNumber bigNumber{ constantPoolInfoLong.highBytes(), constantPoolInfoLong.lowBytes() };
         return bigNumber.longValue();
     }
 
     double ConstantPoolEntryUtils::toDouble(const ConstantPoolInfoLong& constantPoolInfoLong)
     {
-        BigNumber bigNumber{constantPoolInfoLong.highBytes(), constantPoolInfoLong.lowBytes()};
+        BigNumber bigNumber{ constantPoolInfoLong.highBytes(), constantPoolInfoLong.lowBytes() };
         return bigNumber.doubleValue();
     }
 } // namespace AeroJet::Java::ClassFile::Utils

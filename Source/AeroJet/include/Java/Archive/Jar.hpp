@@ -54,9 +54,9 @@ namespace AeroJet::Java::Archive
             explicit Entry(zip_t* inZip);
 
           protected:
-            zip_t*      m_zip;
+            zip_t* m_zip;
             std::string m_name;
-            ssize_t     m_index;
+            ssize_t m_index;
         };
 
       public:
@@ -74,6 +74,6 @@ namespace AeroJet::Java::Archive
 
       protected:
         std::filesystem::path m_location;
-        zip_t*                m_zip;
+        zip_t* m_zip;
     };
 } // namespace AeroJet::Java::Archive

@@ -36,17 +36,17 @@ namespace AeroJet::Java::ClassFile
     class Attribute
     {
       public:
-        Attribute(const ConstantPool&  constantPool,
+        Attribute(const ConstantPool& constantPool,
                   const AttributeInfo& attributeInfo,
-                  std::string_view     requiredAttributeName);
+                  std::string_view requiredAttributeName);
 
         [[nodiscard]] u2 attributeNameIndex() const;
 
         [[nodiscard]] u4 attributeLength() const;
 
       protected:
-        u2                   m_attributeNameIndex;
-        u4                   m_attributeLength;
+        u2 m_attributeNameIndex;
+        u4 m_attributeLength;
         Stream::MemoryStream m_infoDataStream;
     };
 } // namespace AeroJet::Java::ClassFile

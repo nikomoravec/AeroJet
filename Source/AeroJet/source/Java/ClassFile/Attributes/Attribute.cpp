@@ -29,11 +29,11 @@
 
 namespace AeroJet::Java::ClassFile
 {
-    Attribute::Attribute(const ConstantPool&  constantPool,
+    Attribute::Attribute(const ConstantPool& constantPool,
                          const AttributeInfo& attributeInfo,
-                         std::string_view     requiredAttributeName)
+                         std::string_view requiredAttributeName)
     {
-        const u2          nameIndex     = attributeInfo.attributeNameIndex();
+        const u2 nameIndex = attributeInfo.attributeNameIndex();
         const std::string attributeName = constantPool.at(nameIndex).as<ConstantPoolInfoUtf8>().asString();
 
         if(attributeName != requiredAttributeName)
@@ -42,7 +42,7 @@ namespace AeroJet::Java::ClassFile
         }
 
         m_attributeNameIndex = nameIndex;
-        m_attributeLength    = attributeInfo.size();
+        m_attributeLength = attributeInfo.size();
 
         m_infoDataStream = Stream::Utils::bytesToStream(attributeInfo.info());
     }

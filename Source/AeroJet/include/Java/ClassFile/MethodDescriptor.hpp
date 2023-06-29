@@ -38,20 +38,20 @@ namespace AeroJet::Java::ClassFile
     {
       public:
         static constexpr char METHOD_DESCRIPTOR_ARGS_BEGIN_TOKEN = '(';
-        static constexpr char METHOD_DESCRIPTOR_ARGS_END_TOKEN   = ')';
+        static constexpr char METHOD_DESCRIPTOR_ARGS_END_TOKEN = ')';
 
       public:
         explicit MethodDescriptor(std::string inDescriptor);
 
         [[nodiscard]] std::optional<FieldDescriptor> returnType() const;
 
-        [[nodiscard]] std::vector<FieldDescriptor> arguments() const;
+        [[nodiscard]] const std::vector<FieldDescriptor>& arguments() const;
 
         [[nodiscard]] std::string_view rawLiteral() const;
 
       protected:
         std::optional<FieldDescriptor> m_returnType;
-        std::vector<FieldDescriptor>   m_arguments;
-        std::string                    m_rawLiteral;
+        std::vector<FieldDescriptor> m_arguments;
+        std::string m_rawLiteral;
     };
 } // namespace AeroJet::Java::ClassFile

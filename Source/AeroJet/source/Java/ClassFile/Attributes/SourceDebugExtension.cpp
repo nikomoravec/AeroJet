@@ -23,6 +23,7 @@
  */
 
 #include "Java/ClassFile/Attributes/SourceDebugExtension.hpp"
+
 #include "Stream/Reader.hpp"
 
 namespace AeroJet::Java::ClassFile
@@ -32,7 +33,7 @@ namespace AeroJet::Java::ClassFile
         Attribute(constantPool, attributeInfo, SOURCE_DEBUG_EXTENSION_ATTRIBUTE_NAME)
     {
         m_debugExtension.reserve(m_attributeLength);
-        for (size_t index = 0; index < m_attributeLength; index++)
+        for(size_t index = 0; index < m_attributeLength; index++)
         {
             const u1 byte = Stream::Reader::read<u1>(m_infoDataStream, Stream::ByteOrder::INVERSE);
             m_debugExtension.emplace_back(byte);

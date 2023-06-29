@@ -29,7 +29,7 @@
 namespace AeroJet::Java::ClassFile
 {
 
-    RuntimeVisibleTyperAnnotations::RuntimeVisibleTyperAnnotations(const ConstantPool&  constantPool,
+    RuntimeVisibleTyperAnnotations::RuntimeVisibleTyperAnnotations(const ConstantPool& constantPool,
                                                                    const AttributeInfo& attributeInfo) :
         Attribute(constantPool, attributeInfo, RUNTIME_VISIBLE_TYPE_ANNOTATIONS_ATTRIBUTE_NAME)
     {

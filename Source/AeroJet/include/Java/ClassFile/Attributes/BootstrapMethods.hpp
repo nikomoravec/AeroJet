@@ -78,7 +78,7 @@ namespace AeroJet::Java::ClassFile
             [[nodiscard]] const std::vector<u2>& bootstrapArguments() const;
 
           private:
-            u2              m_bootstrapMethodRef;
+            u2 m_bootstrapMethodRef;
             std::vector<u2> m_bootstrapArguments;
         };
 

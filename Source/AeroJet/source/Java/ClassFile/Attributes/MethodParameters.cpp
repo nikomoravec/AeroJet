@@ -29,7 +29,7 @@
 namespace AeroJet::Java::ClassFile
 {
 
-    MethodParameters::MethodParameter::MethodParameter(u2                                           nameIndex,
+    MethodParameters::MethodParameter::MethodParameter(u2 nameIndex,
                                                        MethodParameters::MethodParameterAccessFlags accessFlags) :
         m_nameIndex(nameIndex),
         m_accessFlags(accessFlags)

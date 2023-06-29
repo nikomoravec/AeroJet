@@ -59,7 +59,7 @@ AeroJet::Java::ClassFile::Annotation AeroJet::Stream::Reader::read(std::istream&
     elementValues.reserve(numElementValuePairs);
     for(u2 elementValueIndex = 0; elementValueIndex < numElementValuePairs; elementValueIndex++)
     {
-        const u2                            elementNameIndex = AeroJet::Stream::Reader::read<u2>(stream, byteOrder);
+        const u2 elementNameIndex = AeroJet::Stream::Reader::read<u2>(stream, byteOrder);
         const Java::ClassFile::ElementValue elementValue =
             AeroJet::Stream::Reader::read<Java::ClassFile::ElementValue>(stream, byteOrder);
 

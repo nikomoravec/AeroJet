@@ -27,7 +27,7 @@
 
 namespace AeroJet::Java::ClassFile
 {
-    RuntimeInvisibleTyperAnnotations::RuntimeInvisibleTyperAnnotations(const ConstantPool&  constantPool,
+    RuntimeInvisibleTyperAnnotations::RuntimeInvisibleTyperAnnotations(const ConstantPool& constantPool,
                                                                        const AttributeInfo& attributeInfo) :
         Attribute(constantPool, attributeInfo, RUNTIME_INVISIBLE_TYPE_ANNOTATIONS_ATTRIBUTE_NAME)
     {

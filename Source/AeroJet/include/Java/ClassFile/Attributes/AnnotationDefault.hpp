@@ -24,8 +24,8 @@
 
 #pragma once
 
-#include "Java/ClassFile/Attributes/Attribute.hpp"
 #include "Java/ClassFile/Attributes/Annotation/ElementValue.hpp"
+#include "Java/ClassFile/Attributes/Attribute.hpp"
 
 namespace AeroJet::Java::ClassFile
 {

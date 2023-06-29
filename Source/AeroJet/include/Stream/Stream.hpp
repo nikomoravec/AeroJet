@@ -47,7 +47,7 @@ namespace AeroJet::Stream
 
         union ByteObjectRepresentation
         {
-            T             object;
+            T object;
             unsigned char bytes[sizeof(T)];
         };
 

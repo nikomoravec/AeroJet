@@ -57,7 +57,7 @@ namespace AeroJet::Java::ClassFile
         [[nodiscard]] const std::vector<u1>& info() const;
 
       protected:
-        u2              m_attributeNameIndex;
+        u2 m_attributeNameIndex;
         std::vector<u1> m_info;
     };
 } // namespace AeroJet::Java::ClassFile

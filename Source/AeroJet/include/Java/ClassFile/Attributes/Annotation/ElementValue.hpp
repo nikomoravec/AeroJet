@@ -39,19 +39,19 @@ namespace AeroJet::Java::ClassFile
       public:
         enum class Tag : u1
         {
-            BYTE            = 'B',
-            CHAR            = 'C',
-            DOUBLE          = 'D',
-            FLOAT           = 'F',
-            INT             = 'I',
-            LONG            = 'J',
-            SHORT           = 'S',
-            BOOLEAN         = 'Z',
-            STRING          = 's',
-            ENUM_TYPE       = 'e',
-            CLASS           = 'c',
+            BYTE = 'B',
+            CHAR = 'C',
+            DOUBLE = 'D',
+            FLOAT = 'F',
+            INT = 'I',
+            LONG = 'J',
+            SHORT = 'S',
+            BOOLEAN = 'Z',
+            STRING = 's',
+            ENUM_TYPE = 'e',
+            CLASS = 'c',
             ANNOTATION_TYPE = '@',
-            ARRAY_TYPE      = '['
+            ARRAY_TYPE = '['
         };
 
         class EnumConstValue
@@ -72,7 +72,7 @@ namespace AeroJet::Java::ClassFile
           public:
             explicit ArrayValue(const std::vector<ElementValue>& values);
 
-            [[nodiscard]] u2                               numValues() const;
+            [[nodiscard]] u2 numValues() const;
             [[nodiscard]] const std::vector<ElementValue>& values() const;
 
           private:
@@ -83,11 +83,11 @@ namespace AeroJet::Java::ClassFile
 
         ElementValue(Tag tag, Value value);
 
-        [[nodiscard]] Tag          tag() const;
+        [[nodiscard]] Tag tag() const;
         [[nodiscard]] const Value& value() const;
 
       private:
-        Tag   m_tag;
+        Tag m_tag;
         Value m_value;
     };
 } // namespace AeroJet::Java::ClassFile

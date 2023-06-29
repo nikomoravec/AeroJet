@@ -35,20 +35,20 @@ namespace AeroJet::Java::ClassFile
 {
     enum class ConstantPoolInfoTag : u1
     {
-        UTF_8                = 1,
-        INTEGER              = 3,
-        FLOAT                = 4,
-        LONG                 = 5,
-        DOUBLE               = 6,
-        CLASS                = 7,
-        STRING               = 8,
-        FIELD_REF            = 9,
-        METHOD_REF           = 10,
+        UTF_8 = 1,
+        INTEGER = 3,
+        FLOAT = 4,
+        LONG = 5,
+        DOUBLE = 6,
+        CLASS = 7,
+        STRING = 8,
+        FIELD_REF = 9,
+        METHOD_REF = 10,
         INTERFACE_METHOD_REF = 11,
-        NAME_AND_TYPE        = 12,
-        METHOD_HANDLE        = 15,
-        METHOD_TYPE          = 16,
-        INVOKE_DYNAMIC       = 18
+        NAME_AND_TYPE = 12,
+        METHOD_HANDLE = 15,
+        METHOD_TYPE = 16,
+        INVOKE_DYNAMIC = 18
     };
 
     class ConstantPoolInfoUtf8
@@ -131,7 +131,7 @@ namespace AeroJet::Java::ClassFile
         u2 m_nameAndTypeIndex;
     };
 
-    using ConstantPoolInfoMethodRef          = ConstantPoolInfoFieldRef;
+    using ConstantPoolInfoMethodRef = ConstantPoolInfoFieldRef;
     using ConstantPoolInfoInterfaceMethodRef = ConstantPoolInfoFieldRef;
 
     class ConstantPoolInfoNameAndType
@@ -153,15 +153,15 @@ namespace AeroJet::Java::ClassFile
       public:
         enum class ReferenceKind : u1
         {
-            REF_getField         = 1,
-            REF_getStatic        = 2,
-            REF_putField         = 3,
-            REF_putStatic        = 4,
-            REF_invokeVirtual    = 5,
-            REF_invokeStatic     = 6,
-            REF_invokeSpecial    = 7,
+            REF_getField = 1,
+            REF_getStatic = 2,
+            REF_putField = 3,
+            REF_putStatic = 4,
+            REF_invokeVirtual = 5,
+            REF_invokeStatic = 6,
+            REF_invokeSpecial = 7,
             REF_newInvokeSpecial = 8,
-            REF_invokeInterface  = 9
+            REF_invokeInterface = 9
         };
 
         ConstantPoolInfoMethodHandle(ReferenceKind referenceKind, u2 referenceIndex);
@@ -172,7 +172,7 @@ namespace AeroJet::Java::ClassFile
 
       private:
         ReferenceKind m_referenceKind;
-        u2            m_referenceIndex;
+        u2 m_referenceIndex;
     };
 
     class ConstantPoolInfoMethodType
@@ -218,6 +218,6 @@ namespace AeroJet::Java::ClassFile
 
       protected:
         ConstantPoolInfoTag m_tag;
-        std::vector<u1>     m_data;
+        std::vector<u1> m_data;
     };
 } // namespace AeroJet::Java::ClassFile

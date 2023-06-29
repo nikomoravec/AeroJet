@@ -28,9 +28,9 @@
 
 namespace AeroJet::Java::ClassFile
 {
-    MethodInfo::MethodInfo(u2                                accessFlags,
-                           u2                                nameIndex,
-                           u2                                descriptorIndex,
+    MethodInfo::MethodInfo(u2 accessFlags,
+                           u2 nameIndex,
+                           u2 descriptorIndex,
                            const std::vector<AttributeInfo>& attributes) :
         m_accessFlags(accessFlags),
         m_nameIndex(nameIndex), m_descriptorIndex(descriptorIndex), m_attributes(attributes)
@@ -61,8 +61,8 @@ namespace AeroJet::Java::ClassFile
 template<>
 AeroJet::Java::ClassFile::MethodInfo AeroJet::Stream::Reader::read(std::istream& stream, ByteOrder byteOrder)
 {
-    const AeroJet::u2 accessFlags     = read<AeroJet::u2>(stream, byteOrder);
-    const AeroJet::u2 nameIndex       = read<AeroJet::u2>(stream, byteOrder);
+    const AeroJet::u2 accessFlags = read<AeroJet::u2>(stream, byteOrder);
+    const AeroJet::u2 nameIndex = read<AeroJet::u2>(stream, byteOrder);
     const AeroJet::u2 descriptorIndex = read<AeroJet::u2>(stream, byteOrder);
     const AeroJet::u2 attributesCount = read<AeroJet::u2>(stream, byteOrder);
 

@@ -51,9 +51,9 @@ namespace
         }
     }
 
-    inline size_t resolveArray(const std::string&                                      literal,
+    inline size_t resolveArray(const std::string& literal,
                                std::vector<AeroJet::Java::ClassFile::FieldDescriptor>& arguments,
-                               size_t                                                  position)
+                               size_t position)
     {
         const size_t underlyingTypeIndex =
             literal.find_first_not_of(static_cast<char>(AeroJet::Java::ClassFile::FieldDescriptor::FieldType::ARRAY),
@@ -78,17 +78,17 @@ namespace
             fmt::format("Unexpected token at position {} in \"{}\"", underlyingTypeIndex, literal));
     }
 
-    inline size_t resolvePrimitive(const std::string&                                      literal,
+    inline size_t resolvePrimitive(const std::string& literal,
                                    std::vector<AeroJet::Java::ClassFile::FieldDescriptor>& arguments,
-                                   size_t                                                  position)
+                                   size_t position)
     {
         arguments.emplace_back(AeroJet::Java::ClassFile::FieldDescriptor({ literal[position] }));
         return position;
     }
 
-    inline size_t resolveClass(const std::string&                                      literal,
+    inline size_t resolveClass(const std::string& literal,
                                std::vector<AeroJet::Java::ClassFile::FieldDescriptor>& arguments,
-                               size_t                                                  position)
+                               size_t position)
     {
         const size_t classNameEndPos =
             literal.find(AeroJet::Java::ClassFile::FieldDescriptor::FIELD_TYPE_CLASS_END_TOKEN, position);
@@ -104,7 +104,8 @@ namespace
 
 namespace AeroJet::Java::ClassFile
 {
-    MethodDescriptor::MethodDescriptor(std::string inDescriptor) : m_rawLiteral(std::move(inDescriptor))
+    MethodDescriptor::MethodDescriptor(std::string inDescriptor) :
+        m_rawLiteral(std::move(inDescriptor))
     {
         if(*m_rawLiteral.begin() == METHOD_DESCRIPTOR_ARGS_BEGIN_TOKEN)
         {
@@ -170,7 +171,7 @@ namespace AeroJet::Java::ClassFile
         return m_returnType;
     }
 
-    std::vector<FieldDescriptor> MethodDescriptor::arguments() const
+    const std::vector<FieldDescriptor>& MethodDescriptor::arguments() const
     {
         return m_arguments;
     }

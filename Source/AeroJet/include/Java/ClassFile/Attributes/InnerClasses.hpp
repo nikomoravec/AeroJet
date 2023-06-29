@@ -61,7 +61,7 @@ namespace AeroJet::Java::ClassFile
             [[nodiscard]] u2 outerClassInfoIndex() const;
             [[nodiscard]] u2 innerNameIndex() const;
             [[nodiscard]] InnerClassAccessFlags innerClassAccessFlags() const;
-            
+
           private:
             u2 m_innerClassInfoIndex;
             u2 m_outerClassInfoIndex;

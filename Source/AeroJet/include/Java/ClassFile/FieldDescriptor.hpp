@@ -34,16 +34,16 @@ namespace AeroJet::Java::ClassFile
       public:
         enum class FieldType : char
         {
-            BYTE    = 'B',
-            CHAR    = 'C',
-            DOUBLE  = 'D',
-            FLOAT   = 'F',
+            BYTE = 'B',
+            CHAR = 'C',
+            DOUBLE = 'D',
+            FLOAT = 'F',
             INTEGER = 'I',
-            LONG    = 'J',
-            CLASS   = 'L',
-            SHORT   = 'S',
+            LONG = 'J',
+            CLASS = 'L',
+            SHORT = 'S',
             BOOLEAN = 'Z',
-            ARRAY   = '['
+            ARRAY = '['
         };
 
         static constexpr char FIELD_TYPE_CLASS_END_TOKEN = ';';
@@ -68,6 +68,6 @@ namespace AeroJet::Java::ClassFile
 
       protected:
         std::string m_rawLiteral;
-        FieldType   m_type;
+        FieldType m_type;
     };
 } // namespace AeroJet::Java::ClassFile

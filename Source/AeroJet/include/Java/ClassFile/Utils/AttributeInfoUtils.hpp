@@ -41,7 +41,7 @@ namespace AeroJet::Java::ClassFile::Utils
          * @return name of Java Class File attribute
          * @see https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.7
          */
-        [[nodiscard]] static std::string extractName(const ConstantPool&  constantPool,
+        [[nodiscard]] static std::string extractName(const ConstantPool& constantPool,
                                                      const AttributeInfo& attributeInfo);
     };
 } // namespace AeroJet::Java::ClassFile::Utils

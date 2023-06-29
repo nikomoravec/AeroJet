@@ -4,7 +4,8 @@
 
 namespace AeroJet::Exceptions
 {
-    RuntimeException::RuntimeException(std::string_view message) : std::runtime_error(message.data())
+    RuntimeException::RuntimeException(std::string_view message) :
+        std::runtime_error(message.data())
     {
         ::backward::StackTrace stackTrace;
         stackTrace.load_here();

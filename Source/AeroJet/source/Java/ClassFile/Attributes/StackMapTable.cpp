@@ -82,35 +82,40 @@ AeroJet::Java::ClassFile::VerificationTypeInfo AeroJet::Stream::Reader::read(std
 
 namespace AeroJet::Java::ClassFile
 {
-    TopVariableInfo::TopVariableInfo() : m_tag(VerificationTypeTag::ITEM_TOP) {}
+    TopVariableInfo::TopVariableInfo() :
+        m_tag(VerificationTypeTag::ITEM_TOP) {}
 
     VerificationTypeTag TopVariableInfo::tag() const
     {
         return m_tag;
     }
 
-    IntegerVariableInfo::IntegerVariableInfo() : m_tag(VerificationTypeTag::ITEM_INTEGER) {}
+    IntegerVariableInfo::IntegerVariableInfo() :
+        m_tag(VerificationTypeTag::ITEM_INTEGER) {}
 
     VerificationTypeTag IntegerVariableInfo::tag() const
     {
         return m_tag;
     }
 
-    FloatVariableInfo::FloatVariableInfo() : m_tag(VerificationTypeTag::ITEM_FLOAT) {}
+    FloatVariableInfo::FloatVariableInfo() :
+        m_tag(VerificationTypeTag::ITEM_FLOAT) {}
 
     VerificationTypeTag FloatVariableInfo::tag() const
     {
         return m_tag;
     }
 
-    NullVariableInfo::NullVariableInfo() : m_tag(VerificationTypeTag::ITEM_NULL) {}
+    NullVariableInfo::NullVariableInfo() :
+        m_tag(VerificationTypeTag::ITEM_NULL) {}
 
     VerificationTypeTag NullVariableInfo::tag() const
     {
         return m_tag;
     }
 
-    UninitializedThisVariableInfo::UninitializedThisVariableInfo() : m_tag(VerificationTypeTag::ITEM_UNINITIALIZED_THIS)
+    UninitializedThisVariableInfo::UninitializedThisVariableInfo() :
+        m_tag(VerificationTypeTag::ITEM_UNINITIALIZED_THIS)
     {
     }
 
@@ -149,21 +154,24 @@ namespace AeroJet::Java::ClassFile
         return m_offset;
     }
 
-    LongVariableInfo::LongVariableInfo() : m_tag(VerificationTypeTag::ITEM_LONG) {}
+    LongVariableInfo::LongVariableInfo() :
+        m_tag(VerificationTypeTag::ITEM_LONG) {}
 
     VerificationTypeTag LongVariableInfo::tag() const
     {
         return m_tag;
     }
 
-    DoubleVariableInfo::DoubleVariableInfo() : m_tag(VerificationTypeTag::ITEM_DOUBLE) {}
+    DoubleVariableInfo::DoubleVariableInfo() :
+        m_tag(VerificationTypeTag::ITEM_DOUBLE) {}
 
     VerificationTypeTag DoubleVariableInfo::tag()
     {
         return m_tag;
     }
 
-    SameFrame::SameFrame(u1 frameType) : m_frameType(frameType) {}
+    SameFrame::SameFrame(u1 frameType) :
+        m_frameType(frameType) {}
 
     u1 SameFrame::frameType() const
     {
@@ -210,7 +218,8 @@ namespace AeroJet::Java::ClassFile
         return m_stack;
     }
 
-    ChopFrame::ChopFrame(u1 frameType, u2 offsetDelta) : m_frameType(frameType), m_offsetDelta(offsetDelta) {}
+    ChopFrame::ChopFrame(u1 frameType, u2 offsetDelta) :
+        m_frameType(frameType), m_offsetDelta(offsetDelta) {}
 
     u1 ChopFrame::frameType() const
     {
@@ -222,7 +231,8 @@ namespace AeroJet::Java::ClassFile
         return m_offsetDelta;
     }
 
-    SameFrameExtended::SameFrameExtended(u2 offsetDelta) : m_offsetDelta(offsetDelta) {}
+    SameFrameExtended::SameFrameExtended(u2 offsetDelta) :
+        m_offsetDelta(offsetDelta) {}
 
     u1 SameFrameExtended::frameType() const
     {
@@ -254,7 +264,7 @@ namespace AeroJet::Java::ClassFile
         return m_locals;
     }
 
-    FullFrame::FullFrame(u2                                offsetDelta,
+    FullFrame::FullFrame(u2 offsetDelta,
                          std::vector<VerificationTypeInfo> locals,
                          std::vector<VerificationTypeInfo> stack) :
         m_offsetDelta(offsetDelta),
@@ -336,7 +346,7 @@ namespace AeroJet::Java::ClassFile
             {
                 const u2 offsetDelta = Stream::Reader::read<u2>(m_infoDataStream, Stream::ByteOrder::INVERSE);
 
-                const u1                          localsSize = frameType - 251;
+                const u1 localsSize = frameType - 251;
                 std::vector<VerificationTypeInfo> locals;
                 locals.reserve(localsSize);
 
@@ -352,7 +362,7 @@ namespace AeroJet::Java::ClassFile
             }
             else if(frameType == FullFrame::FULL_FRAME_TAG_VALUE)
             {
-                const u2 offsetDelta    = Stream::Reader::read<u2>(m_infoDataStream, Stream::ByteOrder::INVERSE);
+                const u2 offsetDelta = Stream::Reader::read<u2>(m_infoDataStream, Stream::ByteOrder::INVERSE);
                 const u2 numberOfLocals = Stream::Reader::read<u2>(m_infoDataStream, Stream::ByteOrder::INVERSE);
 
                 std::vector<VerificationTypeInfo> locals;

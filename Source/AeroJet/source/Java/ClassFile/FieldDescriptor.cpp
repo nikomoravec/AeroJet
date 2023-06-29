@@ -29,7 +29,8 @@
 
 namespace AeroJet::Java::ClassFile
 {
-    FieldDescriptor::FieldDescriptor(std::string descriptor) : m_rawLiteral(std::move(descriptor)), m_type(resolve()) {}
+    FieldDescriptor::FieldDescriptor(std::string descriptor) :
+        m_rawLiteral(std::move(descriptor)), m_type(resolve()) {}
 
     std::optional<FieldDescriptor> FieldDescriptor::underlyingType() const
     {

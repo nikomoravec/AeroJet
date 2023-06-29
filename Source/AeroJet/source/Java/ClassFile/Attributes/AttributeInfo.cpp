@@ -54,7 +54,7 @@ template<>
 AeroJet::Java::ClassFile::AttributeInfo AeroJet::Stream::Reader::read(std::istream& stream, ByteOrder byteOrder)
 {
     const AeroJet::u2 attributeNameIndex = AeroJet::Stream::Reader::read<AeroJet::u2>(stream, byteOrder);
-    const AeroJet::u4 attributeInfoSize  = AeroJet::Stream::Reader::read<AeroJet::u4>(stream, byteOrder);
+    const AeroJet::u4 attributeInfoSize = AeroJet::Stream::Reader::read<AeroJet::u4>(stream, byteOrder);
 
     std::vector<AeroJet::u1> attributeInfo;
     attributeInfo.reserve(attributeInfoSize);

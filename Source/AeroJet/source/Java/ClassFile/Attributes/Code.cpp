@@ -56,13 +56,13 @@ namespace AeroJet::Java::ClassFile
     Code::Code(const ConstantPool& constantPool, const AttributeInfo& attributeInfo) :
         Attribute(constantPool, attributeInfo, CODE_ATTRIBUTE_NAME)
     {
-        m_maxStack  = Stream::Reader::read<u2>(m_infoDataStream, Stream::ByteOrder::INVERSE);
+        m_maxStack = Stream::Reader::read<u2>(m_infoDataStream, Stream::ByteOrder::INVERSE);
         m_maxLocals = Stream::Reader::read<u2>(m_infoDataStream, Stream::ByteOrder::INVERSE);
 
         const u4 codeLength = Stream::Reader::read<u4>(m_infoDataStream, Stream::ByteOrder::INVERSE);
 
         const u4 currentPos = static_cast<u4>(m_infoDataStream.tellg());
-        const u4 endPos     = currentPos + codeLength;
+        const u4 endPos = currentPos + codeLength;
         while(m_infoDataStream.tellg() != endPos)
         {
             m_code.emplace_back(
@@ -73,9 +73,9 @@ namespace AeroJet::Java::ClassFile
         m_exceptionTable.reserve(exceptionTableLength);
         for(int32_t exceptionTableIndex = 0; exceptionTableIndex < exceptionTableLength; exceptionTableIndex++)
         {
-            const u2 startPc   = Stream::Reader::read<u2>(m_infoDataStream, Stream::ByteOrder::INVERSE);
-            const u2 endPc     = Stream::Reader::read<u2>(m_infoDataStream, Stream::ByteOrder::INVERSE);
-            const u2 handlePc  = Stream::Reader::read<u2>(m_infoDataStream, Stream::ByteOrder::INVERSE);
+            const u2 startPc = Stream::Reader::read<u2>(m_infoDataStream, Stream::ByteOrder::INVERSE);
+            const u2 endPc = Stream::Reader::read<u2>(m_infoDataStream, Stream::ByteOrder::INVERSE);
+            const u2 handlePc = Stream::Reader::read<u2>(m_infoDataStream, Stream::ByteOrder::INVERSE);
             const u2 catchType = Stream::Reader::read<u2>(m_infoDataStream, Stream::ByteOrder::INVERSE);
 
             m_exceptionTable.emplace_back(startPc, endPc, handlePc, catchType);

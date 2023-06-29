@@ -29,7 +29,7 @@
 namespace AeroJet::Java::ClassFile
 {
 
-    BootstrapMethods::BootstrapMethodsEntry::BootstrapMethodsEntry(u2                     bootstrapMethodRef,
+    BootstrapMethods::BootstrapMethodsEntry::BootstrapMethodsEntry(u2 bootstrapMethodRef,
                                                                    const std::vector<u2>& bootstrapArguments) :
         m_bootstrapMethodRef(bootstrapMethodRef),
         m_bootstrapArguments(bootstrapArguments)
@@ -61,7 +61,7 @@ namespace AeroJet::Java::ClassFile
             const u2 bootstrapMethodRef = Stream::Reader::read<u2>(m_infoDataStream, Stream::ByteOrder::INVERSE);
 
             const u2 numBootstrapArguments = Stream::Reader::read<u2>(m_infoDataStream, Stream::ByteOrder::INVERSE);
-            std::vector<u2> boostrapArguments {};
+            std::vector<u2> boostrapArguments{};
             boostrapArguments.reserve(numBootstrapArguments);
             for(u2 bootstrapArgumentIndex = 0; bootstrapArgumentIndex < numBootstrapArguments; bootstrapArgumentIndex++)
             {

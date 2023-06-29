@@ -29,7 +29,7 @@
 namespace AeroJet::Java::ClassFile
 {
 
-    RuntimeInvisibleParameterAnnotations::RuntimeInvisibleParameterAnnotations(const ConstantPool&  constantPool,
+    RuntimeInvisibleParameterAnnotations::RuntimeInvisibleParameterAnnotations(const ConstantPool& constantPool,
                                                                                const AttributeInfo& attributeInfo) :
         Attribute(constantPool, attributeInfo, RUNTIME_INVISIBLE_PARAMETER_ANNOTATIONS_ATTRIBUTE_NAME)
     {

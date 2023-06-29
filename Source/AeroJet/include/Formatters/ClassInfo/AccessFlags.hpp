@@ -36,9 +36,9 @@ struct fmt::formatter<AeroJet::Java::ClassFile::ClassInfo::AccessFlags> : fmt::f
   private:
     void append(AeroJet::Java::ClassFile::ClassInfo::AccessFlags accessFlags,
                 AeroJet::Java::ClassFile::ClassInfo::AccessFlags value,
-                std::string_view                                 valueString,
-                AeroJet::u1&                                     valuesCount,
-                std::stringstream&                               stream) const
+                std::string_view valueString,
+                AeroJet::u1& valuesCount,
+                std::stringstream& stream) const
     {
         if(accessFlags & value)
         {
@@ -49,7 +49,6 @@ struct fmt::formatter<AeroJet::Java::ClassFile::ClassInfo::AccessFlags> : fmt::f
 
             valuesCount++;
             stream << valueString;
-
         }
     }
 
@@ -102,7 +101,6 @@ struct fmt::formatter<AeroJet::Java::ClassFile::ClassInfo::AccessFlags> : fmt::f
                "ACC_ANNOTATION",
                valuesCount,
                value);
-
 
         append(accessFlags,
                AeroJet::Java::ClassFile::ClassInfo::AccessFlags::ACC_ENUM,

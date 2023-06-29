@@ -63,7 +63,7 @@ namespace AeroJet::Java::ClassFile
         return m_index;
     }
 
-    LocalVariableTypeTable::LocalVariableTypeTable(const ConstantPool&  constantPool,
+    LocalVariableTypeTable::LocalVariableTypeTable(const ConstantPool& constantPool,
                                                    const AttributeInfo& attributeInfo) :
         Attribute(constantPool, attributeInfo, LOCAL_VARIABLE_TYPES_TABLE_ATTRIBUTE_NAME)
     {
@@ -73,11 +73,11 @@ namespace AeroJet::Java::ClassFile
         for(int32_t localVariableTypeTableIndex = 0; localVariableTypeTableIndex < localVariableTypeTableLength;
             localVariableTypeTableIndex++)
         {
-            const u2 startPc        = Stream::Reader::read<u2>(m_infoDataStream, Stream::ByteOrder::INVERSE);
-            const u2 length         = Stream::Reader::read<u2>(m_infoDataStream, Stream::ByteOrder::INVERSE);
-            const u2 nameIndex      = Stream::Reader::read<u2>(m_infoDataStream, Stream::ByteOrder::INVERSE);
+            const u2 startPc = Stream::Reader::read<u2>(m_infoDataStream, Stream::ByteOrder::INVERSE);
+            const u2 length = Stream::Reader::read<u2>(m_infoDataStream, Stream::ByteOrder::INVERSE);
+            const u2 nameIndex = Stream::Reader::read<u2>(m_infoDataStream, Stream::ByteOrder::INVERSE);
             const u2 signatureIndex = Stream::Reader::read<u2>(m_infoDataStream, Stream::ByteOrder::INVERSE);
-            const u2 index          = Stream::Reader::read<u2>(m_infoDataStream, Stream::ByteOrder::INVERSE);
+            const u2 index = Stream::Reader::read<u2>(m_infoDataStream, Stream::ByteOrder::INVERSE);
 
             m_localVariableTypeTable.emplace_back(startPc, length, nameIndex, signatureIndex, index);
         }

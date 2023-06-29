@@ -51,7 +51,7 @@ namespace AeroJet::Java::ClassFile
         for(i4 lineNumberTableEntryIndex = 0; lineNumberTableEntryIndex < lineNumberTableLength;
             lineNumberTableEntryIndex++)
         {
-            const u2 startPc    = Stream::Reader::read<u2>(m_infoDataStream, Stream::ByteOrder::INVERSE);
+            const u2 startPc = Stream::Reader::read<u2>(m_infoDataStream, Stream::ByteOrder::INVERSE);
             const u2 lineNumber = Stream::Reader::read<u2>(m_infoDataStream, Stream::ByteOrder::INVERSE);
             m_lineNumberTable.emplace_back(startPc, lineNumber);
         }

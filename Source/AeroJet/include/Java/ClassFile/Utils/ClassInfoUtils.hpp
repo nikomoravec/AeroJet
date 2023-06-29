@@ -26,6 +26,7 @@
 
 #include "Java/ClassFile/ClassInfo.hpp"
 
+#include <filesystem>
 #include <string>
 
 namespace AeroJet::Java::ClassFile::Utils
@@ -55,6 +56,8 @@ namespace AeroJet::Java::ClassFile::Utils
          * @return short name of given ClassInfo including package
          */
         [[nodiscard]] static std::string className(const ClassInfo& classInfo);
+
+        [[nodiscard]] static std::string javaNameFromPath(const std::filesystem::path& path);
 
         /**
          * @brief Extracts short name of class from ClassInfo
