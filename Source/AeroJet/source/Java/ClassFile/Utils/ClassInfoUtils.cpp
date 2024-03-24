@@ -65,7 +65,7 @@ namespace AeroJet::Java::ClassFile::Utils
 
     std::string ClassInfoUtils::javaNameFromPath(const std::filesystem::path& path)
     {
-        std::string javaName = path;
+        std::string javaName = std::string{ path.begin(), path.end() };
         std::replace(javaName.begin(), javaName.end(), CLASS_PACKAGE_DELIMITER, JAVA_PACKAGE_DELIMITER);
         return javaName;
     }
