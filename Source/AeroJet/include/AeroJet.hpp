@@ -24,6 +24,7 @@
 
 #pragma once
 
+#include "Assertion.hpp"
 #include "Exceptions/FileNotFoundException.hpp"
 #include "Exceptions/IncorrectAttributeTypeException.hpp"
 #include "Exceptions/OperationNotSupportedException.hpp"

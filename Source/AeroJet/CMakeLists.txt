@@ -23,6 +23,7 @@
 
 
 option(AEROJET_SHARED "Build dynamic AeroJet shared lib" OFF)
+option(AEROJET_ENABLE_ASSERTIONS "Enable assertions" ON)
 
 if(AEROJET_SHARED)
     set(AEROJET_LIB_TYPE SHARED)
@@ -32,6 +33,7 @@ endif()
 
 add_library(AeroJet ${AEROJET_LIB_TYPE}
         include/AeroJet.hpp
+        include/Assertion.hpp
         include/Types.hpp
         include/Formatters/Formatters.hpp
         include/Formatters/ClassInfo/AccessFlags.hpp
@@ -147,3 +149,9 @@ target_link_libraries(AeroJet PRIVATE
         backward
         zip
 )
+
+if (AEROJET_ENABLE_ASSERTIONS)
+        target_compile_definitions(AeroJet PUBLIC
+                AEROJET_ENABLE_ASSERTIONS
+        )
+endif()
