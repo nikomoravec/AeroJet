@@ -34,10 +34,6 @@ add_subdirectory(Source/third-party/spdlog)
 add_subdirectory(Source/Examples)
 
 add_subdirectory(Source/AeroJet)
-find_package(LLVM CONFIG)
-if(${LLVM_FOUND})
-    add_subdirectory(Source/AeroJetCompiler)
-endif()
 
 if(NOT CMAKE_DISABLE_TESTING)
     enable_testing()
