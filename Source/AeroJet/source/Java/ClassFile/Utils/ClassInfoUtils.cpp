@@ -24,6 +24,8 @@
 
 #include "Java/ClassFile/Utils/ClassInfoUtils.hpp"
 
+#include <algorithm>
+
 namespace AeroJet::Java::ClassFile::Utils
 {
     bool ClassInfoUtils::isUnderPackage(const ClassInfo& classInfo)
