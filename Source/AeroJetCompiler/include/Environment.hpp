@@ -1,7 +1,7 @@
 /*
  * Environment.hpp
  *
- * Copyright © 2023 AeroJet Developers. All Rights Reserved.
+ * Copyright © 2024 AeroJet Developers. All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the “Software”), to deal
@@ -48,7 +48,6 @@ namespace AeroJet::Compiler
         [[nodiscard]] const std::filesystem::path& path() const;
 
       private:
-
       private:
         Kind m_kind;
         std::filesystem::path m_path;
@@ -64,9 +63,9 @@ namespace AeroJet::Compiler
           public:
             Builder();
 
-            Builder&    classPath(const ClassPath& classPath);
-            Builder&    mainClass(const MainClassStorage& mainClass);
-            Builder&    output(const std::string& mainClass);
+            Builder& classPath(const ClassPath& classPath);
+            Builder& mainClass(const MainClassStorage& mainClass);
+            Builder& output(const std::string& mainClass);
             Environment build();
 
           private:

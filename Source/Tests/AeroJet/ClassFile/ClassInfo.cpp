@@ -1,7 +1,7 @@
 /*
  * ClassInfo.cpp
  *
- * Copyright © 2023 AeroJet Developers. All Rights Reserved.
+ * Copyright © 2024 AeroJet Developers. All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the “Software”), to deal
@@ -29,13 +29,12 @@
 
 TEST_CASE("AeroJet::Java::ClassFile::Instructions::table_switch")
 {
-    std::ifstream inputFileStream{"Resources/TestJavaBytecodeTableSwitch.class"};
+    std::ifstream inputFileStream{ "Resources/TestJavaBytecodeTableSwitch.class" };
     CHECK(inputFileStream.is_open());
 
     AeroJet::Java::ClassFile::ClassInfo classInfo = AeroJet::Stream::Reader::read<AeroJet::Java::ClassFile::ClassInfo>(
-            inputFileStream,
-            AeroJet::Stream::ByteOrder::INVERSE
-    );
+        inputFileStream,
+        AeroJet::Stream::ByteOrder::INVERSE);
     const AeroJet::Java::ClassFile::ConstantPool& constantPool = classInfo.constantPool();
 
     SUBCASE("Check Constant Pool Size")
@@ -46,13 +45,13 @@ TEST_CASE("AeroJet::Java::ClassFile::Instructions::table_switch")
     SUBCASE("Check Constant Pool Entries")
     {
         AeroJet::u2 index = 1;
-        for (const auto& pair : constantPool)
+        for(const auto& pair : constantPool)
         {
             AeroJet::u2 entryIndex = pair.first;
             const AeroJet::Java::ClassFile::ConstantPoolEntry& entry = pair.second;
             AeroJet::Java::ClassFile::ConstantPoolInfoTag tag = entry.tag();
 
-            switch (entryIndex)
+            switch(entryIndex)
             {
                 case 1:
                 {
@@ -453,7 +452,7 @@ TEST_CASE("AeroJet::Java::ClassFile::Instructions::table_switch")
             CHECK_EQ(entryIndex, index);
             index++;
 
-            if (tag == AeroJet::Java::ClassFile::ConstantPoolInfoTag::LONG || tag == AeroJet::Java::ClassFile::ConstantPoolInfoTag::DOUBLE)
+            if(tag == AeroJet::Java::ClassFile::ConstantPoolInfoTag::LONG || tag == AeroJet::Java::ClassFile::ConstantPoolInfoTag::DOUBLE)
             {
                 index++;
             }
@@ -476,8 +475,7 @@ TEST_CASE("AeroJet::Java::ClassFile::Instructions::table_switch")
 
             AeroJet::Java::ClassFile::MethodDescriptor methodDescriptor{
                 std::string{
-                    constantPool.at(descriptorIndex).as<AeroJet::Java::ClassFile::ConstantPoolInfoUtf8>().asString()
-                }
+                    constantPool.at(descriptorIndex).as<AeroJet::Java::ClassFile::ConstantPoolInfoUtf8>().asString() }
             };
 
             CHECK_FALSE(methodDescriptor.returnType().has_value());
@@ -493,7 +491,7 @@ TEST_CASE("AeroJet::Java::ClassFile::Instructions::table_switch")
                 const AeroJet::Java::ClassFile::AttributeInfo& attributeInfo = attributes[0];
 
                 CHECK_EQ(constantPool.at(attributeInfo.attributeNameIndex()).as<AeroJet::Java::ClassFile::ConstantPoolInfoUtf8>().asString(), "Code");
-                AeroJet::Java::ClassFile::Code codeAttribute {constantPool, attributeInfo};
+                AeroJet::Java::ClassFile::Code codeAttribute{ constantPool, attributeInfo };
                 CHECK_EQ(codeAttribute.maxStack(), 1);
                 CHECK_EQ(codeAttribute.maxLocals(), 1);
 
@@ -504,14 +502,16 @@ TEST_CASE("AeroJet::Java::ClassFile::Instructions::table_switch")
                 CHECK_EQ(code[1].opCode(), AeroJet::Java::ByteCode::OperationCode::invokespecial);
                 std::stringstream invokeSpecialDataStream = AeroJet::Stream::Utils::bytesToStream(code[1].data());
                 CHECK_EQ(AeroJet::Stream::Reader::read<AeroJet::u2>(
-                        invokeSpecialDataStream, AeroJet::Stream::ByteOrder::INVERSE), 1);
+                             invokeSpecialDataStream,
+                             AeroJet::Stream::ByteOrder::INVERSE),
+                         1);
                 CHECK_EQ(code[2].opCode(), AeroJet::Java::ByteCode::OperationCode::RETURN);
 
                 CHECK_EQ(codeAttribute.attributes().size(), 2);
                 SUBCASE("TestJavaBytecodeTableSwitch - Code Attribute - LineNumberTable")
                 {
                     CHECK_EQ(constantPool.at(codeAttribute.attributes()[0].attributeNameIndex()).as<AeroJet::Java::ClassFile::ConstantPoolInfoUtf8>().asString(), "LineNumberTable");
-                    AeroJet::Java::ClassFile::LineNumberTable lineNumberTable {constantPool, codeAttribute.attributes()[0]};
+                    AeroJet::Java::ClassFile::LineNumberTable lineNumberTable{ constantPool, codeAttribute.attributes()[0] };
                     CHECK_EQ(lineNumberTable.lineNumberTable().size(), 1);
                     CHECK_EQ(lineNumberTable.lineNumberTable()[0].startPc(), 0);
                     CHECK_EQ(lineNumberTable.lineNumberTable()[0].lineNumber(), 1);
@@ -519,20 +519,23 @@ TEST_CASE("AeroJet::Java::ClassFile::Instructions::table_switch")
                 SUBCASE("TestJavaBytecodeTableSwitch - Code Attribute - LocalVariableTable")
                 {
                     CHECK_EQ(constantPool.at(codeAttribute.attributes()[1].attributeNameIndex()).as<AeroJet::Java::ClassFile::ConstantPoolInfoUtf8>().asString(), "LocalVariableTable");
-                    AeroJet::Java::ClassFile::LocalVariableTable localVariableTable {constantPool, codeAttribute.attributes()[1]};
+                    AeroJet::Java::ClassFile::LocalVariableTable localVariableTable{ constantPool, codeAttribute.attributes()[1] };
                     CHECK_EQ(localVariableTable.localVariableTable().size(), 1);
                     CHECK_EQ(localVariableTable.localVariableTable()[0].startPc(), 0);
                     CHECK_EQ(localVariableTable.localVariableTable()[0].length(), 5);
                     CHECK_EQ(
-                            constantPool.at(localVariableTable.localVariableTable()[0]
-                            .nameIndex()).as<AeroJet::Java::ClassFile::ConstantPoolInfoUtf8>().asString(), "this"
-                    );
+                        constantPool.at(localVariableTable.localVariableTable()[0]
+                                            .nameIndex())
+                            .as<AeroJet::Java::ClassFile::ConstantPoolInfoUtf8>()
+                            .asString(),
+                        "this");
                     CHECK_EQ(
-                            constantPool.at(localVariableTable.localVariableTable()[0]
-                            .descriptorIndex()).as<AeroJet::Java::ClassFile::ConstantPoolInfoUtf8>().asString(), "LTestJavaBytecodeTableSwitch;"
-                    );
+                        constantPool.at(localVariableTable.localVariableTable()[0]
+                                            .descriptorIndex())
+                            .as<AeroJet::Java::ClassFile::ConstantPoolInfoUtf8>()
+                            .asString(),
+                        "LTestJavaBytecodeTableSwitch;");
                 }
-
             }
         }
 
@@ -544,10 +547,9 @@ TEST_CASE("AeroJet::Java::ClassFile::Instructions::table_switch")
 
             CHECK_EQ(constantPool.at(nameIndex).as<AeroJet::Java::ClassFile::ConstantPoolInfoUtf8>().asString(), "tableSwitchTest");
             CHECK_EQ(constantPool.at(descriptorIndex).as<AeroJet::Java::ClassFile::ConstantPoolInfoUtf8>().asString(), "(I)V");
-            AeroJet::Java::ClassFile::MethodDescriptor methodDescriptor {
+            AeroJet::Java::ClassFile::MethodDescriptor methodDescriptor{
                 std::string{
-                    constantPool.at(descriptorIndex).as<AeroJet::Java::ClassFile::ConstantPoolInfoUtf8>().asString()
-                }
+                    constantPool.at(descriptorIndex).as<AeroJet::Java::ClassFile::ConstantPoolInfoUtf8>().asString() }
             };
 
             CHECK_FALSE(methodDescriptor.returnType().has_value());
@@ -561,7 +563,7 @@ TEST_CASE("AeroJet::Java::ClassFile::Instructions::table_switch")
                 const AeroJet::Java::ClassFile::AttributeInfo& attributeInfo = methodInfo.attributes()[0];
                 CHECK_EQ(constantPool.at(attributeInfo.attributeNameIndex()).as<AeroJet::Java::ClassFile::ConstantPoolInfoUtf8>().asString(), "Code");
 
-                AeroJet::Java::ClassFile::Code codeAttribute {constantPool, attributeInfo};
+                AeroJet::Java::ClassFile::Code codeAttribute{ constantPool, attributeInfo };
                 CHECK_EQ(codeAttribute.maxStack(), 3);
                 CHECK_EQ(codeAttribute.maxLocals(), 1);
 

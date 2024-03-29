@@ -1,7 +1,7 @@
 /*
  * ClassRegistry.hpp
  *
- * Copyright © 2023 AeroJet Developers. All Rights Reserved.
+ * Copyright © 2024 AeroJet Developers. All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the “Software”), to deal
@@ -36,8 +36,8 @@ namespace AeroJet::Compiler
     class ClassRegistry : ClassRegistryBaseTtype
     {
       public:
-        using ClassRegistryBaseTtype::size;
         using ClassRegistryBaseTtype::at;
+        using ClassRegistryBaseTtype::size;
 
         explicit ClassRegistry(ClassPath classPath);
         [[nodiscard]] const AeroJet::Java::ClassFile::ClassInfo& get(const std::filesystem::path& path);

@@ -1,7 +1,7 @@
 /*
  * StreamUtils.cpp
  *
- * Copyright © 2023 AeroJet Developers. All Rights Reserved.
+ * Copyright © 2024 AeroJet Developers. All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the “Software”), to deal
@@ -29,7 +29,7 @@
 
 TEST_CASE("AeroJet::Stream::Utils::bytesToStream")
 {
-    std::stringstream stream = AeroJet::Stream::Utils::bytesToStream({0xDE, 0xAD, 0xFA, 0xCE});
+    std::stringstream stream = AeroJet::Stream::Utils::bytesToStream({ 0xDE, 0xAD, 0xFA, 0xCE });
 
     REQUIRE_EQ(stream.get(), 0xDE);
     REQUIRE_EQ(stream.get(), 0xAD);
@@ -40,10 +40,10 @@ TEST_CASE("AeroJet::Stream::Utils::bytesToStream")
 TEST_CASE("AeroJet::Stream::Utils::streamToBytes")
 {
     std::stringstream stream;
-    AeroJet::Stream::Writer::write(stream, AeroJet::u1{0xDE});
-    AeroJet::Stream::Writer::write(stream, AeroJet::u1{0xAD});
-    AeroJet::Stream::Writer::write(stream, AeroJet::u1{0xFA});
-    AeroJet::Stream::Writer::write(stream, AeroJet::u1{0xCE});
+    AeroJet::Stream::Writer::write(stream, AeroJet::u1{ 0xDE });
+    AeroJet::Stream::Writer::write(stream, AeroJet::u1{ 0xAD });
+    AeroJet::Stream::Writer::write(stream, AeroJet::u1{ 0xFA });
+    AeroJet::Stream::Writer::write(stream, AeroJet::u1{ 0xCE });
 
     std::vector<AeroJet::u1> bytes = AeroJet::Stream::Utils::streamToBytes(stream);
 

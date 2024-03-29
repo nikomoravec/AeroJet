@@ -1,7 +1,7 @@
 /*
  * IRCodeGen.hpp
  *
- * Copyright © 2023 AeroJet Developers. All Rights Reserved.
+ * Copyright © 2024 AeroJet Developers. All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the “Software”), to deal
@@ -39,12 +39,12 @@ namespace AeroJet::Compiler::LLVM
         explicit IRCodeGen(Environment environment);
 
         TranslationUnit translate(const Java::ClassFile::ClassInfo& classInfo);
-        i4              run();
+        i4 run();
 
         static llvm::LLVMContext& llvmContext();
 
       private:
-        Environment              m_environment;
+        Environment m_environment;
         static llvm::LLVMContext s_llvmContext;
     };
 } // namespace AeroJet::Compiler::LLVM

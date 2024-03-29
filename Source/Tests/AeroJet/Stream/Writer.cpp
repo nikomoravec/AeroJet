@@ -1,7 +1,7 @@
 /*
  * Writer.cpp
  *
- * Copyright © 2023 AeroJet Developers. All Rights Reserved.
+ * Copyright © 2024 AeroJet Developers. All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the “Software”), to deal
@@ -28,12 +28,11 @@
 #include "doctest.h"
 
 #define READ_TEST(type, expectedValue)       \
-{                                            \
-    type read = {};                          \
-    ss.read((char*)&read, sizeof(type));     \
-    REQUIRE_EQ(read, expectedValue);         \
-}                                            \
-
+    {                                        \
+        type read = {};                      \
+        ss.read((char*)&read, sizeof(type)); \
+        REQUIRE_EQ(read, expectedValue);     \
+    }
 
 TEST_CASE("AeroJet::Stream::Writer::write")
 {
@@ -41,10 +40,10 @@ TEST_CASE("AeroJet::Stream::Writer::write")
 
     SUBCASE("Numeric types")
     {
-        AeroJet::Stream::Writer::write(ss, AeroJet::u1{0xFF});
-        AeroJet::Stream::Writer::write(ss, AeroJet::u2{0xFFFF});
-        AeroJet::Stream::Writer::write(ss, AeroJet::u4{0xFFFFFFFF});
-        AeroJet::Stream::Writer::write(ss, AeroJet::u8{0xFFFFFFFFFFFFFFFF});
+        AeroJet::Stream::Writer::write(ss, AeroJet::u1{ 0xFF });
+        AeroJet::Stream::Writer::write(ss, AeroJet::u2{ 0xFFFF });
+        AeroJet::Stream::Writer::write(ss, AeroJet::u4{ 0xFFFFFFFF });
+        AeroJet::Stream::Writer::write(ss, AeroJet::u8{ 0xFFFFFFFFFFFFFFFF });
 
         READ_TEST(AeroJet::u1, 0xFF)
         READ_TEST(AeroJet::u2, 0xFFFF)

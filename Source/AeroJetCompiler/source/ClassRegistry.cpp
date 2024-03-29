@@ -1,7 +1,7 @@
 /*
  * ClassRegistry.cpp
  *
- * Copyright © 2023 AeroJet Developers. All Rights Reserved.
+ * Copyright © 2024 AeroJet Developers. All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the “Software”), to deal
@@ -24,27 +24,28 @@
 
 #include "ClassRegistry.hpp"
 
+#include "ErrorCodes.hpp"
 #include "Exceptions/CompilerException.hpp"
 #include "fmt/format.h"
-#include "ErrorCodes.hpp"
 
 #include <fstream>
 #include <utility>
 
 namespace AeroJet::Compiler
 {
-    ClassRegistry::ClassRegistry(AeroJet::Compiler::ClassPath classPath) : m_classPath(std::move(classPath))
+    ClassRegistry::ClassRegistry(AeroJet::Compiler::ClassPath classPath) :
+        m_classPath(std::move(classPath))
     {
     }
 
     const AeroJet::Java::ClassFile::ClassInfo& ClassRegistry::get(const std::filesystem::path& path)
     {
-        if (contains(path))
+        if(contains(path))
         {
             return at(path);
         }
 
-        for (const ClassPath::Entry& entry : m_classPath.entries())
+        for(const ClassPath::Entry& entry : m_classPath.entries())
         {
             const ClassPath::EntryType entryType = entry.type();
             switch(entryType)
@@ -54,31 +55,31 @@ namespace AeroJet::Compiler
                     const std::filesystem::path classFilePath = path.string() + ".class";
                     const std::filesystem::path classFileFullPath = entry.path() / classFilePath;
 
-                    if (std::filesystem::exists(classFileFullPath))
+                    if(std::filesystem::exists(classFileFullPath))
                     {
-                        std::fstream fileStream{classFileFullPath};
-                        if (fileStream.is_open())
+                        std::fstream fileStream{ classFileFullPath };
+                        if(fileStream.is_open())
                         {
                             Java::ClassFile::ClassInfo classInfo = Stream::Reader::read<Java::ClassFile::ClassInfo>(fileStream, Stream::ByteOrder::INVERSE);
-                            insert({path, std::move(classInfo)});
+                            insert({ path, std::move(classInfo) });
 
                             return at(path);
                         }
 
-                        throw Exceptions::CompilerException{fmt::format("Failed to open class file '{}'!", classFileFullPath.string()), ErrorCodes::EXIT_CODE_IO_ERROR};
+                        throw Exceptions::CompilerException{ fmt::format("Failed to open class file '{}'!", classFileFullPath.string()), ErrorCodes::EXIT_CODE_IO_ERROR };
                     }
                 }
                 case ClassPath::EntryType::ARCHIVE:
                 {
-                    Java::Archive::Jar jar{entry.path()};
-                    for (ssize_t entryIndex = 0; entryIndex < jar.count(); entryIndex++)
+                    Java::Archive::Jar jar{ entry.path() };
+                    for(ssize_t entryIndex = 0; entryIndex < jar.count(); entryIndex++)
                     {
                         Java::Archive::Jar::Entry jarEntry = jar.open(entryIndex);
-                        if (!jarEntry.isDirectory() && jarEntry.name() == path.string() + ".class")
+                        if(!jarEntry.isDirectory() && jarEntry.name() == path.string() + ".class")
                         {
                             Stream::MemoryStream entryStream = jarEntry.read();
                             Java::ClassFile::ClassInfo classInfo = Stream::Reader::read<Java::ClassFile::ClassInfo>(entryStream, Stream::ByteOrder::INVERSE);
-                            insert({path, std::move(classInfo)});
+                            insert({ path, std::move(classInfo) });
 
                             return at(path);
                         }
@@ -87,6 +88,6 @@ namespace AeroJet::Compiler
             }
         }
 
-        throw Exceptions::CompilerException{fmt::format("Can not find requested class '{}' in any of class path entries!", path.string()), ErrorCodes::EXIT_CODE_CLASS_NOT_FOUND};
+        throw Exceptions::CompilerException{ fmt::format("Can not find requested class '{}' in any of class path entries!", path.string()), ErrorCodes::EXIT_CODE_CLASS_NOT_FOUND };
     }
 } // namespace AeroJet::Compiler

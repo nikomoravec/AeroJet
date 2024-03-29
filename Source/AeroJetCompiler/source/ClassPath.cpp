@@ -1,7 +1,7 @@
 /*
  * ClassPath.cpp
  *
- * Copyright © 2023 AeroJet Developers. All Rights Reserved.
+ * Copyright © 2024 AeroJet Developers. All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the “Software”), to deal
@@ -43,7 +43,8 @@ namespace AeroJet::Compiler
         return m_path;
     }
 
-    ClassPath::ClassPath() : m_entries()
+    ClassPath::ClassPath() :
+        m_entries()
     {
     }
 
@@ -53,17 +54,17 @@ namespace AeroJet::Compiler
         std::vector<std::string> classPathVector = AeroJet::Utils::StringUtils::split(classPath, ':');
 
         m_entries.reserve(classPathVector.size());
-        for (const std::string& cp : classPathVector)
+        for(const std::string& cp : classPathVector)
         {
-            std::filesystem::path path{cp};
+            std::filesystem::path path{ cp };
 
-            if (std::filesystem::exists(path))
+            if(std::filesystem::exists(path))
             {
-                if (std::filesystem::is_directory(path))
+                if(std::filesystem::is_directory(path))
                 {
                     m_entries.emplace_back(EntryType::FOLDER, path);
                 }
-                else if (path.extension() == ".jar")
+                else if(path.extension() == ".jar")
                 {
                     m_entries.emplace_back(EntryType::ARCHIVE, path);
                 }

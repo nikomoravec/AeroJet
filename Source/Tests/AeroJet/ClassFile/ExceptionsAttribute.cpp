@@ -1,7 +1,7 @@
 /*
  * ExceptionsAttribute.cpp
  *
- * Copyright © 2023 AeroJet Developers. All Rights Reserved.
+ * Copyright © 2024 AeroJet Developers. All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the “Software”), to deal
@@ -43,13 +43,12 @@
 
 TEST_CASE("AeroJet::Java::Attributes::Exceptions")
 {
-    std::ifstream inputFileStream{"Resources/TestExceptionsAttribute.class"};
+    std::ifstream inputFileStream{ "Resources/TestExceptionsAttribute.class" };
     REQUIRE(inputFileStream.is_open());
 
     AeroJet::Java::ClassFile::ClassInfo classInfo = AeroJet::Stream::Reader::read<AeroJet::Java::ClassFile::ClassInfo>(
-            inputFileStream,
-            AeroJet::Stream::ByteOrder::INVERSE
-    );
+        inputFileStream,
+        AeroJet::Stream::ByteOrder::INVERSE);
 
     const AeroJet::Java::ClassFile::ConstantPool& constantPool = classInfo.constantPool();
 
@@ -58,50 +57,44 @@ TEST_CASE("AeroJet::Java::Attributes::Exceptions")
      *  [1] void foo() throws java.lang.RuntimeException;
      *  [2] void bar() throws javax.naming.directory.NoSuchAttributeException;
      * }
-    */
+     */
     SUBCASE("foo")
     {
         const AeroJet::Java::ClassFile::MethodInfo& methodInfo = classInfo.methods()[1];
         CHECK_EQ(
-                constantPool.at(methodInfo.nameIndex()).as<AeroJet::Java::ClassFile::ConstantPoolInfoUtf8>().asString(),
-                "foo"
-        );
+            constantPool.at(methodInfo.nameIndex()).as<AeroJet::Java::ClassFile::ConstantPoolInfoUtf8>().asString(),
+            "foo");
 
         const AeroJet::Java::ClassFile::AttributeInfo& attributeInfo = methodInfo.attributes()[1];
         CHECK_EQ(
-                AeroJet::Java::ClassFile::Utils::AttributeInfoUtils::extractName(constantPool, attributeInfo),
-                "Exceptions"
-        );
+            AeroJet::Java::ClassFile::Utils::AttributeInfoUtils::extractName(constantPool, attributeInfo),
+            "Exceptions");
 
-        AeroJet::Java::ClassFile::Exceptions exceptionsAttribute{constantPool, attributeInfo};
+        AeroJet::Java::ClassFile::Exceptions exceptionsAttribute{ constantPool, attributeInfo };
         CHECK_EQ(exceptionsAttribute.numberOfExceptions(), 1);
         const AeroJet::u2 exceptionClassNameIndex = constantPool.at(exceptionsAttribute.exceptionIndexTable()[0]).as<AeroJet::Java::ClassFile::ConstantPoolInfoClass>().nameIndex();
         CHECK_EQ(
-             constantPool.at(exceptionClassNameIndex).as<AeroJet::Java::ClassFile::ConstantPoolInfoUtf8>().asString(),
-            "java/lang/RuntimeException"
-        );
+            constantPool.at(exceptionClassNameIndex).as<AeroJet::Java::ClassFile::ConstantPoolInfoUtf8>().asString(),
+            "java/lang/RuntimeException");
     }
 
     SUBCASE("foo")
     {
         const AeroJet::Java::ClassFile::MethodInfo& methodInfo = classInfo.methods()[2];
         CHECK_EQ(
-                constantPool.at(methodInfo.nameIndex()).as<AeroJet::Java::ClassFile::ConstantPoolInfoUtf8>().asString(),
-                "bar"
-        );
+            constantPool.at(methodInfo.nameIndex()).as<AeroJet::Java::ClassFile::ConstantPoolInfoUtf8>().asString(),
+            "bar");
 
         const AeroJet::Java::ClassFile::AttributeInfo& attributeInfo = methodInfo.attributes()[1];
         CHECK_EQ(
-                AeroJet::Java::ClassFile::Utils::AttributeInfoUtils::extractName(constantPool, attributeInfo),
-                "Exceptions"
-        );
+            AeroJet::Java::ClassFile::Utils::AttributeInfoUtils::extractName(constantPool, attributeInfo),
+            "Exceptions");
 
-        AeroJet::Java::ClassFile::Exceptions exceptionsAttribute{constantPool, attributeInfo};
+        AeroJet::Java::ClassFile::Exceptions exceptionsAttribute{ constantPool, attributeInfo };
         CHECK_EQ(exceptionsAttribute.numberOfExceptions(), 1);
         const AeroJet::u2 exceptionClassNameIndex = constantPool.at(exceptionsAttribute.exceptionIndexTable()[0]).as<AeroJet::Java::ClassFile::ConstantPoolInfoClass>().nameIndex();
         CHECK_EQ(
-                constantPool.at(exceptionClassNameIndex).as<AeroJet::Java::ClassFile::ConstantPoolInfoUtf8>().asString(),
-                "javax/naming/directory/NoSuchAttributeException"
-        );
+            constantPool.at(exceptionClassNameIndex).as<AeroJet::Java::ClassFile::ConstantPoolInfoUtf8>().asString(),
+            "javax/naming/directory/NoSuchAttributeException");
     }
 }

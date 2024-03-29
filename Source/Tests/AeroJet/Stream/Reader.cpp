@@ -1,7 +1,7 @@
 /*
  * Reader.cpp
  *
- * Copyright © 2023 AeroJet Developers. All Rights Reserved.
+ * Copyright © 2024 AeroJet Developers. All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the “Software”), to deal
@@ -29,7 +29,7 @@
 
 TEST_CASE("AeroJet::Stream::Utils::bytesToStream")
 {
-    std::stringstream stream = AeroJet::Stream::Utils::bytesToStream({0xCA, 0xFE, 0xBA, 0xBE});
+    std::stringstream stream = AeroJet::Stream::Utils::bytesToStream({ 0xCA, 0xFE, 0xBA, 0xBE });
     AeroJet::u4 readData = AeroJet::Stream::Reader::read<AeroJet::u4>(stream, AeroJet::Stream::ByteOrder::INVERSE);
     REQUIRE_EQ(readData, AeroJet::Java::ClassFile::ClassInfo::JAVA_CLASS_MAGIC);
 }

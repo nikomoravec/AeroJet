@@ -1,7 +1,7 @@
 /*
  * CompilerException.cpp
  *
- * Copyright © 2023 AeroJet Developers. All Rights Reserved.
+ * Copyright © 2024 AeroJet Developers. All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the “Software”), to deal
@@ -26,7 +26,8 @@
 
 namespace AeroJet::Compiler::Exceptions
 {
-    CompilerException::CompilerException(std::string_view message, u4 errorCode) : AeroJet::Exceptions::RuntimeException(message), m_errorCode(errorCode)
+    CompilerException::CompilerException(std::string_view message, u4 errorCode) :
+        AeroJet::Exceptions::RuntimeException(message), m_errorCode(errorCode)
     {
     }
 
@@ -34,4 +35,4 @@ namespace AeroJet::Compiler::Exceptions
     {
         return m_errorCode;
     }
-}
+} // namespace AeroJet::Compiler::Exceptions

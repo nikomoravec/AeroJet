@@ -1,7 +1,7 @@
 /*
  * IRCodeGen.cpp
  *
- * Copyright © 2023 AeroJet Developers. All Rights Reserved.
+ * Copyright © 2024 AeroJet Developers. All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the “Software”), to deal
@@ -36,7 +36,8 @@ namespace AeroJet::Compiler::LLVM
 
     llvm::LLVMContext IRCodeGen::s_llvmContext = llvm::LLVMContext{};
 
-    IRCodeGen::IRCodeGen(Environment environment) : m_environment{ std::move(environment) }
+    IRCodeGen::IRCodeGen(Environment environment) :
+        m_environment{ std::move(environment) }
     {
     }
 
@@ -66,7 +67,7 @@ namespace AeroJet::Compiler::LLVM
 
         for(const auto& pair : constantPool)
         {
-            const u2          index = pair.first;
+            const u2 index = pair.first;
             const Java::ClassFile::ConstantPoolEntry& entry = pair.second;
             const std::string constantPoolGlobalEntryName = fmt::format("{}_CONSTANT_POOL_ENTRY_{}", tu.name(), index);
 
@@ -89,7 +90,7 @@ namespace AeroJet::Compiler::LLVM
                     gVar->setConstant(true);
                     gVar->setInitializer(tu.builder().getInt32(entry.as<Java::ClassFile::ConstantPoolInfoInteger>().bytes()));
                     gVar->setLinkage(llvm::GlobalVariable::PrivateLinkage);
-                    break ;
+                    break;
                 }
                 case Java::ClassFile::ConstantPoolInfoTag::FLOAT:
                 {
@@ -197,7 +198,6 @@ namespace AeroJet::Compiler::LLVM
                     const Java::ClassFile::ConstantPoolInfoNameAndType& nameAndType =
                         entry.as<Java::ClassFile::ConstantPoolInfoNameAndType>();
 
-
                     llvm::GlobalVariable* gVar = tu.addGlobalVariable(constantPoolGlobalEntryName, nameAndTypeStructTy);
                     llvm::Constant* initValue =
                         llvm::ConstantStruct::get(nameAndTypeStructTy,
@@ -238,7 +238,6 @@ namespace AeroJet::Compiler::LLVM
                     const Java::ClassFile::ConstantPoolInfoInvokeDynamic& invokeDynamic =
                         entry.as<Java::ClassFile::ConstantPoolInfoInvokeDynamic>();
 
-
                     llvm::GlobalVariable* gVar = tu.addGlobalVariable(constantPoolGlobalEntryName, nameAndTypeStructTy);
                     llvm::Constant* initValue =
                         llvm::ConstantStruct::get(nameAndTypeStructTy,
@@ -263,16 +262,15 @@ namespace AeroJet::Compiler::LLVM
         const Java::ClassFile::ConstantPool& constantPool = classInfo.constantPool();
         translateConstantPool(tu, constantPool);
 
-
         tu.print(std::cout);
-        tu.toObjectFile(std::filesystem::path{m_environment.output()} / fmt::format("{}.o", javaClassFullName));
+        tu.toObjectFile(std::filesystem::path{ m_environment.output() } / fmt::format("{}.o", javaClassFullName));
         return tu;
     }
 
     i4 IRCodeGen::run()
     {
-        const MainClassStorage&     environmentMainClass = m_environment.mainClass();
-        const std::filesystem::path mainClassPath        = environmentMainClass.path();
+        const MainClassStorage& environmentMainClass = m_environment.mainClass();
+        const std::filesystem::path mainClassPath = environmentMainClass.path();
 
         std::optional<Java::ClassFile::ClassInfo> mainClassInfo{};
 
@@ -289,12 +287,12 @@ namespace AeroJet::Compiler::LLVM
         }
         else if(environmentMainClass.kind() == MainClassStorage::Kind::ARCHIVE)
         {
-            if (const std::vector<std::string> split = Utils::StringUtils::split(mainClassPath, ':'); split.size() == 2)
+            if(const std::vector<std::string> split = Utils::StringUtils::split(mainClassPath, ':'); split.size() == 2)
             {
                 const std::string& archivePath = split[0];
                 const std::string& relativeMainPath = split[1];
 
-                AeroJet::Java::Archive::Jar archive{archivePath};
+                AeroJet::Java::Archive::Jar archive{ archivePath };
                 AeroJet::Java::Archive::Jar::Entry archiveEntry = archive.open(relativeMainPath);
 
                 Stream::MemoryStream mainClassStream = archiveEntry.read();
@@ -302,7 +300,7 @@ namespace AeroJet::Compiler::LLVM
             }
         }
 
-        if (!mainClassInfo.has_value())
+        if(!mainClassInfo.has_value())
         {
             spdlog::error(fmt::format("Failed to read main class", mainClassPath.string()));
             return ErrorCodes::EXIT_CODE_FAILED_TO_READ_MAIN_CLASS;

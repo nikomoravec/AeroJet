@@ -1,7 +1,7 @@
 /*
  * ClassPath.hpp
  *
- * Copyright © 2023 AeroJet Developers. All Rights Reserved.
+ * Copyright © 2024 AeroJet Developers. All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the “Software”), to deal
@@ -45,11 +45,11 @@ namespace AeroJet::Compiler
           public:
             Entry(EntryType type, std::filesystem::path path);
 
-            [[nodiscard]] EntryType                    type() const;
+            [[nodiscard]] EntryType type() const;
             [[nodiscard]] const std::filesystem::path& path() const;
 
           private:
-            EntryType             m_type;
+            EntryType m_type;
             std::filesystem::path m_path;
         };
 

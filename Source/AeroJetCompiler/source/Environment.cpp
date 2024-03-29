@@ -1,7 +1,7 @@
 /*
  * Environment.cpp
  *
- * Copyright © 2023 AeroJet Developers. All Rights Reserved.
+ * Copyright © 2024 AeroJet Developers. All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the “Software”), to deal
@@ -26,7 +26,8 @@
 
 namespace AeroJet::Compiler
 {
-    Environment::Builder::Builder() : m_classPath() {}
+    Environment::Builder::Builder() :
+        m_classPath() {}
 
     Environment::Builder& Environment::Builder::classPath(const AeroJet::Compiler::ClassPath& classPath)
     {
@@ -55,7 +56,7 @@ namespace AeroJet::Compiler
     {
         m_classPath = builder.m_classPath;
         m_mainClass = builder.m_mainClass;
-        m_output    = builder.m_output;
+        m_output = builder.m_output;
     }
 
     const ClassPath& Environment::classPath() const
@@ -73,7 +74,8 @@ namespace AeroJet::Compiler
         return m_output;
     }
 
-    MainClassStorage::MainClassStorage() : m_kind(Kind::CLASS_FILE), m_path() {}
+    MainClassStorage::MainClassStorage() :
+        m_kind(Kind::CLASS_FILE), m_path() {}
 
     MainClassStorage::MainClassStorage(MainClassStorage::Kind kind, std::filesystem::path path) :
         m_kind(kind), m_path(std::move(path))

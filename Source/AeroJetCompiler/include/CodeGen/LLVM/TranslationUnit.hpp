@@ -1,7 +1,7 @@
 /*
  * TranslationUnit.hpp
  *
- * Copyright © 2023 AeroJet Developers. All Rights Reserved.
+ * Copyright © 2024 AeroJet Developers. All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the “Software”), to deal
@@ -37,9 +37,9 @@ namespace AeroJet::Compiler::LLVM
         explicit TranslationUnit(std::string name);
         TranslationUnit(const TranslationUnit& other);
 
-        const std::string&             name() const;
+        const std::string& name() const;
         std::unique_ptr<llvm::Module>& module();
-        llvm::IRBuilder<>&             builder();
+        llvm::IRBuilder<>& builder();
 
         llvm::GlobalVariable* addGlobalVariable(const std::string& name, llvm::Type* type);
 
@@ -47,8 +47,8 @@ namespace AeroJet::Compiler::LLVM
         void toObjectFile(const std::filesystem::path& outputFilePath) const;
 
       protected:
-        std::string                   m_name;
+        std::string m_name;
         std::unique_ptr<llvm::Module> m_module;
-        llvm::IRBuilder<>             m_builder;
+        llvm::IRBuilder<> m_builder;
     };
 } // namespace AeroJet::Compiler::LLVM
