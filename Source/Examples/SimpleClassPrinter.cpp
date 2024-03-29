@@ -25,6 +25,7 @@
 #include "AeroJet.hpp"
 #include "fmt/format.h"
 
+#include <algorithm>
 #include <filesystem>
 #include <fstream>
 
