@@ -324,40 +324,4 @@ namespace AeroJet::Stream
         TStream m_stream;
         std::size_t m_size;
     };
-
-    template<typename T, ByteOrder ReadMode = ByteOrder::NORMAL, ByteOrder WriteMode = ByteOrder::NORMAL>
-    class VectorStream
-    {
-      public:
-        VectorStream(std::size_t initialSize = 16)
-        {
-            container.reserve(initialSize);
-            readPosition = 0;
-            writePosition = 0;
-        }
-
-        [[nodiscard]] T read()
-        {
-            container[readPosition++];
-        }
-
-        void write(T object)
-            requires std::is_fundamental_v<T>
-        {
-            container.emplace_back(object);
-            writePosition++;
-        }
-
-        void write(const T& object)
-            requires !std::is_fundamental_v<T>
-        {
-            container.emplace_back(object);
-            writePosition++;
-        }
-
-      private:
-        std::vector<T> container;
-        std::size_t readPosition;
-        std::size_t writePosition;
-    };
 } // namespace AeroJet::Stream
