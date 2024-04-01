@@ -27,7 +27,8 @@
 namespace AeroJet::Tree
 {
     Node::Node(Node::Type type) :
-        m_nodeType(type)
+        m_nodeType(type),
+        m_parent(nullptr)
     {
     }
 

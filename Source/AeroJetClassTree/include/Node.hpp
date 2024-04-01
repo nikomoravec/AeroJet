@@ -45,7 +45,8 @@ namespace AeroJet::Tree
         [[nodiscard]] const std::vector<std::shared_ptr<Node>>& nodes() const;
 
       protected:
-        Node(Type type);
+        explicit Node(Type type);
+        Node(Type type, const std::shared_ptr<Node>& parent);
 
       protected:
         Type m_nodeType;
