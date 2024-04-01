@@ -1,6 +1,8 @@
 add_library(AeroJetClassTree ${AEROJET_LIB_TYPE}
     include/Node.hpp
     source/Node.cpp
+    include/ClassInfoNode.hpp
+    source/ClassInfoNode.cpp
 )
 
 target_include_directories(AeroJetClassTree PUBLIC

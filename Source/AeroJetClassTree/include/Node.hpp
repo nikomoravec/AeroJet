@@ -29,7 +29,7 @@
 #include <memory>
 #include <vector>
 
-namespace AeroJet::ClassTree
+namespace AeroJet::Tree
 {
     class Node
     {
@@ -45,8 +45,11 @@ namespace AeroJet::ClassTree
         [[nodiscard]] const std::vector<std::shared_ptr<Node>>& nodes() const;
 
       protected:
+        Node(Type type);
+
+      protected:
         Type m_nodeType;
         std::shared_ptr<Node> m_parent;
         std::vector<std::shared_ptr<Node>> m_nodes;
     };
-} // namespace AeroJet::ClassTree
+} // namespace AeroJet::Tree

@@ -1,5 +1,5 @@
 /*
- * Node.cpp
+ * ClassInfoNode.hpp
  *
  * Copyright © 2024 AeroJet Developers. All Rights Reserved.
  *
@@ -21,28 +21,20 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+#pragma once
 
 #include "Node.hpp"
 
 namespace AeroJet::Tree
 {
-    Node::Node(Node::Type type) :
-        m_nodeType(type)
+    class ClassInfoNode final : public Node
     {
-    }
+      public:
+        explicit ClassInfoNode(Java::ClassFile::ClassInfo classInfo);
 
-    Node::Type Node::type() const
-    {
-        return m_nodeType;
-    }
+        [[nodiscard]] const Java::ClassFile::ClassInfo& classInfo() const;
 
-    const std::shared_ptr<Node>& Node::parent() const
-    {
-        return m_parent;
-    }
-
-    const std::vector<std::shared_ptr<Node>>& Node::nodes() const
-    {
-        return m_nodes;
-    }
+      private:
+        Java::ClassFile::ClassInfo m_classInfo;
+    };
 } // namespace AeroJet::Tree
