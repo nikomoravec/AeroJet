@@ -34,6 +34,7 @@ add_subdirectory(Source/third-party/spdlog)
 add_subdirectory(Source/Examples)
 
 add_subdirectory(Source/AeroJet)
+add_subdirectory(Source/AeroJetClassTree)
 
 if(NOT CMAKE_DISABLE_TESTING)
     enable_testing()
