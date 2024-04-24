@@ -32,7 +32,6 @@ namespace AeroJet::Tree
     {
       public:
         IndexedNode(Type type, const std::shared_ptr<Node>& parent, u2 index);
-        virtual void accept(ClassTreeVisitor* visitor) const = 0;
 
         u2 index() const;
 
