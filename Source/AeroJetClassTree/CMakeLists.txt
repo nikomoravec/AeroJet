@@ -3,6 +3,8 @@ add_library(AeroJetClassTree ${AEROJET_LIB_TYPE}
     source/Node.cpp
     include/ClassInfoNode.hpp
     source/ClassInfoNode.cpp
+    include/ConstantPoolNode.hpp
+    source/ConstantPoolNode.cpp
 )
 
 target_include_directories(AeroJetClassTree PUBLIC

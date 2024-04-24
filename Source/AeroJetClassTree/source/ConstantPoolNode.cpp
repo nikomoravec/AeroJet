@@ -1,5 +1,5 @@
 /*
- * Node.hpp
+ * ConstantPoolNode.cpp
  *
  * Copyright © 2024 AeroJet Developers. All Rights Reserved.
  *
@@ -22,36 +22,21 @@
  * SOFTWARE.
  */
 
-#pragma once
+#include "ConstantPoolNode.hpp"
 
-#include "AeroJet.hpp"
-
-#include <memory>
-#include <vector>
+#include "Assertion.hpp"
+#include "ClassInfoNode.hpp"
 
 namespace AeroJet::Tree
 {
-    class Node
+    ConstantPoolNode::ConstantPoolNode(const std::shared_ptr<Node>& parent) :
+        Node(Type::CONSTANT_POOL, parent)
     {
-      public:
-        enum class Type : u1
-        {
-            CLASS_INFO,
-            CONSTANT_POOL
-        };
+        AEROJET_VERIFY_THROW(parent->type() == Type::CLASS_INFO, AeroJet::Exceptions::RuntimeException, "Parent node for CONSTANT_POOL can be only node of type CLASS");
+    }
 
-      public:
-        [[nodiscard]] Type type() const;
-        [[nodiscard]] const std::shared_ptr<Node>& parent() const;
-        [[nodiscard]] const std::vector<std::shared_ptr<Node>>& nodes() const;
-
-      protected:
-        explicit Node(Type type);
-        Node(Type type, const std::shared_ptr<Node>& parent);
-
-      protected:
-        Type m_nodeType;
-        std::shared_ptr<Node> m_parent;
-        std::vector<std::shared_ptr<Node>> m_nodes;
-    };
+    const Java::ClassFile::ConstantPool& ConstantPoolNode::constantPool() const
+    {
+        return std::static_pointer_cast<ClassInfoNode>(m_parent)->classInfo().constantPool();
+    }
 } // namespace AeroJet::Tree
