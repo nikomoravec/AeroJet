@@ -1,7 +1,7 @@
 /*
- * Node.hpp
+ * ConstantPoolEntryNode.cpp
  *
- * Copyright © 2024 AeroJet Developers. All Rights Reserved.
+ * Copyright © 2023 AeroJet Developers. All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the “Software”), to deal
@@ -22,37 +22,24 @@
  * SOFTWARE.
  */
 
-#pragma once
+#include "ConstantPoolEntryNode.hpp"
 
-#include "AeroJet.hpp"
-
-#include <memory>
-#include <vector>
+#include "Assertion.hpp"
+#include "ConstantPoolNode.hpp"
+#include "Exceptions/RuntimeException.hpp"
 
 namespace AeroJet::Tree
 {
-    class Node
+
+    ConstantPoolEntryNode::ConstantPoolEntryNode(const std::shared_ptr<Node>& parent, u2 index) :
+        IndexedNode(Type::CONSTANT_POOL_ENTRY, parent, index)
     {
-      public:
-        enum class Type : u1
-        {
-            CLASS_INFO,
-            CONSTANT_POOL,
-            CONSTANT_POOL_ENTRY
-        };
+        AEROJET_VERIFY_THROW(parent->type() == Type::CONSTANT_POOL, AeroJet::Exceptions::RuntimeException, "Parent node for CONSTANT_POOL_ENTRY can be only node of type CONSTANT_POOL");
+    }
 
-      public:
-        [[nodiscard]] Type type() const;
-        [[nodiscard]] const std::shared_ptr<Node>& parent() const;
-        [[nodiscard]] const std::vector<std::shared_ptr<Node>>& nodes() const;
-
-      protected:
-        explicit Node(Type type);
-        Node(Type type, const std::shared_ptr<Node>& parent);
-
-      protected:
-        Type m_nodeType;
-        std::shared_ptr<Node> m_parent;
-        std::vector<std::shared_ptr<Node>> m_nodes;
-    };
+    const AeroJet::Java::ClassFile::ConstantPoolEntry& ConstantPoolEntryNode::entry() const
+    {
+        const Java::ClassFile::ConstantPool& constantPool = std::static_pointer_cast<ConstantPoolNode>(m_parent)->constantPool();
+        return constantPool.at(m_index);
+    }
 } // namespace AeroJet::Tree

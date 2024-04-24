@@ -5,6 +5,8 @@ add_library(AeroJetClassTree ${AEROJET_LIB_TYPE}
     source/ClassInfoNode.cpp
     include/ConstantPoolNode.hpp
     source/ConstantPoolNode.cpp
+    include/ConstantPoolEntryNode.hpp
+    source/ConstantPoolEntryNode.cpp
     include/IndexedNode.hpp
     source/IndexedNode.cpp
 )

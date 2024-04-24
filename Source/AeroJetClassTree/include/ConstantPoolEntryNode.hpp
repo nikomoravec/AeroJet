@@ -1,7 +1,7 @@
 /*
- * Node.hpp
+ * ConstantPoolEntryNode.hpp
  *
- * Copyright © 2024 AeroJet Developers. All Rights Reserved.
+ * Copyright © 2023 AeroJet Developers. All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the “Software”), to deal
@@ -21,38 +21,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 #pragma once
 
-#include "AeroJet.hpp"
-
-#include <memory>
-#include <vector>
+#include "IndexedNode.hpp"
 
 namespace AeroJet::Tree
 {
-    class Node
+    class ConstantPoolEntryNode final : public IndexedNode
     {
       public:
-        enum class Type : u1
-        {
-            CLASS_INFO,
-            CONSTANT_POOL,
-            CONSTANT_POOL_ENTRY
-        };
+        ConstantPoolEntryNode(const std::shared_ptr<Node>& parent, u2 index);
 
-      public:
-        [[nodiscard]] Type type() const;
-        [[nodiscard]] const std::shared_ptr<Node>& parent() const;
-        [[nodiscard]] const std::vector<std::shared_ptr<Node>>& nodes() const;
-
-      protected:
-        explicit Node(Type type);
-        Node(Type type, const std::shared_ptr<Node>& parent);
-
-      protected:
-        Type m_nodeType;
-        std::shared_ptr<Node> m_parent;
-        std::vector<std::shared_ptr<Node>> m_nodes;
+        [[nodiscard]] const AeroJet::Java::ClassFile::ConstantPoolEntry& entry() const;
     };
 } // namespace AeroJet::Tree
