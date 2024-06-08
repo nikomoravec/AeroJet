@@ -21,7 +21,7 @@
 # SOFTWARE.
 #
 
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 3.11)
 project(AeroJet)
 
 set(CMAKE_CXX_STANDARD 20)
@@ -34,7 +34,6 @@ add_subdirectory(Source/third-party/spdlog)
 add_subdirectory(Source/Examples)
 
 add_subdirectory(Source/AeroJet)
-add_subdirectory(Source/AeroJetClassTree)
 
 if(NOT CMAKE_DISABLE_TESTING)
     enable_testing()
