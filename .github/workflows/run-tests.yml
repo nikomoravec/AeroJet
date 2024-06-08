@@ -13,8 +13,6 @@ jobs:
     
     steps:
     - uses: actions/checkout@v3
-    - name: update submodules
-      run: git submodule update --init --recursive
     - name: generate project
       run: mkdir .build && cd .build && cmake ..
     - name: build

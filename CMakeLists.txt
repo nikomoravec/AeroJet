@@ -26,17 +26,21 @@ project(AeroJet)
 
 set(CMAKE_CXX_STANDARD 20)
 
-add_subdirectory(Source/third-party/fmtlib)
-add_subdirectory(Source/third-party/backwandcpp)
-add_subdirectory(Source/third-party/zip)
-add_subdirectory(Source/third-party/cxxopts)
-add_subdirectory(Source/third-party/spdlog)
-add_subdirectory(Source/Examples)
+include(FetchContent)
+
+FetchContent_Declare(fmt GIT_REPOSITORY https://github.com/fmtlib/fmt.git GIT_TAG 10.2.1)
+FetchContent_Declare(backward GIT_REPOSITORY https://github.com/bombela/backward-cpp GIT_TAG v1.6)
+FetchContent_Declare(zip GIT_REPOSITORY https://github.com/kuba--/zip.git GIT_TAG v0.3.2)
+
+FetchContent_MakeAvailable(fmt)
+FetchContent_MakeAvailable(backward)
+FetchContent_MakeAvailable(zip)
 
 add_subdirectory(Source/AeroJet)
+add_subdirectory(Source/Examples)
 
 if(NOT CMAKE_DISABLE_TESTING)
     enable_testing()
-    include_directories(Source/third-party/doctest/doctest)
-    add_subdirectory(Source/Tests)
+    FetchContent_Declare(doctest GIT_REPOSITORY https://github.com/doctest/doctest.git GIT_TAG v2.4.11)
+    FetchContent_MakeAvailable(doctest)
 endif()

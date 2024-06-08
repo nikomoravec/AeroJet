@@ -339,7 +339,7 @@ AeroJet::Java::ClassFile::ConstantPoolEntry AeroJet::Stream::Reader::read(std::i
             throw AeroJet::Exceptions::RuntimeException(
                 fmt::format("Unexpected Constant Pool Entry Tag {:#04x} at position {:#08x}!",
                             static_cast<u2>(tag),
-                            stream.tellg()));
+                            static_cast<std::size_t>(stream.tellg())));
     }
 
     std::vector<AeroJet::u1> dataBytes = AeroJet::Stream::Utils::streamToBytes(dataStream);

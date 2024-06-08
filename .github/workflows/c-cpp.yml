@@ -13,8 +13,6 @@ jobs:
     
     steps:
     - uses: actions/checkout@v3
-    - name: update submodules
-      run: git submodule update --init --recursive
     - name: generate project
       run: mkdir .build && cd .build && cmake ..
     - name: build
@@ -26,9 +24,7 @@ jobs:
     runs-on: windows-latest
     
     steps:
-    - uses: actions/checkout@v3
-    - name: update submodules
-      run: git submodule update --init --recursive
+    - uses: actions/checkout@v3e
     - name: generate project
       run: mkdir .build && cd .build && cmake ..
     - name: build
@@ -40,8 +36,6 @@ jobs:
     
     steps:
     - uses: actions/checkout@v3
-    - name: update submodules
-      run: git submodule update --init --recursive
     - name: generate project
       run: mkdir .build && cd .build && cmake ..
     - name: build

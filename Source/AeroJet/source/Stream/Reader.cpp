@@ -61,7 +61,7 @@ namespace AeroJet::Stream::Reader
         if(stream.eof())
         {
             throw Exceptions::RuntimeException(
-                fmt::format("stream EOF at {:#08x}! Read size was {}", stream.tellg(), readSize));
+                fmt::format("stream EOF at {:#08x}! Read size was {}", static_cast<std::size_t>(stream.tellg()), readSize));
         }
 
         const std::istream::pos_type currentPos = stream.tellg();
