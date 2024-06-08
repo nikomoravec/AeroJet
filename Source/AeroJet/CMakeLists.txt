@@ -148,7 +148,7 @@ target_include_directories(AeroJet PUBLIC
 target_link_libraries(AeroJet PRIVATE
         fmt
         backward
-        zip
+        zip::zip
 )
 
 if (AEROJET_ENABLE_ASSERTIONS)
