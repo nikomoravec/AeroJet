@@ -131,12 +131,6 @@ add_library(AeroJet ${AEROJET_LIB_TYPE}
         include/Exceptions/RuntimeException.hpp
         source/Exceptions/RuntimeException.cpp
         include/Stream/StandardStreamWrapper.hpp
-        include/Stream/Stream.hpp
-        include/Stream/Reader.hpp
-        source/Stream/Reader.cpp
-        include/Stream/StreamUtils.hpp
-        source/Stream/StreamUtils.cpp
-        include/Stream/Writer.hpp
         include/Utils/StringUtils.hpp
 )
 
