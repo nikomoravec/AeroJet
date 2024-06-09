@@ -46,6 +46,7 @@ NamespaceIndentation: All
 ObjCSpaceAfterProperty: false
 ObjCSpaceBeforeProtocolList: false
 PointerAlignment: Left
+RequiresClausePosition: WithPreceding
 ReflowComments: true
 SortIncludes: CaseInsensitive
 SortUsingDeclarations: true
