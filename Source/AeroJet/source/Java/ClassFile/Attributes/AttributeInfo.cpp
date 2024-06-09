@@ -24,7 +24,7 @@
 
 #include "Java/ClassFile/Attributes/AttributeInfo.hpp"
 
-#include "Stream/Reader.hpp"
+#include "Stream/StandardStreamWrapper.hpp"
 #include "Types.hpp"
 
 namespace AeroJet::Java::ClassFile

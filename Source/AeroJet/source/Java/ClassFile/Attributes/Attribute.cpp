@@ -25,7 +25,7 @@
 #include "Java/ClassFile/Attributes/Attribute.hpp"
 
 #include "Exceptions/IncorrectAttributeTypeException.hpp"
-#include "Stream/StreamUtils.hpp"
+#include "Stream/StandardStreamWrapper.hpp"
 
 namespace AeroJet::Java::ClassFile
 {

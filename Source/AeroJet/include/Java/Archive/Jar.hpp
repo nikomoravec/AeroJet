@@ -24,7 +24,7 @@
 
 #pragma once
 
-#include "Stream/Stream.hpp"
+#include "Stream/StandardStreamWrapper.hpp"
 #include "zip.h"
 
 #include <filesystem>

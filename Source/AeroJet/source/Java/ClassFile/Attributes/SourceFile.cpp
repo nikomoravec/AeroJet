@@ -26,7 +26,7 @@
 
 #include "Java/ClassFile/Attributes/AttributeInfo.hpp"
 #include "Java/ClassFile/ConstantPool.hpp"
-#include "Stream/Reader.hpp"
+#include "Stream/StandardStreamWrapper.hpp"
 
 namespace AeroJet::Java::ClassFile
 {

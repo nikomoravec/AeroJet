@@ -27,7 +27,7 @@
 #include "Exceptions/RuntimeException.hpp"
 #include "fmt/format.h"
 #include "Java/ClassFile/Utils/ClassInfoUtils.hpp"
-#include "Stream/Reader.hpp"
+#include "Stream/StandardStreamWrapper.hpp"
 
 namespace AeroJet::Java::ClassFile
 {

@@ -27,7 +27,7 @@
 #include "Exceptions/FileNotFoundException.hpp"
 #include "Exceptions/RuntimeException.hpp"
 #include "fmt/format.h"
-#include "Stream/Stream.hpp"
+#include "Stream/StandardStreamWrapper.hpp"
 #include "Types.hpp"
 
 #include <sstream>

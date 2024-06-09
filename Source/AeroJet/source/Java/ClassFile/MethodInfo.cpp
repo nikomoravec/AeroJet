@@ -24,7 +24,7 @@
 
 #include "Java/ClassFile/MethodInfo.hpp"
 
-#include "Stream/Reader.hpp"
+#include "Stream/StandardStreamWrapper.hpp"
 
 namespace AeroJet::Java::ClassFile
 {

@@ -25,7 +25,7 @@
 #include "Java/ClassFile/Attributes/LocalVariableTable.hpp"
 
 #include "Exceptions/IncorrectAttributeTypeException.hpp"
-#include "Stream/Reader.hpp"
+#include "Stream/StandardStreamWrapper.hpp"
 
 namespace AeroJet::Java::ClassFile
 {

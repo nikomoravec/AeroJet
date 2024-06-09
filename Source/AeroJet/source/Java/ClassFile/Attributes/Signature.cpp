@@ -25,7 +25,7 @@
 #include "Java/ClassFile/Attributes/Signature.hpp"
 
 #include "Exceptions/RuntimeException.hpp"
-#include "Stream/Reader.hpp"
+#include "Stream/StandardStreamWrapper.hpp"
 
 namespace AeroJet::Java::ClassFile
 {

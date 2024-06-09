@@ -26,7 +26,7 @@
 
 #include "Exceptions/RuntimeException.hpp"
 #include "fmt/format.h"
-#include "Stream/Reader.hpp"
+#include "Stream/StandardStreamWrapper.hpp"
 
 template<>
 AeroJet::Java::ClassFile::VerificationTypeInfo AeroJet::Stream::Reader::read(std::istream& stream, ByteOrder byteOrder)
