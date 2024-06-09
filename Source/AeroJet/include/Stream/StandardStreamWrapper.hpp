@@ -122,7 +122,7 @@ namespace AeroJet::Stream
 
         ~StandardStreamWrapper() requires ClosableStream<TStream>
         {
-            m_stream.close();
+            close();
         }
 
         [[nodiscard]] constexpr StreamType type() const requires StandardInputStream<TStream>
@@ -143,6 +143,14 @@ namespace AeroJet::Stream
         [[nodiscard]] inline bool isOpen() requires OpenableStream<TStream>
         {
             return m_stream.is_open();
+        }
+
+        inline void close() requires ClosableStream<TStream>
+        {
+            if(isOpen())
+            {
+                m_stream.close();
+            }
         }
 
         [[nodiscard]] inline std::size_t readPosition() requires StandardInputStream<TStream> || StandardInputOutputStream<TStream>
@@ -251,7 +259,7 @@ namespace AeroJet::Stream
 
       private:
         template<typename T>
-        static T swapEndian(const T& data)
+        [[nodiscard]] static T swapEndian(const T& data)
         {
             static_assert(CHAR_BIT == 8, "CHAR_BIT != 8");
 
@@ -275,7 +283,7 @@ namespace AeroJet::Stream
         }
 
         template<typename T>
-        inline T readInternal() requires std::is_fundamental_v<T>
+        [[nodiscard]] inline T readInternal() requires std::is_fundamental_v<T>
         {
             AEROJET_VERIFY_THROW(isOpen(), Exceptions::RuntimeException, "Stream is not open!");
             AEROJET_VERIFY_THROW(good(), Exceptions::RuntimeException, "Internal stream fatal error occured!");
