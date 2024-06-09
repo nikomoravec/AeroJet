@@ -29,3 +29,12 @@ add_test(NAME test_AeroJet_StreamWriter COMMAND test_AeroJet_StreamWriter)
 
 add_executable(test_AeroJet_StreamReader Reader.cpp)
 add_test(NAME test_AeroJet_StreamReader COMMAND test_AeroJet_StreamReader)
+
+add_executable(test_AeroJet_StandardStreamWrapper StandardStreamWrapper.cpp)
+add_test(NAME test_AeroJet_StandardStreamWrapper COMMAND test_AeroJet_StandardStreamWrapper)
+add_custom_command(
+        TARGET test_AeroJet_StandardStreamWrapper POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy
+        ${CMAKE_CURRENT_SOURCE_DIR}/Resources/HelloWorld.class
+        ${CMAKE_CURRENT_BINARY_DIR}/Resources/HelloWorld.class
+)
