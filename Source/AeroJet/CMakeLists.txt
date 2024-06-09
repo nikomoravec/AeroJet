@@ -141,11 +141,10 @@ add_library(AeroJet ${AEROJET_LIB_TYPE}
 )
 
 target_include_directories(AeroJet PUBLIC
-        include
-        ${CMAKE_SOURCE_DIR}/Source/third-party/zip/src
+        ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
 
-target_link_libraries(AeroJet PRIVATE
+target_link_libraries(AeroJet PUBLIC
         fmt
         backward
         zip::zip
