@@ -41,17 +41,24 @@ namespace AeroJet::Stream
                std::is_same_v<T, std::wfstream>;
     }
 
-    enum class ByteOrder : uint8_t
+    enum class StreamType : u1
+    {
+        INPUT,
+        OUTPUT,
+        INPUT_OUTPUT
+    };
+
+    enum class ByteOrder : u1
     {
         NORMAL,
         REVERSE
     };
 
     template<class T>
-    concept StandardInputStream = isStandardInputStream<T>() || isStandardInputOutputStream<T>();
+    concept StandardInputStream = isStandardInputStream<T>();
 
     template<class T>
-    concept StandardOutputStream = isStandardOutputStream<T>() || isStandardInputOutputStream<T>();
+    concept StandardOutputStream = isStandardOutputStream<T>();
 
     template<class T>
     concept StandardInputOutputStream = isStandardInputOutputStream<T>();
@@ -70,7 +77,21 @@ namespace AeroJet::Stream
     concept Writable = requires(T& object, StandardStreamWrapper<TStream, ReadMode, WriteMode>& stream) {
         {
             object.write(stream)
-        } -> std::convertible_to<void>;
+        } -> std::same_as<void>;
+    };
+
+    template<typename TStream>
+    concept ClosableStream = requires(TStream& stream) {
+        {
+            stream.close()
+        } -> std::same_as<void>;
+    };
+
+    template<typename TStream>
+    concept OpenableStream = requires(TStream& stream) {
+        {
+            stream.is_open()
+        } -> std::same_as<bool>;
     };
 
     template<typename TStream, ByteOrder ReadMode, ByteOrder WriteMode>
@@ -80,56 +101,58 @@ namespace AeroJet::Stream
         using CharType = typename TStream::char_type;
 
         template<class... Args>
-        StandardStreamWrapper(Args&&... args) :
+        constexpr StandardStreamWrapper(Args&&... args) requires StandardInputStream<TStream> || StandardInputOutputStream<TStream>
+            :
             m_stream(args...)
         {
-            if constexpr(isStandardInputStream<TStream>() || isStandardInputOutputStream<TStream>())
-            {
-                seekRead(0, std::ios::end);
-                m_size = readPosition();
-                seekRead(0, std::ios::beg);
-            }
+            seekRead(0, std::ios::end);
+            m_size = readPosition();
+            seekRead(0, std::ios::beg);
         }
 
-        StandardStreamWrapper(const std::vector<u1>& bytes)
-            requires StandardOutputStream<TStream> || StandardInputOutputStream<TStream>
+        template<class... Args>
+        constexpr StandardStreamWrapper(Args&&... args) requires StandardOutputStream<TStream>
+            :
+            m_stream(args...),
+            m_size(0)
         {
-            std::copy(bytes.begin(), bytes.end(), std::ostream_iterator<u1>(m_stream));
         }
 
-        ~StandardStreamWrapper()
+        ~StandardStreamWrapper() = default;
+
+        ~StandardStreamWrapper() requires ClosableStream<TStream>
         {
             m_stream.close();
         }
 
-        [[nodiscard]] inline bool isOpen()
+        [[nodiscard]] constexpr StreamType type() const requires StandardInputStream<TStream>
+        {
+            return StreamType::INPUT;
+        }
+
+        [[nodiscard]] constexpr StreamType type() const requires StandardOutputStream<TStream>
+        {
+            return StreamType::OUTPUT;
+        }
+
+        [[nodiscard]] constexpr StreamType type() const requires StandardInputOutputStream<TStream>
+        {
+            return StreamType::INPUT_OUTPUT;
+        }
+
+        [[nodiscard]] inline bool isOpen() requires OpenableStream<TStream>
         {
             return m_stream.is_open();
         }
 
-        inline void close()
-        {
-            if(isOpen())
-            {
-                return m_stream.close();
-            }
-        }
-
-        [[nodiscard]] inline bool eof()
-        {
-            return m_stream.eof();
-        }
-
-        [[nodiscard]] inline std::size_t readPosition()
-            requires StandardInputStream<TStream> || StandardInputOutputStream<TStream>
+        [[nodiscard]] inline std::size_t readPosition() requires StandardInputStream<TStream> || StandardInputOutputStream<TStream>
         {
             return m_stream.tellg();
         }
 
-        [[nodiscard]] inline std::size_t writePosition() const
-            requires StandardOutputStream<TStream> || StandardInputOutputStream<TStream>
+        inline void seekRead(std::size_t position, std::ios_base::seekdir seekType = std::ios::ios_base::cur) requires StandardInputStream<TStream> || StandardInputOutputStream<TStream>
         {
-            return m_stream.tellp();
+            m_stream.seekg(position, seekType);
         }
 
         [[nodiscard]] inline std::size_t size() const
@@ -137,53 +160,44 @@ namespace AeroJet::Stream
             return m_size;
         }
 
-        inline void seekRead(std::size_t position, std::ios_base::seekdir seekType = std::ios::ios_base::cur)
-            requires StandardInputStream<TStream> || StandardInputOutputStream<TStream>
+        [[nodiscard]] inline bool good()
         {
-            m_stream.seekg(position, seekType);
+            return m_stream.good();
         }
 
-        inline void seekWrite(std::size_t position)
-            requires StandardOutputStream<TStream> || StandardInputOutputStream<TStream>
+        [[nodiscard]] inline bool bad()
         {
-            m_stream.seekp(position);
+            return m_stream.bad();
+        }
+
+        [[nodiscard]] inline bool fail()
+        {
+            return m_stream.fail();
+        }
+
+        inline void clear()
+        {
+            return m_stream.clear();
+        }
+
+        [[nodiscard]] inline bool eof()
+        {
+            return m_stream.eof();
         }
 
         template<typename T>
-        [[nodiscard]] inline T read()
-            requires(StandardInputStream<TStream> || StandardInputOutputStream<TStream>) && std::is_fundamental_v<T>
+        [[nodiscard]] inline T read() requires(StandardInputStream<TStream> || StandardInputOutputStream<TStream>) && std::is_fundamental_v<T>
         {
             return readInternal<T>();
         }
 
-        template<typename T>
-        [[nodiscard]] inline T read()
-            requires(StandardInputStream<TStream> || StandardInputOutputStream<TStream>) && Readable<T, TStream, ReadMode, WriteMode>
-        {
-            return T::read(*this);
-        }
-
         template<typename T, std::size_t size>
-        [[nodiscard]] inline std::array<T, size> readSome()
-            requires(StandardInputStream<TStream> || StandardInputOutputStream<TStream>) && std::is_fundamental_v<T>
+        [[nodiscard]] inline std::array<T, size> readSome() requires(StandardInputStream<TStream> || StandardInputOutputStream<TStream>) && std::is_fundamental_v<T>
         {
             std::array<T, size> array{};
             for(std::size_t index = 0; index < size; index++)
             {
                 array[index] = read<T>();
-            }
-
-            return array;
-        }
-
-        template<typename T, std::size_t size>
-        [[nodiscard]] inline std::array<T, size> readSome()
-            requires(StandardInputStream<TStream> || StandardInputOutputStream<TStream>) && Readable<T, TStream, ReadMode, WriteMode>
-        {
-            std::array<T, size> array{};
-            for(std::size_t index = 0; index < size; index++)
-            {
-                array[index] = T::read(*this);
             }
 
             return array;
@@ -217,85 +231,25 @@ namespace AeroJet::Stream
             return vector;
         }
 
-        template<typename T>
-        inline void write(T object)
-            requires(StandardOutputStream<TStream> || StandardInputOutputStream<TStream>) && std::is_fundamental_v<T>
+        template<typename T, std::size_t size>
+        [[nodiscard]] inline std::array<T, size> readSome() requires(StandardInputStream<TStream> || StandardInputOutputStream<TStream>) && Readable<T, TStream, ReadMode, WriteMode>
         {
-            writeInternal(object);
-        }
-
-        template<typename T>
-        inline void writeSome(const std::vector<T>& items)
-            requires(StandardOutputStream<TStream> || StandardInputOutputStream<TStream>) && std::is_fundamental_v<T>
-        {
-            for(T item : items)
+            std::array<T, size> array{};
+            for(std::size_t index = 0; index < size; index++)
             {
-                writeInternal((CharType*)items.data(), sizeof(item) * items.size());
+                array[index] = T::read(*this);
             }
+
+            return array;
         }
 
         template<typename T>
-        inline void write(T object)
-            requires(StandardOutputStream<TStream> || StandardInputOutputStream<TStream>) && Writable<T, TStream, ReadMode, WriteMode>
+        [[nodiscard]] inline T read() requires(StandardInputStream<TStream> || StandardInputOutputStream<TStream>) && Readable<T, TStream, ReadMode, WriteMode>
         {
-            object.write(*this);
-        }
-
-        template<typename T>
-        inline void writeSome(const std::vector<T>& items)
-            requires(StandardOutputStream<TStream> || StandardInputOutputStream<TStream>) && Writable<T, TStream, ReadMode, WriteMode>
-        {
-            for(const T& item : items)
-            {
-                item.write(*this);
-            }
-        }
-
-        inline std::vector<CharType> bytes() const
-        {
-            std::vector<CharType> bytesArray{};
-            bytesArray.reserve(m_size);
-            bytesArray.assign(std::istreambuf_iterator<CharType>(m_stream), std::istreambuf_iterator<CharType>());
-            return bytes;
+            return T::read(*this);
         }
 
       private:
-        template<typename T>
-        inline T readInternal()
-        {
-            AEROJET_VERIFY_THROW(isOpen(), Exceptions::RuntimeException, "Stream is not open!");
-
-            const std::size_t readSize = sizeof(T);
-            const std::size_t readPos = readPosition();
-
-            AEROJET_VERIFY_THROW(!eof(), Exceptions::RuntimeException, fmt::format("stream EOF at {:#08x}! Read size was {}", readPosition(), readSize));
-            AEROJET_VERIFY_THROW(readPos + readSize <= m_size, Exceptions::RuntimeException, fmt::format("Attempt to read {} bytes while {} is available", readSize, m_size - readPos));
-
-            T read{};
-            m_stream.read(reinterpret_cast<CharType*>(&read), readSize);
-
-            if constexpr(ReadMode == ByteOrder::REVERSE)
-            {
-                read = swapEndian(read);
-            }
-
-            return read;
-        }
-
-        template<typename T>
-        inline void writeInternal(T data)
-            requires StandardOutputStream<TStream> || StandardInputOutputStream<TStream>
-        {
-            if constexpr(WriteMode == ByteOrder::REVERSE)
-            {
-                data = swapEndian(data);
-            }
-
-            std::size_t size = sizeof(data);
-            m_stream.write(reinterpret_cast<CharType*>(&data), size);
-            m_size += size;
-        }
-
         template<typename T>
         static T swapEndian(const T& data)
         {
@@ -318,6 +272,79 @@ namespace AeroJet::Stream
             }
 
             return dst.object;
+        }
+
+        template<typename T>
+        inline T readInternal() requires std::is_fundamental_v<T>
+        {
+            AEROJET_VERIFY_THROW(isOpen(), Exceptions::RuntimeException, "Stream is not open!");
+            AEROJET_VERIFY_THROW(good(), Exceptions::RuntimeException, "Internal stream fatal error occured!");
+
+            const std::size_t readSize = sizeof(T);
+            const std::size_t readPos = readPosition();
+
+            AEROJET_VERIFY_THROW(!eof(), Exceptions::RuntimeException, fmt::format("stream EOF at {:#08x}! Read size was {}", readPosition(), readSize));
+            AEROJET_VERIFY_THROW(readPos + readSize <= m_size, Exceptions::RuntimeException, fmt::format("Attempt to read {} bytes while {} is available", readSize, m_size - readPos));
+
+            T read{};
+            m_stream.read(reinterpret_cast<CharType*>(&read), readSize);
+            AEROJET_VERIFY_THROW(!fail(), Exceptions::RuntimeException, "Stream failed to perform last read operation!");
+
+            if constexpr(ReadMode == ByteOrder::REVERSE)
+            {
+                read = swapEndian(read);
+            }
+
+            return read;
+        }
+
+        template<typename T>
+        inline void writeInternal(T data) requires StandardOutputStream<TStream> || StandardInputOutputStream<TStream>
+        {
+            if constexpr(WriteMode == ByteOrder::REVERSE)
+            {
+                data = swapEndian(data);
+            }
+
+            std::size_t size = sizeof(data);
+
+            AEROJET_VERIFY_THROW(isOpen(), Exceptions::RuntimeException, "Stream is not open!");
+            AEROJET_VERIFY_THROW(good(), Exceptions::RuntimeException, "Internal stream fatal error occured!");
+
+            m_stream.write(reinterpret_cast<CharType*>(&data), size);
+            m_size += size;
+
+            AEROJET_VERIFY_THROW(!fail(), Exceptions::RuntimeException, "Stream failed to perform last write operation!");
+        }
+
+        template<typename T>
+        inline void write(T object) requires(StandardOutputStream<TStream> || StandardInputOutputStream<TStream>) && std::is_fundamental_v<T>
+        {
+            writeInternal<T>(object);
+        }
+
+        template<typename T>
+        inline void write(T object) requires(StandardOutputStream<TStream> || StandardInputOutputStream<TStream>) && Writable<T, TStream, ReadMode, WriteMode>
+        {
+            object.write(*this);
+        }
+
+        template<typename T>
+        inline void writeSome(const std::vector<T>& items) requires(StandardOutputStream<TStream> || StandardInputOutputStream<TStream>) && Writable<T, TStream, ReadMode, WriteMode>
+        {
+            for(const T& item : items)
+            {
+                item.write(*this);
+            }
+        }
+
+        template<typename T>
+        inline void writeSome(const std::vector<T>& items) requires(StandardOutputStream<TStream> || StandardInputOutputStream<TStream>) && std::is_fundamental_v<T>
+        {
+            for(T item : items)
+            {
+                writeInternal<T>(item);
+            }
         }
 
       private:
