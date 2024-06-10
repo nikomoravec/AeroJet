@@ -24,7 +24,8 @@
 
 #pragma once
 
-#include "Stream/StreamUtils.hpp"
+#include "Stream/JavaClassStream.hpp"
+#include "Stream/StandardStreamWrapper.hpp"
 #include "Types.hpp"
 
 #include <string>
@@ -209,6 +210,84 @@ namespace AeroJet::Java::ClassFile
 
         [[nodiscard]] const std::vector<u1>& data() const;
 
+        template<typename T>
+        static ConstantPoolEntry read(Stream::JavaClassStream<T>& stream)
+        {
+            Stream::StandardStreamWrapper<std::stringstream> dataStream;
+
+            const AeroJet::Java::ClassFile::ConstantPoolInfoTag tag = static_cast<AeroJet::Java::ClassFile::ConstantPoolInfoTag>(stream.template read<u1>());
+            switch(tag)
+            {
+                case Java::ClassFile::ConstantPoolInfoTag::UTF_8:
+                {
+                    const AeroJet::u2 dataSize = stream.template read<u2>();
+                    for(AeroJet::u2 byteIndex = 0; byteIndex < dataSize; byteIndex++)
+                    {
+                        AeroJet::u1 byte = stream.template read<u1>();
+                        dataStream.write<u1>(byte);
+                    }
+
+                    break;
+                }
+                case Java::ClassFile::ConstantPoolInfoTag::INTEGER:
+                case Java::ClassFile::ConstantPoolInfoTag::FLOAT:
+                {
+                    const AeroJet::u4 value = stream.template read<u4>();
+                    dataStream.write<u4>(value);
+
+                    break;
+                }
+                case Java::ClassFile::ConstantPoolInfoTag::LONG:
+                case Java::ClassFile::ConstantPoolInfoTag::DOUBLE:
+                {
+                    const AeroJet::u4 highBytes = stream.template read<u4>();
+                    const AeroJet::u4 lowBytes = stream.template read<u4>();
+
+                    dataStream.write<u4>(highBytes);
+                    dataStream.write<u4>(lowBytes);
+
+                    break;
+                }
+                case Java::ClassFile::ConstantPoolInfoTag::CLASS:
+                case Java::ClassFile::ConstantPoolInfoTag::STRING:
+                case Java::ClassFile::ConstantPoolInfoTag::METHOD_TYPE:
+                {
+                    const AeroJet::u2 index = stream.template read<u2>();
+                    dataStream.write<u2>(index);
+
+                    break;
+                }
+                case Java::ClassFile::ConstantPoolInfoTag::FIELD_REF:
+                case Java::ClassFile::ConstantPoolInfoTag::METHOD_REF:
+                case Java::ClassFile::ConstantPoolInfoTag::INTERFACE_METHOD_REF:
+                case Java::ClassFile::ConstantPoolInfoTag::NAME_AND_TYPE:
+                case Java::ClassFile::ConstantPoolInfoTag::INVOKE_DYNAMIC:
+                {
+                    const AeroJet::u2 index1 = stream.template read<u2>();
+                    const AeroJet::u2 index2 = stream.template read<u2>();
+
+                    dataStream.write<u2>(index1);
+                    dataStream.write<u2>(index2);
+
+                    break;
+                }
+                case Java::ClassFile::ConstantPoolInfoTag::METHOD_HANDLE:
+                {
+                    const AeroJet::u1 referenceKind = stream.template read<u1>();
+                    const AeroJet::u2 referenceIndex = stream.template read<u2>();
+
+                    dataStream.write<u1>(referenceKind);
+                    dataStream.write<u2>(referenceKind);
+
+                    break;
+                }
+                default:
+                    throw AeroJet::Exceptions::RuntimeException(fmt::format("Unexpected Constant Pool Entry Tag {:#04x} at position {:#08x}!", static_cast<u2>(tag), static_cast<std::size_t>(stream.tellg())));
+            }
+
+            return { tag, dataStream };
+        }
+
         /*
          * FIXME: this is kinda unsafe because of no m_tag validation inside specialized realizations
          * Author: Nikita Miroshnichenko (nikita.miroshnichenko@yahoo.com)
@@ -218,6 +297,6 @@ namespace AeroJet::Java::ClassFile
 
       protected:
         ConstantPoolInfoTag m_tag;
-        std::vector<u1> m_data;
+        Stream::StandardStreamWrapper<std::stringstream> m_data;
     };
 } // namespace AeroJet::Java::ClassFile
