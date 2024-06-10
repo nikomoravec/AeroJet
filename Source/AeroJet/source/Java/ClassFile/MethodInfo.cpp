@@ -24,8 +24,6 @@
 
 #include "Java/ClassFile/MethodInfo.hpp"
 
-#include "Stream/StandardStreamWrapper.hpp"
-
 namespace AeroJet::Java::ClassFile
 {
     MethodInfo::MethodInfo(u2 accessFlags,
@@ -57,22 +55,3 @@ namespace AeroJet::Java::ClassFile
         return m_attributes;
     }
 } // namespace AeroJet::Java::ClassFile
-
-template<>
-AeroJet::Java::ClassFile::MethodInfo AeroJet::Stream::Reader::read(std::istream& stream, ByteOrder byteOrder)
-{
-    const AeroJet::u2 accessFlags = read<AeroJet::u2>(stream, byteOrder);
-    const AeroJet::u2 nameIndex = read<AeroJet::u2>(stream, byteOrder);
-    const AeroJet::u2 descriptorIndex = read<AeroJet::u2>(stream, byteOrder);
-    const AeroJet::u2 attributesCount = read<AeroJet::u2>(stream, byteOrder);
-
-    std::vector<AeroJet::Java::ClassFile::AttributeInfo> attributes;
-    attributes.reserve(attributesCount);
-    for(int32_t attributeIndex = 0; attributeIndex < attributesCount; attributeIndex++)
-    {
-        attributes.emplace_back(
-            AeroJet::Stream::Reader::read<AeroJet::Java::ClassFile::AttributeInfo>(stream, byteOrder));
-    }
-
-    return { accessFlags, nameIndex, descriptorIndex, attributes };
-}
