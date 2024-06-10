@@ -25,6 +25,7 @@
 #pragma once
 
 #include "Java/ClassFile/Attributes/AttributeInfo.hpp"
+#include "Stream/JavaClassStream.hpp"
 #include "Types.hpp"
 
 #include <vector>
@@ -110,6 +111,19 @@ namespace AeroJet::Java::ClassFile
          * The rules concerning non-predefined attributes in the attributes table of a field_info structure are given in §4.7.1.
          */
         [[nodiscard]] const std::vector<AttributeInfo>& attributes() const;
+
+        template<typename T>
+        static FieldInfo read(Stream::JavaClassStream<T>& stream)
+        {
+            const u2 accessFlags = stream.template read<u2>();
+            const u2 nameIndex = stream.template read<u2>();
+            const u2 descriptorIndex = stream.template read<u2>();
+
+            const u2 attributesCount = stream.template read<u2>();
+            std::vector<AttributeInfo> attributes = stream.template readSome<AeroJet::Java::ClassFile::AttributeInfo>(attributesCount);
+
+            return { accessFlags, nameIndex, descriptorIndex, attributes };
+        }
 
       protected:
         u2 m_accessFlags;
