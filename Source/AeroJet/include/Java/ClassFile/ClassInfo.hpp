@@ -28,6 +28,7 @@
 #include "Java/ClassFile/ConstantPool.hpp"
 #include "Java/ClassFile/FieldInfo.hpp"
 #include "Java/ClassFile/MethodInfo.hpp"
+#include "Stream/JavaClassStream.hpp"
 #include "Types.hpp"
 
 #include <optional>
@@ -208,6 +209,63 @@ namespace AeroJet::Java::ClassFile
          * are given in §4.7.1.
          */
         [[nodiscard]] const std::vector<AttributeInfo>& attributes() const;
+
+        template<typename T>
+        static ClassInfo read(Stream::JavaClassStream<T>& stream)
+        {
+            static constexpr u2 MAX_JAVA_CLASS_MAJOR_VERSION = 52;
+
+            const u4 magic = stream.template read<u4>();
+            AEROJET_VERIFY_THROW(magic == AeroJet::Java::ClassFile::ClassInfo::JAVA_CLASS_MAGIC, Exceptions::RuntimeException, "Not a Java class!");
+
+            const u2 minorVersion = stream.template read<u2>();
+            const u2 majorVersion = stream.template read<u2>();
+            AEROJET_VERIFY_THROW(majorVersion <= MAX_JAVA_CLASS_MAJOR_VERSION, Exceptions::RuntimeException, fmt::format("Unsupported java class version file {}! Maximum supported version is: {}", majorVersion, MAX_JAVA_CLASS_MAJOR_VERSION));
+
+            const u2 constantPoolSize = stream.template read<u2>();
+            Java::ClassFile::ConstantPool constantPool;
+            for(std::size_t constantPoolEntryIndex = 1; constantPoolEntryIndex < constantPoolSize; constantPoolEntryIndex++)
+            {
+                Java::ClassFile::ConstantPoolEntry entry = stream.template read<Java::ClassFile::ConstantPoolEntry>();
+                const Java::ClassFile::ConstantPoolInfoTag tag = entry.tag();
+
+                constantPool.insert({ constantPoolEntryIndex, std::move(entry) });
+
+                if(tag == Java::ClassFile::ConstantPoolInfoTag::LONG || tag == Java::ClassFile::ConstantPoolInfoTag::DOUBLE)
+                {
+                    constantPoolEntryIndex++;
+                }
+            }
+
+            const u2 accessFlags = stream.template read<u2>();
+            const u2 thisClass = stream.template read<u2>();
+            const u2 superClass = stream.template read<u2>();
+
+            const u2 interfacesCount = stream.read<u2>();
+            std::vector<u2> interfaces = stream.template readSome<u2>(interfacesCount);
+
+            const u2 fieldsCount = stream.template read<u2>();
+            std::vector<Java::ClassFile::FieldInfo> fields = stream.template readSome<Java::ClassFile::FieldInfo>(fieldsCount);
+
+            const u2 methodsCount = stream.template read<u2>();
+            std::vector<Java::ClassFile::MethodInfo> methods = stream.template readSome<Java::ClassFile::MethodInfo>(methodsCount);
+
+            const u2 attributesCount = stream.template read<u2>();
+            std::vector<Java::ClassFile::AttributeInfo> attributes = stream.template readSome<Java::ClassFile::AttributeInfo>(attributesCount);
+
+            return {
+                minorVersion,
+                majorVersion,
+                constantPool,
+                accessFlags,
+                thisClass,
+                superClass == 0 ? std::nullopt : std::optional<u2>(superClass),
+                interfaces,
+                fields,
+                methods,
+                attributes
+            };
+        }
 
       protected:
         u2 m_minorVersion;
