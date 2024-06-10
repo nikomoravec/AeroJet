@@ -215,13 +215,6 @@ namespace AeroJet::Java::ClassFile
 } // namespace AeroJet::Java::ClassFile
 
 template<>
-AeroJet::Java::ClassFile::ThrowsTarget AeroJet::Stream::Reader::read(std::istream& stream, ByteOrder byteOrder)
-{
-    const u2 throwsTypeIndex = AeroJet::Stream::Reader::read<u2>(stream, byteOrder);
-    return AeroJet::Java::ClassFile::ThrowsTarget{ throwsTypeIndex };
-}
-
-template<>
 AeroJet::Java::ClassFile::LocalVarTarget AeroJet::Stream::Reader::read(std::istream& stream, ByteOrder byteOrder)
 {
     const u2 tableLength = AeroJet::Stream::Reader::read<u2>(stream, byteOrder);

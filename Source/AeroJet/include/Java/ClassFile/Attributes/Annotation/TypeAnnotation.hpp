@@ -182,6 +182,13 @@ namespace AeroJet::Java::ClassFile
          */
         [[nodiscard]] u2 throwsTypeIndex() const;
 
+        template<typename T>
+        [[nodiscard]] static ThrowsTarget read(Stream::JavaClassStream<T>& stream)
+        {
+            const u1 throwsTypeIndex = stream.template read<u2>();
+            return AeroJet::Java::ClassFile::ThrowsTarget{ throwsTypeIndex };
+        }
+
       private:
         u2 m_throwsTypeIndex;
     };
