@@ -215,13 +215,6 @@ namespace AeroJet::Java::ClassFile
 } // namespace AeroJet::Java::ClassFile
 
 template<>
-AeroJet::Java::ClassFile::SuperTypeTarget AeroJet::Stream::Reader::read(std::istream& stream, ByteOrder byteOrder)
-{
-    const u2 superTypeIndex = AeroJet::Stream::Reader::read<u2>(stream, byteOrder);
-    return AeroJet::Java::ClassFile::SuperTypeTarget{ superTypeIndex };
-}
-
-template<>
 AeroJet::Java::ClassFile::TypeParameterBoundTarget AeroJet::Stream::Reader::read(std::istream& stream,
                                                                                  ByteOrder byteOrder)
 {

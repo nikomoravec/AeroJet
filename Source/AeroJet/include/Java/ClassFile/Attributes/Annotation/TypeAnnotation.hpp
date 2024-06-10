@@ -78,6 +78,13 @@ namespace AeroJet::Java::ClassFile
          */
         [[nodiscard]] u2 superTypeIndex() const;
 
+        template<typename T>
+        [[nodiscard]] static SuperTypeTarget read(Stream::JavaClassStream<T>& stream)
+        {
+            const u2 superTypeIndex = stream.template read<u2>();
+            return AeroJet::Java::ClassFile::SuperTypeTarget{ superTypeIndex };
+        }
+
       private:
         u2 m_superTypeIndex;
     };
