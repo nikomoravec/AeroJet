@@ -281,55 +281,6 @@ namespace AeroJet::Stream
             return T::read(*this);
         }
 
-      private:
-        template<typename T>
-        [[nodiscard]] static T swapEndian(const T& data)
-        {
-            static_assert(CHAR_BIT == 8, "CHAR_BIT != 8");
-
-            union ByteObjectRepresentation
-            {
-                T object;
-                std::array<u1, sizeof(T)> bytes;
-            };
-
-            ByteObjectRepresentation source{};
-            ByteObjectRepresentation dst{};
-
-            source.object = data;
-
-            for(size_t k = 0; k < sizeof(T); k++)
-            {
-                dst.bytes[k] = source.bytes[sizeof(T) - k - 1];
-            }
-
-            return dst.object;
-        }
-
-        template<typename T>
-        [[nodiscard]] inline T readInternal() requires std::is_fundamental_v<T>
-        {
-            AEROJET_VERIFY_THROW(isOpen(), Exceptions::RuntimeException, "Stream is not open!");
-            AEROJET_VERIFY_THROW(good(), Exceptions::RuntimeException, "Internal stream fatal error occured!");
-
-            const std::size_t readSize = sizeof(T);
-            const std::size_t readPos = readPosition();
-
-            AEROJET_VERIFY_THROW(!eof(), Exceptions::RuntimeException, fmt::format("stream EOF at {:#08x}! Read size was {}", readPosition(), readSize));
-            AEROJET_VERIFY_THROW(readPos + readSize <= m_size, Exceptions::RuntimeException, fmt::format("Attempt to read {} bytes while {} is available", readSize, m_size - readPos));
-
-            T read{};
-            m_stream.read(reinterpret_cast<CharType*>(&read), readSize);
-            AEROJET_VERIFY_THROW(!fail(), Exceptions::RuntimeException, "Stream failed to perform last read operation!");
-
-            if constexpr(ReadMode == ByteOrder::REVERSE)
-            {
-                read = swapEndian(read);
-            }
-
-            return read;
-        }
-
         template<typename T>
         inline void writeInternal(T data) requires StandardOutputStream<TStream> || StandardInputOutputStream<TStream>
         {
@@ -377,6 +328,55 @@ namespace AeroJet::Stream
             {
                 writeInternal<T>(item);
             }
+        }
+
+      private:
+        template<typename T>
+        [[nodiscard]] static T swapEndian(const T& data)
+        {
+            static_assert(CHAR_BIT == 8, "CHAR_BIT != 8");
+
+            union ByteObjectRepresentation
+            {
+                T object;
+                std::array<u1, sizeof(T)> bytes;
+            };
+
+            ByteObjectRepresentation source{};
+            ByteObjectRepresentation dst{};
+
+            source.object = data;
+
+            for(size_t k = 0; k < sizeof(T); k++)
+            {
+                dst.bytes[k] = source.bytes[sizeof(T) - k - 1];
+            }
+
+            return dst.object;
+        }
+
+        template<typename T>
+        [[nodiscard]] inline T readInternal() requires std::is_fundamental_v<T>
+        {
+            AEROJET_VERIFY_THROW(isOpen(), Exceptions::RuntimeException, "Stream is not open!");
+            AEROJET_VERIFY_THROW(good(), Exceptions::RuntimeException, "Internal stream fatal error occured!");
+
+            const std::size_t readSize = sizeof(T);
+            const std::size_t readPos = readPosition();
+
+            AEROJET_VERIFY_THROW(!eof(), Exceptions::RuntimeException, fmt::format("stream EOF at {:#08x}! Read size was {}", readPosition(), readSize));
+            AEROJET_VERIFY_THROW(readPos + readSize <= m_size, Exceptions::RuntimeException, fmt::format("Attempt to read {} bytes while {} is available", readSize, m_size - readPos));
+
+            T read{};
+            m_stream.read(reinterpret_cast<CharType*>(&read), readSize);
+            AEROJET_VERIFY_THROW(!fail(), Exceptions::RuntimeException, "Stream failed to perform last read operation!");
+
+            if constexpr(ReadMode == ByteOrder::REVERSE)
+            {
+                read = swapEndian(read);
+            }
+
+            return read;
         }
 
       private:
