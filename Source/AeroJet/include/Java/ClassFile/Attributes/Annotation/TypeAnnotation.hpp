@@ -156,6 +156,13 @@ namespace AeroJet::Java::ClassFile
          */
         [[nodiscard]] u1 formalParameterIndex() const;
 
+        template<typename T>
+        [[nodiscard]] static FormalParameterTarget read(Stream::JavaClassStream<T>& stream)
+        {
+            const u1 formalParameterIndex = stream.template read<u1>();
+            return AeroJet::Java::ClassFile::FormalParameterTarget{ formalParameterIndex };
+        }
+
       private:
         u1 m_formalParameterIndex;
     };
