@@ -113,6 +113,15 @@ namespace AeroJet::Java::ClassFile
          */
         [[nodiscard]] u1 boundIndex() const;
 
+        template<typename T>
+        [[nodiscard]] static TypeParameterBoundTarget read(Stream::JavaClassStream<T>& stream)
+        {
+            const u1 typeParameterIndex = stream.template read<u1>();
+            const u1 boundIndex = stream.template read<u1>();
+
+            return AeroJet::Java::ClassFile::TypeParameterBoundTarget{ typeParameterIndex, boundIndex };
+        }
+
       private:
         u1 m_typeParameterIndex;
         u1 m_boundIndex;

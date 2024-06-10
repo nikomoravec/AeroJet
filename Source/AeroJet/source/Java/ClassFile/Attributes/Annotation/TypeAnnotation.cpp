@@ -215,16 +215,6 @@ namespace AeroJet::Java::ClassFile
 } // namespace AeroJet::Java::ClassFile
 
 template<>
-AeroJet::Java::ClassFile::TypeParameterBoundTarget AeroJet::Stream::Reader::read(std::istream& stream,
-                                                                                 ByteOrder byteOrder)
-{
-    const u1 typeParameterIndex = AeroJet::Stream::Reader::read<u1>(stream, byteOrder);
-    const u1 boundIndex = AeroJet::Stream::Reader::read<u1>(stream, byteOrder);
-
-    return AeroJet::Java::ClassFile::TypeParameterBoundTarget{ typeParameterIndex, boundIndex };
-}
-
-template<>
 AeroJet::Java::ClassFile::FormalParameterTarget AeroJet::Stream::Reader::read(std::istream& stream, ByteOrder byteOrder)
 {
     const u1 formalParameterIndex = AeroJet::Stream::Reader::read<u1>(stream, byteOrder);
