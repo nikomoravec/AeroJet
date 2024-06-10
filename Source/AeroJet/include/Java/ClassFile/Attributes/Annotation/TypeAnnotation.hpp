@@ -26,6 +26,7 @@
 
 #include "Java/ClassFile/Attributes/Annotation/ElementValue.hpp"
 #include "Java/ClassFile/Attributes/Annotation/ElementValuePair.hpp"
+#include "Stream/JavaClassStream.hpp"
 
 #include <variant>
 #include <vector>
@@ -46,6 +47,13 @@ namespace AeroJet::Java::ClassFile
          * A type_parameter_index value of 0 specifies the first type parameter declaration.
          */
         [[nodiscard]] u1 typeParameterIndex() const;
+
+        template<typename T>
+        [[nodiscard]] static TypeParameterTarget read(Stream::JavaClassStream<T>& stream)
+        {
+            const u1 typeParameterIndex = stream.template read<u1>();
+            return AeroJet::Java::ClassFile::TypeParameterTarget{ typeParameterIndex };
+        }
 
       private:
         u1 m_typeParameterIndex;
