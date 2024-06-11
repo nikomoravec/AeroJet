@@ -62,7 +62,7 @@ namespace AeroJet::Java::ClassFile
         {
             const u2 typeIndex = stream.template read<u2>();
 
-            const u2 numElementValuePairs = Astream.template read<u2>();
+            const u2 numElementValuePairs = stream.template read<u2>();
             std::vector<ElementValuePair> elementValues = stream.template readSome<ElementValuePair>(numElementValuePairs);
 
             return AeroJet::Java::ClassFile::Annotation{ typeIndex, elementValues };
