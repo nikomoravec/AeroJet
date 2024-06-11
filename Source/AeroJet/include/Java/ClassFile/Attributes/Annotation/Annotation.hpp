@@ -24,7 +24,6 @@
 
 #pragma once
 
-#include "Java/ClassFile/Attributes/Annotation/ElementValue.hpp"
 #include "Java/ClassFile/Attributes/Annotation/ElementValuePair.hpp"
 #include "Stream/JavaClassStream.hpp"
 #include "Types.hpp"

@@ -24,8 +24,6 @@
 
 #include "Java/ClassFile/Attributes/Annotation/Annotation.hpp"
 
-#include "Stream/Reader.hpp"
-
 namespace AeroJet::Java::ClassFile
 {
     Annotation::Annotation(u2 typeIndex, const std::vector<ElementValuePair>& elementValuePairs) :
