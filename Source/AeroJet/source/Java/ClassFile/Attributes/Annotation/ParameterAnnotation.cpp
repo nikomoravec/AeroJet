@@ -40,20 +40,3 @@ namespace AeroJet::Java::ClassFile
         return m_annotations;
     }
 } // namespace AeroJet::Java::ClassFile
-
-template<>
-AeroJet::Java::ClassFile::ParameterAnnotation AeroJet::Stream::Reader::read(std::istream& stream, ByteOrder byteOrder)
-{
-    std::vector<AeroJet::Java::ClassFile::Annotation> annotations;
-
-    const u2 numAnnotations = AeroJet::Stream::Reader::read<u2>(stream, byteOrder);
-    annotations.reserve(numAnnotations);
-
-    for(u2 annotationIndex = 0; annotationIndex < numAnnotations; annotationIndex++)
-    {
-        annotations.emplace_back(
-            AeroJet::Stream::Reader::read<AeroJet::Java::ClassFile::Annotation>(stream, byteOrder));
-    }
-
-    return AeroJet::Java::ClassFile::ParameterAnnotation{ annotations };
-}

@@ -25,6 +25,7 @@
 #pragma once
 
 #include "Java/ClassFile/Attributes/Annotation/Annotation.hpp"
+#include "Stream/JavaClassStream.hpp"
 
 #include <vector>
 
@@ -47,6 +48,15 @@ namespace AeroJet::Java::ClassFile
          * The annotation structure is specified in §4.7.16.
          */
         [[nodiscard]] const std::vector<Annotation>& annotations() const;
+
+        template<typename T>
+        static ParameterAnnotation read(Stream::JavaClassStream<T>& stream)
+        {
+            const u2 numAnnotations = stream.template read<u2>();
+            std::vector<Annotation> annotations = stream.template readSome<Annotation>(numAnnotations);
+
+            return AeroJet::Java::ClassFile::ParameterAnnotation{ annotations };
+        }
 
       private:
         std::vector<Annotation> m_annotations;
