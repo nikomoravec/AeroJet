@@ -307,6 +307,13 @@ namespace AeroJet::Java::ClassFile
          */
         [[nodiscard]] u2 offset() const;
 
+        template<typename T>
+        [[nodiscard]] static OffsetTarget read(Stream::JavaClassStream<T>& stream)
+        {
+            const u2 offset = stream.template read<u2>();
+            return AeroJet::Java::ClassFile::OffsetTarget{ offset };
+        }
+
       private:
         u2 m_offset;
     };
