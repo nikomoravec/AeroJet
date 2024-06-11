@@ -30,7 +30,7 @@
 
 namespace AeroJet::Java::ClassFile
 {
-    ConstantPoolEntry::ConstantPoolEntry(const ConstantPoolInfoTag tag, const std::vector<u1>& data) :
+    ConstantPoolEntry::ConstantPoolEntry(const ConstantPoolInfoTag tag, DataStream& data) :
         m_tag(tag), m_data(data)
     {
     }
@@ -38,11 +38,6 @@ namespace AeroJet::Java::ClassFile
     ConstantPoolInfoTag ConstantPoolEntry::tag() const
     {
         return m_tag;
-    }
-
-    const std::vector<u1>& ConstantPoolEntry::data() const
-    {
-        return m_data;
     }
 
     ConstantPoolInfoUtf8::ConstantPoolInfoUtf8(const std::vector<u1>& bytes) :

@@ -204,8 +204,10 @@ namespace AeroJet::Java::ClassFile
 
     class ConstantPoolEntry
     {
+        using DataStream = Stream::StandardStreamWrapper<std::stringstream, Stream::ByteOrder::REVERSE, Stream::ByteOrder::REVERSE>;
+
       public:
-        ConstantPoolEntry(ConstantPoolInfoTag tag, const std::vector<u1>& data);
+        ConstantPoolEntry(ConstantPoolInfoTag tag, DataStream& data);
 
         [[nodiscard]] ConstantPoolInfoTag tag() const;
 
@@ -214,7 +216,7 @@ namespace AeroJet::Java::ClassFile
         template<typename T>
         static ConstantPoolEntry read(Stream::JavaClassStream<T>& stream)
         {
-            Stream::StandardStreamWrapper<std::stringstream> dataStream;
+            DataStream dataStream;
 
             const AeroJet::Java::ClassFile::ConstantPoolInfoTag tag = static_cast<AeroJet::Java::ClassFile::ConstantPoolInfoTag>(stream.template read<u1>());
             switch(tag)
@@ -298,6 +300,6 @@ namespace AeroJet::Java::ClassFile
 
       protected:
         ConstantPoolInfoTag m_tag;
-        Stream::StandardStreamWrapper<std::stringstream> m_data;
+        DataStream m_data;
     };
 } // namespace AeroJet::Java::ClassFile
