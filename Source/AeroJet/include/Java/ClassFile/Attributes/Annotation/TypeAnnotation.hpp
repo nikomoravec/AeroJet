@@ -523,6 +523,89 @@ namespace AeroJet::Java::ClassFile
         [[nodiscard]] u2 numElementValuePairs() const;
         [[nodiscard]] const std::vector<ElementValuePair>& elementValuePairs() const;
 
+        template<typename T>
+        [[nodiscard]] static TypeAnnotation read(Stream::JavaClassStream<T>& stream)
+        {
+            Java::ClassFile::TargetInfo targetInfo{ Java::ClassFile::EmptyTarget{} };
+
+            const u1 targetType = stream.template read<u1>();
+            switch(targetType)
+            {
+                case 0x00: // type parameter declaration of generic class or interface
+                case 0x01: // type parameter declaration of generic method or constructor
+                {
+                    targetInfo = stream.template read<AeroJet::Java::ClassFile::TypeParameterTarget>();
+                    break;
+                }
+                case 0x10: // type in extends or implements clause of class declaration
+                {
+                    targetInfo = stream.template read<AeroJet::Java::ClassFile::SuperTypeTarget>();
+                    break;
+                }
+                case 0x11: // type in bound of type parameter declaration of generic class or interface
+                case 0x12: // type in bound of type parameter declaration of generic method or constructor
+                {
+                    targetInfo = stream.template read<AeroJet::Java::ClassFile::TypeParameterBoundTarget>();
+                    break;
+                }
+                case 0x13: // type in field declaration
+                case 0x14: // return type of method, or type of newly constructed object
+                case 0x15: // receiver type of method or constructor
+                {
+                    targetInfo = Java::ClassFile::EmptyTarget{};
+                    break;
+                }
+                case 0x16: // type in formal parameter declaration of method, constructor, or lambda expression
+                {
+                    targetInfo = stream.template read<AeroJet::Java::ClassFile::FormalParameterTarget>();
+                    break;
+                }
+                case 0x17: // type in throws clause of method or constructor
+                {
+                    targetInfo = stream.template read<AeroJet::Java::ClassFile::ThrowsTarget>();
+                    break;
+                }
+                case 0x40:
+                case 0x41:
+                {
+                    targetInfo = stream.template read<AeroJet::Java::ClassFile::LocalVarTarget>();
+                    break;
+                }
+                case 0x42:
+                {
+                    targetInfo = stream.template read<AeroJet::Java::ClassFile::CatchTarget>();
+                    break;
+                }
+                case 0x43:
+                case 0x44:
+                case 0x45:
+                case 0x46:
+                {
+                    targetInfo = stream.template read<AeroJet::Java::ClassFile::OffsetTarget>();
+                    break;
+                }
+                case 0x47:
+                case 0x48:
+                case 0x49:
+                case 0x4A:
+                case 0x4B:
+                {
+                    targetInfo = stream.template read<AeroJet::Java::ClassFile::TypeArgumentTarget>();
+                    break;
+                }
+                default:
+                    throw AeroJet::Exceptions::RuntimeException("Unknown targetType value {:#04x}!");
+            }
+
+            const AeroJet::Java::ClassFile::TypePath targetPath = stream.template read<AeroJet::Java::ClassFile::TypePath>();
+            const u2 typeIndex = stream.template read<u2>();
+
+            const u2 numElementValuePairs = stream.template read<u2>();
+            std::vector<ElementValuePair> elementValuePairs = stream.template readSome<ElementValuePair>(numElementValuePairs);
+
+            return Java::ClassFile::TypeAnnotation{ targetType, targetInfo, targetPath, typeIndex, elementValuePairs };
+        }
+
       private:
         u1 m_targetType;
         TargetInfo m_targetInfo;
