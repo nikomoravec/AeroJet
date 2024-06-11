@@ -215,25 +215,6 @@ namespace AeroJet::Java::ClassFile
 } // namespace AeroJet::Java::ClassFile
 
 template<>
-AeroJet::Java::ClassFile::LocalVarTarget AeroJet::Stream::Reader::read(std::istream& stream, ByteOrder byteOrder)
-{
-    const u2 tableLength = AeroJet::Stream::Reader::read<u2>(stream, byteOrder);
-    std::vector<AeroJet::Java::ClassFile::LocalVarTarget::TableEntry> table;
-    table.reserve(tableLength);
-
-    for(u2 tableEntryIndex = 0; tableEntryIndex < tableLength; tableEntryIndex++)
-    {
-        const u2 startPc = AeroJet::Stream::Reader::read<u2>(stream, byteOrder);
-        const u2 length = AeroJet::Stream::Reader::read<u2>(stream, byteOrder);
-        const u2 index = AeroJet::Stream::Reader::read<u2>(stream, byteOrder);
-
-        table.emplace_back(startPc, length, index);
-    }
-
-    return AeroJet::Java::ClassFile::LocalVarTarget{ table };
-}
-
-template<>
 AeroJet::Java::ClassFile::CatchTarget AeroJet::Stream::Reader::read(std::istream& stream, ByteOrder byteOrder)
 {
     const u2 exceptionTableIndex = AeroJet::Stream::Reader::read<u2>(stream, byteOrder);

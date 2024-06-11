@@ -225,6 +225,16 @@ namespace AeroJet::Java::ClassFile
              */
             [[nodiscard]] u2 index() const;
 
+            template<typename T>
+            [[nodiscard]] static TableEntry read(Stream::JavaClassStream<T>& stream)
+            {
+                const u2 startPc = stream.template read<u2>();
+                const u2 length = stream.template read<u2>();
+                const u2 index = stream.template read<u2>();
+
+                return { startPc, length, index };
+            }
+
           private:
             u2 m_startPc;
             u2 m_length;
@@ -236,6 +246,15 @@ namespace AeroJet::Java::ClassFile
         [[nodiscard]] u2 tableLength() const;
 
         [[nodiscard]] const std::vector<TableEntry>& table() const;
+
+        template<typename T>
+        [[nodiscard]] static LocalVarTarget read(Stream::JavaClassStream<T>& stream)
+        {
+            const u2 tableLength = stream.template read<u2>();
+            std::vector<LocalVarTarget::TableEntry> table = stream.template readSome<LocalVarTarget::TableEntry>(tableLength);
+
+            return AeroJet::Java::ClassFile::LocalVarTarget{ table };
+        }
 
       private:
         std::vector<TableEntry> m_table;
