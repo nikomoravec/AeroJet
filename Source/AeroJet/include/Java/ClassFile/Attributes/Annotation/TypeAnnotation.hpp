@@ -280,6 +280,13 @@ namespace AeroJet::Java::ClassFile
          */
         [[nodiscard]] u2 exceptionTableIndex() const;
 
+        template<typename T>
+        [[nodiscard]] static CatchTarget read(Stream::JavaClassStream<T>& stream)
+        {
+            const u2 exceptionTableIndex = stream.template read<u2>();
+            return AeroJet::Java::ClassFile::CatchTarget{ exceptionTableIndex };
+        }
+
       private:
         u2 m_exceptionTableIndex;
     };
