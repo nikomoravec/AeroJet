@@ -241,7 +241,7 @@ namespace AeroJet::Java::ClassFile
             const u2 thisClass = stream.template read<u2>();
             const u2 superClass = stream.template read<u2>();
 
-            const u2 interfacesCount = stream.read<u2>();
+            const u2 interfacesCount = stream.template read<u2>();
             std::vector<u2> interfaces = stream.template readSome<u2>(interfacesCount);
 
             const u2 fieldsCount = stream.template read<u2>();
