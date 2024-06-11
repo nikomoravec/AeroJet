@@ -348,6 +348,15 @@ namespace AeroJet::Java::ClassFile
          */
         [[nodiscard]] u1 typeArgumentIndex() const;
 
+        template<typename T>
+        [[nodiscard]] static TypeArgumentTarget read(Stream::JavaClassStream<T>& stream)
+        {
+            const u2 offset = stream.template read<u2>();
+            const u1 typeArgumentIndex = stream.template read<u1>();
+
+            return AeroJet::Java::ClassFile::TypeArgumentTarget{ offset, typeArgumentIndex };
+        }
+
       private:
         u2 m_offset;
         u1 m_typeArgumentIndex;

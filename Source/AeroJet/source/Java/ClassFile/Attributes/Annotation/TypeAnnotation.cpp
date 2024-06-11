@@ -215,15 +215,6 @@ namespace AeroJet::Java::ClassFile
 } // namespace AeroJet::Java::ClassFile
 
 template<>
-AeroJet::Java::ClassFile::TypeArgumentTarget AeroJet::Stream::Reader::read(std::istream& stream, ByteOrder byteOrder)
-{
-    const u2 offset = AeroJet::Stream::Reader::read<u2>(stream, byteOrder);
-    const u1 typeArgumentIndex = AeroJet::Stream::Reader::read<u1>(stream, byteOrder);
-
-    return AeroJet::Java::ClassFile::TypeArgumentTarget{ offset, typeArgumentIndex };
-}
-
-template<>
 AeroJet::Java::ClassFile::TypePath AeroJet::Stream::Reader::read(std::istream& stream, ByteOrder byteOrder)
 {
     const u1 pathLength = AeroJet::Stream::Reader::read<u1>(stream, byteOrder);
