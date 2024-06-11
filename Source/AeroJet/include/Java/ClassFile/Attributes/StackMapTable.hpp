@@ -83,118 +83,48 @@ namespace AeroJet::Java::ClassFile
         ITEM_DOUBLE = 3
     };
 
-    class TopVariableInfo
+    class VerificationTypeInfo
     {
       public:
-        TopVariableInfo();
+        explicit VerificationTypeInfo(VerificationTypeTag tag);
+        VerificationTypeInfo(VerificationTypeTag tag, u2 data);
 
         [[nodiscard]] VerificationTypeTag tag() const;
 
-      private:
-        VerificationTypeTag m_tag;
-    };
+        [[nodiscard]] u2 constantPoolIndex() const; // ObjectVariableInfo
+        [[nodiscard]] u2 offset() const;            // UninitializedVariableInfo
 
-    class IntegerVariableInfo
-    {
-      public:
-        IntegerVariableInfo();
+        template<typename T>
+        static VerificationTypeInfo read(Stream::JavaClassStream<T>& stream)
+        {
+            u2 data = 0;
+            const Java::ClassFile::VerificationTypeTag tag = static_cast<Java::ClassFile::VerificationTypeTag>(Stream::Reader::read<u1>(stream, Stream::ByteOrder::INVERSE));
+            switch(tag)
+            {
+                case Java::ClassFile::VerificationTypeTag::ITEM_TOP:
+                case Java::ClassFile::VerificationTypeTag::ITEM_INTEGER:
+                case Java::ClassFile::VerificationTypeTag::ITEM_FLOAT:
+                case Java::ClassFile::VerificationTypeTag::ITEM_NULL:
+                case Java::ClassFile::VerificationTypeTag::ITEM_UNINITIALIZED_THIS:
+                case Java::ClassFile::VerificationTypeTag::ITEM_LONG:
+                case Java::ClassFile::VerificationTypeTag::ITEM_DOUBLE:
+                    break;
+                case Java::ClassFile::VerificationTypeTag::ITEM_OBJECT:
+                case Java::ClassFile::VerificationTypeTag::ITEM_UNINITIALIZED:
+                    data = AeroJet::Stream::Reader::read<u2>(stream, byteOrder);
+                    break;
 
-        [[nodiscard]] VerificationTypeTag tag() const;
+                default:
+                    throw Exceptions::RuntimeException(fmt::format("Unknown VerificationTypeInfo tag {}", static_cast<u1>(tag)));
+            }
 
-      private:
-        VerificationTypeTag m_tag;
-    };
-
-    class FloatVariableInfo
-    {
-      public:
-        FloatVariableInfo();
-
-        [[nodiscard]] VerificationTypeTag tag() const;
-
-      private:
-        VerificationTypeTag m_tag;
-    };
-
-    class NullVariableInfo
-    {
-      public:
-        NullVariableInfo();
-
-        [[nodiscard]] VerificationTypeTag tag() const;
+            return { tag, data };
+        }
 
       private:
         VerificationTypeTag m_tag;
+        u2 m_data;
     };
-
-    class UninitializedThisVariableInfo
-    {
-      public:
-        UninitializedThisVariableInfo();
-
-        [[nodiscard]] VerificationTypeTag tag() const;
-
-      private:
-        VerificationTypeTag m_tag;
-    };
-
-    class ObjectVariableInfo
-    {
-      public:
-        explicit ObjectVariableInfo(u2 constantPoolIndex);
-
-        [[nodiscard]] VerificationTypeTag tag() const;
-        [[nodiscard]] u2 constantPoolIndex() const;
-
-      private:
-        VerificationTypeTag m_tag;
-        u2 m_constantPoolIndex;
-    };
-
-    class UninitializedVariableInfo
-    {
-      public:
-        explicit UninitializedVariableInfo(u2 offset);
-
-        [[nodiscard]] VerificationTypeTag tag() const;
-        [[nodiscard]] u2 offset() const;
-
-      private:
-        u2 m_offset;
-        VerificationTypeTag m_tag;
-    };
-
-    class LongVariableInfo
-    {
-      public:
-        LongVariableInfo();
-
-        [[nodiscard]] VerificationTypeTag tag() const;
-
-      private:
-        VerificationTypeTag m_tag;
-    };
-
-    class DoubleVariableInfo
-    {
-      public:
-        DoubleVariableInfo();
-
-        [[nodiscard]] VerificationTypeTag tag();
-
-      private:
-        VerificationTypeTag m_tag;
-    };
-
-    using VerificationTypeInfo = std::variant<TopVariableInfo,
-                                              IntegerVariableInfo,
-                                              FloatVariableInfo,
-                                              LongVariableInfo,
-                                              DoubleVariableInfo,
-                                              NullVariableInfo,
-                                              UninitializedThisVariableInfo,
-                                              ObjectVariableInfo,
-                                              UninitializedVariableInfo>;
 
     /**
      * The frame type same_frame is represented by tags in the range [0-63]. This frame type indicates that the frame

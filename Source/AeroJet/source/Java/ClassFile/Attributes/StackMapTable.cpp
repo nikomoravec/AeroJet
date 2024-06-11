@@ -28,148 +28,8 @@
 #include "fmt/format.h"
 #include "Stream/StandardStreamWrapper.hpp"
 
-template<>
-AeroJet::Java::ClassFile::VerificationTypeInfo AeroJet::Stream::Reader::read(std::istream& stream, ByteOrder byteOrder)
-{
-    const Java::ClassFile::VerificationTypeTag tag =
-        static_cast<Java::ClassFile::VerificationTypeTag>(Stream::Reader::read<u1>(stream, Stream::ByteOrder::INVERSE));
-
-    switch(tag)
-    {
-        case Java::ClassFile::VerificationTypeTag::ITEM_TOP:
-        {
-            return Java::ClassFile::TopVariableInfo{};
-        }
-        case Java::ClassFile::VerificationTypeTag::ITEM_INTEGER:
-        {
-            return Java::ClassFile::IntegerVariableInfo{};
-        }
-        case Java::ClassFile::VerificationTypeTag::ITEM_FLOAT:
-        {
-            return Java::ClassFile::FloatVariableInfo{};
-        }
-        case Java::ClassFile::VerificationTypeTag::ITEM_NULL:
-        {
-            return Java::ClassFile::NullVariableInfo{};
-        }
-        case Java::ClassFile::VerificationTypeTag::ITEM_UNINITIALIZED_THIS:
-        {
-            return Java::ClassFile::UninitializedThisVariableInfo{};
-        }
-        case Java::ClassFile::VerificationTypeTag::ITEM_OBJECT:
-        {
-            const u2 constantPoolIndex = AeroJet::Stream::Reader::read<u2>(stream, byteOrder);
-            return Java::ClassFile::ObjectVariableInfo{ constantPoolIndex };
-        }
-        case Java::ClassFile::VerificationTypeTag::ITEM_UNINITIALIZED:
-        {
-            const u2 offset = AeroJet::Stream::Reader::read<u2>(stream, byteOrder);
-            return Java::ClassFile::UninitializedVariableInfo{ offset };
-        }
-        case Java::ClassFile::VerificationTypeTag::ITEM_LONG:
-        {
-            return Java::ClassFile::LongVariableInfo{};
-        }
-        case Java::ClassFile::VerificationTypeTag::ITEM_DOUBLE:
-        {
-            return Java::ClassFile::DoubleVariableInfo{};
-        }
-        default:
-            throw Exceptions::RuntimeException(
-                fmt::format("Unknown VerificationTypeInfo tag {}", static_cast<u1>(tag)));
-    }
-}
-
 namespace AeroJet::Java::ClassFile
 {
-    TopVariableInfo::TopVariableInfo() :
-        m_tag(VerificationTypeTag::ITEM_TOP) {}
-
-    VerificationTypeTag TopVariableInfo::tag() const
-    {
-        return m_tag;
-    }
-
-    IntegerVariableInfo::IntegerVariableInfo() :
-        m_tag(VerificationTypeTag::ITEM_INTEGER) {}
-
-    VerificationTypeTag IntegerVariableInfo::tag() const
-    {
-        return m_tag;
-    }
-
-    FloatVariableInfo::FloatVariableInfo() :
-        m_tag(VerificationTypeTag::ITEM_FLOAT) {}
-
-    VerificationTypeTag FloatVariableInfo::tag() const
-    {
-        return m_tag;
-    }
-
-    NullVariableInfo::NullVariableInfo() :
-        m_tag(VerificationTypeTag::ITEM_NULL) {}
-
-    VerificationTypeTag NullVariableInfo::tag() const
-    {
-        return m_tag;
-    }
-
-    UninitializedThisVariableInfo::UninitializedThisVariableInfo() :
-        m_tag(VerificationTypeTag::ITEM_UNINITIALIZED_THIS)
-    {
-    }
-
-    VerificationTypeTag UninitializedThisVariableInfo::tag() const
-    {
-        return m_tag;
-    }
-
-    ObjectVariableInfo::ObjectVariableInfo(u2 constantPoolIndex) :
-        m_tag(VerificationTypeTag::ITEM_OBJECT), m_constantPoolIndex(constantPoolIndex)
-    {
-    }
-
-    VerificationTypeTag ObjectVariableInfo::tag() const
-    {
-        return m_tag;
-    }
-
-    u2 ObjectVariableInfo::constantPoolIndex() const
-    {
-        return m_constantPoolIndex;
-    }
-
-    UninitializedVariableInfo::UninitializedVariableInfo(u2 offset) :
-        m_tag(VerificationTypeTag::ITEM_UNINITIALIZED), m_offset(offset)
-    {
-    }
-
-    VerificationTypeTag UninitializedVariableInfo::tag() const
-    {
-        return m_tag;
-    }
-
-    u2 UninitializedVariableInfo::offset() const
-    {
-        return m_offset;
-    }
-
-    LongVariableInfo::LongVariableInfo() :
-        m_tag(VerificationTypeTag::ITEM_LONG) {}
-
-    VerificationTypeTag LongVariableInfo::tag() const
-    {
-        return m_tag;
-    }
-
-    DoubleVariableInfo::DoubleVariableInfo() :
-        m_tag(VerificationTypeTag::ITEM_DOUBLE) {}
-
-    VerificationTypeTag DoubleVariableInfo::tag()
-    {
-        return m_tag;
-    }
-
     SameFrame::SameFrame(u1 frameType) :
         m_frameType(frameType) {}
 
@@ -305,46 +165,38 @@ namespace AeroJet::Java::ClassFile
     StackMapTable::StackMapTable(const ConstantPool& constantPool, const AttributeInfo& attributeInfo) :
         Attribute(constantPool, attributeInfo, STACK_MAP_TABLE_ATTRIBUTE_NAME)
     {
-        const u2 numberOfEntries = Stream::Reader::read<u2>(m_infoDataStream, Stream::ByteOrder::INVERSE);
+        const u2 numberOfEntries = m_infoDataStream.template read<u2>();
         for(u2 entryIndex = 0; entryIndex < numberOfEntries; entryIndex++)
         {
-            const u1 frameType = Stream::Reader::read<u1>(m_infoDataStream, Stream::ByteOrder::INVERSE);
+            const u1 frameType = m_infoDataStream.template read<u1>();
             if(frameType >= SameFrame::SAME_FRAME_MIN_TAG_VALUE && frameType <= SameFrame::SAME_FRAME_MAX_TAG_VALUE)
             {
                 m_entries.emplace_back(StackMapFrame{ SameFrame{ frameType } });
             }
-            else if(frameType >= SameLocals1StackItemFrame::SAME_LOCALS_1_STACK_ITEM_MIN_TAG_VALUE &&
-                    frameType <= SameLocals1StackItemFrame::SAME_LOCALS_1_STACK_ITEM_MAX_TAG_VALUE)
+            else if(frameType >= SameLocals1StackItemFrame::SAME_LOCALS_1_STACK_ITEM_MIN_TAG_VALUE && frameType <= SameLocals1StackItemFrame::SAME_LOCALS_1_STACK_ITEM_MAX_TAG_VALUE)
             {
-                const VerificationTypeInfo verificationTypeInfo =
-                    Stream::Reader::read<VerificationTypeInfo>(m_infoDataStream, Stream::ByteOrder::INVERSE);
-
+                const VerificationTypeInfo verificationTypeInfo = m_infoDataStream.template read<VerificationTypeInfo>();
                 m_entries.emplace_back(StackMapFrame{ SameLocals1StackItemFrame{ frameType, verificationTypeInfo } });
             }
             else if(frameType == SameLocals1StackItemFrameExtended::SAME_LOCALS_1_STACK_ITEM_EXTENDED_TAG_VALUE)
             {
-                const u2 offsetDelta = Stream::Reader::read<u2>(m_infoDataStream, Stream::ByteOrder::INVERSE);
-                const VerificationTypeInfo verificationTypeInfo =
-                    Stream::Reader::read<VerificationTypeInfo>(m_infoDataStream, Stream::ByteOrder::INVERSE);
-
-                m_entries.emplace_back(
-                    StackMapFrame{ SameLocals1StackItemFrameExtended{ offsetDelta, verificationTypeInfo } });
+                const u2 offsetDelta = m_infoDataStream.template read<u2>();
+                const VerificationTypeInfo verificationTypeInfo = m_infoDataStream.template read<VerificationTypeInfo>();
+                m_entries.emplace_back(StackMapFrame{ SameLocals1StackItemFrameExtended{ offsetDelta, verificationTypeInfo } });
             }
-            else if(frameType >= ChopFrame::CHOP_FRAME_MIN_TAG_VALUE &&
-                    frameType <= ChopFrame::CHOP_FRAME_MAX_TAG_VALUE)
+            else if(frameType >= ChopFrame::CHOP_FRAME_MIN_TAG_VALUE && frameType <= ChopFrame::CHOP_FRAME_MAX_TAG_VALUE)
             {
-                const u2 offsetDelta = Stream::Reader::read<u2>(m_infoDataStream, Stream::ByteOrder::INVERSE);
+                const u2 offsetDelta = m_infoDataStream.template read<u2>();
                 m_entries.emplace_back(StackMapFrame{ ChopFrame{ frameType, offsetDelta } });
             }
             else if(frameType == SameFrameExtended::SAME_FRAME_EXTENDED_TAG_VALUE)
             {
-                const u2 offsetDelta = Stream::Reader::read<u2>(m_infoDataStream, Stream::ByteOrder::INVERSE);
+                const u2 offsetDelta = m_infoDataStream.template read<u2>();
                 m_entries.emplace_back(StackMapFrame{ SameFrameExtended{ offsetDelta } });
             }
-            else if(frameType >= AppendFrame::APPEND_FRAME_MIN_TAG_VALUE &&
-                    frameType <= AppendFrame::APPEND_FRAME_MAX_TAG_VALUE)
+            else if(frameType >= AppendFrame::APPEND_FRAME_MIN_TAG_VALUE && frameType <= AppendFrame::APPEND_FRAME_MAX_TAG_VALUE)
             {
-                const u2 offsetDelta = Stream::Reader::read<u2>(m_infoDataStream, Stream::ByteOrder::INVERSE);
+                const u2 offsetDelta = m_infoDataStream.template read<u2>();
 
                 const u1 localsSize = frameType - 251;
                 std::vector<VerificationTypeInfo> locals;
@@ -352,9 +204,7 @@ namespace AeroJet::Java::ClassFile
 
                 for(u1 localsIndex = 0; localsIndex < localsSize; localsIndex++)
                 {
-                    VerificationTypeInfo verificationTypeInfo =
-                        Stream::Reader::read<VerificationTypeInfo>(m_infoDataStream, Stream::ByteOrder::INVERSE);
-
+                    VerificationTypeInfo verificationTypeInfo = m_infoDataStream.template read<VerificationTypeInfo>();
                     locals.emplace_back(verificationTypeInfo);
                 }
 
@@ -362,31 +212,13 @@ namespace AeroJet::Java::ClassFile
             }
             else if(frameType == FullFrame::FULL_FRAME_TAG_VALUE)
             {
-                const u2 offsetDelta = Stream::Reader::read<u2>(m_infoDataStream, Stream::ByteOrder::INVERSE);
-                const u2 numberOfLocals = Stream::Reader::read<u2>(m_infoDataStream, Stream::ByteOrder::INVERSE);
+                const u2 offsetDelta = m_infoDataStream.template read<u2>();
+                const u2 numberOfLocals = m_infoDataStream.template read<u2>();
 
-                std::vector<VerificationTypeInfo> locals;
-                locals.reserve(numberOfLocals);
+                std::vector<VerificationTypeInfo> locals = m_infoDataStream.template readSome<VerificationTypeInfo>(numberOfLocals);
 
-                for(u1 localsIndex = 0; localsIndex < numberOfLocals; localsIndex++)
-                {
-                    VerificationTypeInfo verificationTypeInfo =
-                        Stream::Reader::read<VerificationTypeInfo>(m_infoDataStream, Stream::ByteOrder::INVERSE);
-
-                    locals.emplace_back(verificationTypeInfo);
-                }
-
-                const u2 numberOfStackItems = Stream::Reader::read<u2>(m_infoDataStream, Stream::ByteOrder::INVERSE);
-                std::vector<VerificationTypeInfo> stack;
-                stack.reserve(numberOfStackItems);
-
-                for(u1 stackItemIndex = 0; stackItemIndex < numberOfLocals; stackItemIndex++)
-                {
-                    VerificationTypeInfo verificationTypeInfo =
-                        Stream::Reader::read<VerificationTypeInfo>(m_infoDataStream, Stream::ByteOrder::INVERSE);
-
-                    stack.emplace_back(verificationTypeInfo);
-                }
+                const u2 numberOfStackItems = m_infoDataStream.template read<u2>();
+                std::vector<VerificationTypeInfo> stack = m_infoDataStream.template readSome<VerificationTypeInfo>(numberOfStackItems);
 
                 m_entries.emplace_back(StackMapFrame{ FullFrame{ offsetDelta, locals, stack } });
             }
