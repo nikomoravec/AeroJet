@@ -24,6 +24,7 @@
 
 #pragma once
 
+#include "Stream/JavaClassStream.hpp"
 #include "Types.hpp"
 
 #include <vector>
@@ -55,6 +56,17 @@ namespace AeroJet::Java::ClassFile
         [[nodiscard]] u2 size() const;
 
         [[nodiscard]] const std::vector<u1>& info() const;
+
+        template<typename T>
+        AttributeInfo read(Stream::JavaClassStream<T>& stream)
+        {
+            const u2 attributeNameIndex = stream.template read<u2>();
+
+            const u4 attributeInfoSize = stream.template read<u4>();
+            std::vector<AeroJet::u1> attributeInfo = stream.template readSome<u1>(attributeInfoSize);
+
+            return { attributeNameIndex, attributeInfo };
+        }
 
       protected:
         u2 m_attributeNameIndex;
