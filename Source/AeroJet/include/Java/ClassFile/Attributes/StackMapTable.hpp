@@ -98,7 +98,7 @@ namespace AeroJet::Java::ClassFile
         static VerificationTypeInfo read(Stream::JavaClassStream<T>& stream)
         {
             u2 data = 0;
-            const Java::ClassFile::VerificationTypeTag tag = static_cast<Java::ClassFile::VerificationTypeTag>(Stream::Reader::read<u1>(stream, Stream::ByteOrder::INVERSE));
+            const Java::ClassFile::VerificationTypeTag tag = static_cast<Java::ClassFile::VerificationTypeTag>(stream.template read<u1>());
             switch(tag)
             {
                 case Java::ClassFile::VerificationTypeTag::ITEM_TOP:
@@ -111,7 +111,7 @@ namespace AeroJet::Java::ClassFile
                     break;
                 case Java::ClassFile::VerificationTypeTag::ITEM_OBJECT:
                 case Java::ClassFile::VerificationTypeTag::ITEM_UNINITIALIZED:
-                    data = AeroJet::Stream::Reader::read<u2>(stream, byteOrder);
+                    data = stream.template read<u2>();
                     break;
 
                 default:
