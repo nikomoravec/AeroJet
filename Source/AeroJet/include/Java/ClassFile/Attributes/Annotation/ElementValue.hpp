@@ -24,6 +24,7 @@
 
 #pragma once
 
+#include "Stream/JavaClassStream.hpp"
 #include "Types.hpp"
 
 #include <memory>
@@ -85,6 +86,55 @@ namespace AeroJet::Java::ClassFile
 
         [[nodiscard]] Tag tag() const;
         [[nodiscard]] const Value& value() const;
+
+        template<typename T>
+        ElementValue read(Stream::JavaClassStream<T>& stream)
+        {
+            const Java::ClassFile::ElementValue::Tag tag = static_cast<Java::ClassFile::ElementValue::Tag>(AeroJet::Stream::Reader::read<u1>(stream, byteOrder));
+
+            switch(tag)
+            {
+                case Java::ClassFile::ElementValue::Tag::BYTE:
+                case Java::ClassFile::ElementValue::Tag::CHAR:
+                case Java::ClassFile::ElementValue::Tag::DOUBLE:
+                case Java::ClassFile::ElementValue::Tag::FLOAT:
+                case Java::ClassFile::ElementValue::Tag::INT:
+                case Java::ClassFile::ElementValue::Tag::LONG:
+                case Java::ClassFile::ElementValue::Tag::SHORT:
+                case Java::ClassFile::ElementValue::Tag::BOOLEAN:
+                case Java::ClassFile::ElementValue::Tag::STRING:
+                {
+                    const u2 constValueIndex = stream.template read<u2>();
+                    return { tag, u2{ constValueIndex } };
+                }
+                case Java::ClassFile::ElementValue::Tag::ENUM_TYPE:
+                {
+                    const u2 typeNameIndex = stream.template read<u2>();
+                    const u2 constValueIndex = stream.template read<u2>();
+
+                    return { tag, EnumConstValue{ typeNameIndex, constValueIndex } };
+                }
+                case Java::ClassFile::ElementValue::Tag::CLASS:
+                {
+                    const u2 classInfoIndex = stream.template read<u2>();
+                    return { tag, u2{ classInfoIndex } };
+                }
+                case Java::ClassFile::ElementValue::Tag::ANNOTATION_TYPE:
+                {
+                    const Annotation annotation = stream.template read<Annotation>();
+                    // TODO: check if we really need shared_ptr<Annotation> here
+                    return { tag, std::make_shared<Annotation>(annotation) };
+                }
+                case Java::ClassFile::ElementValue::Tag::ARRAY_TYPE:
+                {
+                    const u2 numValues = stream.template read<u2>();
+                    std::vector<AeroJet::Java::ClassFile::ElementValue> values = stream.template readSome<ElementValue>(numValues);
+                    return { tag, ArrayValue{ values } };
+                }
+                default:
+                    throw Exceptions::RuntimeException(fmt::format("Unknown ElementValue tag: {}", static_cast<u1>(tag)));
+            }
+        }
 
       private:
         Tag m_tag;

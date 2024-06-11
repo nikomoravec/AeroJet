@@ -27,7 +27,6 @@
 #include "Exceptions/RuntimeException.hpp"
 #include "fmt/format.h"
 #include "Java/ClassFile/Attributes/Annotation/Annotation.hpp"
-#include "Stream/Reader.hpp"
 
 #include <utility>
 
@@ -76,69 +75,3 @@ namespace AeroJet::Java::ClassFile
         return m_value;
     }
 } // namespace AeroJet::Java::ClassFile
-
-template<>
-AeroJet::Java::ClassFile::ElementValue AeroJet::Stream::Reader::read(std::istream& stream, ByteOrder byteOrder)
-{
-    const Java::ClassFile::ElementValue::Tag tag =
-        static_cast<Java::ClassFile::ElementValue::Tag>(AeroJet::Stream::Reader::read<u1>(stream, byteOrder));
-
-    switch(tag)
-    {
-        case Java::ClassFile::ElementValue::Tag::BYTE:
-        case Java::ClassFile::ElementValue::Tag::CHAR:
-        case Java::ClassFile::ElementValue::Tag::DOUBLE:
-        case Java::ClassFile::ElementValue::Tag::FLOAT:
-        case Java::ClassFile::ElementValue::Tag::INT:
-        case Java::ClassFile::ElementValue::Tag::LONG:
-        case Java::ClassFile::ElementValue::Tag::SHORT:
-        case Java::ClassFile::ElementValue::Tag::BOOLEAN:
-        case Java::ClassFile::ElementValue::Tag::STRING:
-        {
-            const u2 constValueIndex = AeroJet::Stream::Reader::read<u2>(stream, byteOrder);
-            return AeroJet::Java::ClassFile::ElementValue{ tag, AeroJet::u2{ constValueIndex } };
-        }
-        case Java::ClassFile::ElementValue::Tag::ENUM_TYPE:
-        {
-            const u2 typeNameIndex = AeroJet::Stream::Reader::read<u2>(stream, byteOrder);
-            const u2 constValueIndex = AeroJet::Stream::Reader::read<u2>(stream, byteOrder);
-
-            return AeroJet::Java::ClassFile::ElementValue{
-                tag,
-                Java::ClassFile::ElementValue::EnumConstValue{ typeNameIndex, constValueIndex }
-            };
-        }
-        case Java::ClassFile::ElementValue::Tag::CLASS:
-        {
-            const u2 classInfoIndex = AeroJet::Stream::Reader::read<u2>(stream, byteOrder);
-            return AeroJet::Java::ClassFile::ElementValue{ tag, AeroJet::u2{ classInfoIndex } };
-        }
-        case Java::ClassFile::ElementValue::Tag::ANNOTATION_TYPE:
-        {
-            const AeroJet::Java::ClassFile::Annotation annotation =
-                AeroJet::Stream::Reader::read<AeroJet::Java::ClassFile::Annotation>(stream, byteOrder);
-
-            return AeroJet::Java::ClassFile::ElementValue{ tag,
-                                                           std::make_shared<AeroJet::Java::ClassFile::Annotation>(
-                                                               annotation) };
-        }
-        case Java::ClassFile::ElementValue::Tag::ARRAY_TYPE:
-        {
-            const u2 numValues = AeroJet::Stream::Reader::read<u2>(stream, byteOrder);
-
-            std::vector<AeroJet::Java::ClassFile::ElementValue> values;
-            values.reserve(numValues);
-            for(u2 valueIndex = 0; valueIndex < numValues; valueIndex++)
-            {
-                values.emplace_back(
-                    AeroJet::Stream::Reader::read<AeroJet::Java::ClassFile::ElementValue>(stream, byteOrder));
-            }
-
-            return AeroJet::Java::ClassFile::ElementValue{ tag,
-                                                           AeroJet::Java::ClassFile::ElementValue::ArrayValue{
-                                                               values } };
-        }
-        default:
-            throw Exceptions::RuntimeException(fmt::format("Unknown ElementValue tag: {}", static_cast<u1>(tag)));
-    }
-}
