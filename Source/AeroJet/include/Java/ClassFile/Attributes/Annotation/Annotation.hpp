@@ -26,6 +26,7 @@
 
 #include "Java/ClassFile/Attributes/Annotation/ElementValue.hpp"
 #include "Java/ClassFile/Attributes/Annotation/ElementValuePair.hpp"
+#include "Stream/JavaClassStream.hpp"
 #include "Types.hpp"
 
 #include <vector>
@@ -56,6 +57,17 @@ namespace AeroJet::Java::ClassFile
          * represented by this annotation structure.
          */
         [[nodiscard]] const std::vector<ElementValuePair>& elementValuePairs() const;
+
+        template<typename T>
+        static Annotation read(Stream::JavaClassStream<T>& stream)
+        {
+            const u2 typeIndex = stream.template read<u2>();
+
+            const u2 numElementValuePairs = Astream.template read<u2>();
+            std::vector<ElementValuePair> elementValues = stream.template readSome<ElementValuePair>(numElementValuePairs);
+
+            return AeroJet::Java::ClassFile::Annotation{ typeIndex, elementValues };
+        }
 
       private:
         u2 m_typeIndex;

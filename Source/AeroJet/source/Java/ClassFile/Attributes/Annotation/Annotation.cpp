@@ -48,24 +48,3 @@ namespace AeroJet::Java::ClassFile
         return m_elementValuePairs;
     }
 } // namespace AeroJet::Java::ClassFile
-
-template<>
-AeroJet::Java::ClassFile::Annotation AeroJet::Stream::Reader::read(std::istream& stream, ByteOrder byteOrder)
-{
-    const u2 typeIndex = AeroJet::Stream::Reader::read<u2>(stream, byteOrder);
-
-    const u2 numElementValuePairs = AeroJet::Stream::Reader::read<u2>(stream, byteOrder);
-    std::vector<AeroJet::Java::ClassFile::ElementValuePair> elementValues;
-    elementValues.reserve(numElementValuePairs);
-    for(u2 elementValueIndex = 0; elementValueIndex < numElementValuePairs; elementValueIndex++)
-    {
-        const u2 elementNameIndex = AeroJet::Stream::Reader::read<u2>(stream, byteOrder);
-        const Java::ClassFile::ElementValue elementValue =
-            AeroJet::Stream::Reader::read<Java::ClassFile::ElementValue>(stream, byteOrder);
-
-        AeroJet::Java::ClassFile::ElementValuePair elementValuePair{ elementNameIndex, elementValue };
-        elementValues.emplace_back(elementValuePair);
-    }
-
-    return AeroJet::Java::ClassFile::Annotation{ typeIndex, elementValues };
-}
