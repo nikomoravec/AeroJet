@@ -426,6 +426,15 @@ namespace AeroJet::Java::ClassFile
              */
             [[nodiscard]] u1 typeArgumentIndex() const;
 
+            template<typename T>
+            [[nodiscard]] static TypePathKind read(Stream::JavaClassStream<T>& stream)
+            {
+                const u1 typePathKind = stream.template read<u1>();
+                const u1 typeArgumentIndex = stream.template read<u1>();
+
+                return { static_cast<AeroJet::Java::ClassFile::TypePath::TypePathKind>(typePathKind), typeArgumentIndex };
+            }
+
           private:
             TypePathKind m_typePathKind;
             u1 m_typeArgumentIndex;
@@ -447,6 +456,15 @@ namespace AeroJet::Java::ClassFile
         [[nodiscard]] u1 pathLength() const;
 
         [[nodiscard]] const std::vector<Path>& path() const;
+
+        template<typename T>
+        [[nodiscard]] static TypePath read(Stream::JavaClassStream<T>& stream)
+        {
+            const u1 pathLength = stream.template read<u1>();
+            std::vector<TypePath::Path> paths = stream.template readSome<TypePath::Path>(pathLength);
+
+            return AeroJet::Java::ClassFile::TypePath{ paths };
+        }
 
       private:
         std::vector<Path> m_path;

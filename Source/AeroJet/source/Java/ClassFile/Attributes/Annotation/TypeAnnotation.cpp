@@ -215,26 +215,6 @@ namespace AeroJet::Java::ClassFile
 } // namespace AeroJet::Java::ClassFile
 
 template<>
-AeroJet::Java::ClassFile::TypePath AeroJet::Stream::Reader::read(std::istream& stream, ByteOrder byteOrder)
-{
-    const u1 pathLength = AeroJet::Stream::Reader::read<u1>(stream, byteOrder);
-
-    std::vector<AeroJet::Java::ClassFile::TypePath::Path> paths;
-    paths.reserve(pathLength);
-
-    for(u1 pathIndex = 0; pathIndex < pathLength; pathIndex++)
-    {
-        const u1 typePathKind = AeroJet::Stream::Reader::read<u1>(stream, byteOrder);
-        const u1 typeArgumentIndex = AeroJet::Stream::Reader::read<u1>(stream, byteOrder);
-
-        paths.emplace_back(static_cast<AeroJet::Java::ClassFile::TypePath::TypePathKind>(typePathKind),
-                           typeArgumentIndex);
-    }
-
-    return AeroJet::Java::ClassFile::TypePath{ paths };
-}
-
-template<>
 AeroJet::Java::ClassFile::TypeAnnotation AeroJet::Stream::Reader::read(std::istream& stream, ByteOrder byteOrder)
 {
     const u1 targetType = AeroJet::Stream::Reader::read<u1>(stream, byteOrder);
