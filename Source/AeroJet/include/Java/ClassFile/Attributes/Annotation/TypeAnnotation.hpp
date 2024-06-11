@@ -427,7 +427,7 @@ namespace AeroJet::Java::ClassFile
             [[nodiscard]] u1 typeArgumentIndex() const;
 
             template<typename T>
-            [[nodiscard]] static TypePathKind read(Stream::JavaClassStream<T>& stream)
+            [[nodiscard]] static Path read(Stream::JavaClassStream<T>& stream)
             {
                 const u1 typePathKind = stream.template read<u1>();
                 const u1 typeArgumentIndex = stream.template read<u1>();
