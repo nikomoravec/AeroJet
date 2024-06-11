@@ -28,6 +28,7 @@
 #include "Stream/StandardStreamWrapper.hpp"
 #include "Types.hpp"
 
+#include <sstream>
 #include <string>
 #include <utility>
 #include <vector>
