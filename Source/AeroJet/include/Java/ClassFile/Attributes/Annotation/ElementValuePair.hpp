@@ -22,9 +22,10 @@
  * SOFTWARE.
  */
 
-#include "Java/ClassFile/Attributes/Annotation/ElementValue.hpp"
-
 #pragma once
+
+#include "Java/ClassFile/Attributes/Annotation/ElementValue.hpp"
+#include "Stream/JavaClassStream.hpp"
 
 namespace AeroJet::Java::ClassFile
 {
@@ -46,6 +47,15 @@ namespace AeroJet::Java::ClassFile
          * element_value_pairs entry.
          */
         [[nodiscard]] const ElementValue& value() const;
+
+        template<typename T>
+        ElementValuePair read(Stream::JavaClassStream<T>& stream)
+        {
+            const u2 elementNameIndex = stream.template read<u2>();
+            const ElementValue elementValue = stream.template read<ElementValue>();
+
+            return { elementNameIndex, elementValue };
+        }
 
       private:
         u2 m_elementNameIndex;
